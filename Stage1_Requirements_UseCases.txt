@@ -1,0 +1,38 @@
+Stage 1 – Requirements & Use Cases (Spotify Data Engineering Project)
+
+Objective
+The project uses the Spotify REST API to collect and analyze data about artists, tracks, albums, and audio features (danceability, energy, etc.), then processes and visualizes them in a dashboard.
+
+Functional Requirements (FR)
+- FR1: Connect to Spotify API and collect data (artists, albums, tracks, audio features).
+- FR2: Store raw data in MongoDB (raw.*).
+- FR3: Process data with Spark → curated collections (curated.*).
+- FR4: Simulate “play” events via Kafka and process them in real-time.
+- FR5: Build a Streamlit dashboard with visualizations (charts, top lists, correlations).
+- FR6: Document the workflow in a Jupyter Notebook.
+
+Non-Functional Requirements (NFR)
+- NFR1: Data clarity and consistency.
+- NFR2: Retry logic for API rate limits.
+- NFR3: Idempotent runs (no duplicate or corrupted data).
+- NFR4: Simplicity and reproducibility (everyone can run the code).
+
+Use Cases
+1. Search and store artist/track/album data from API.
+2. Collect audio features for tracks.
+3. Process and clean data with Spark.
+4. Stream “play” events (simulation → Kafka → Spark).
+5. Visualize data and KPIs in Streamlit.
+
+Data Model (simplified)
+- MongoDB (NoSQL): raw.artists, raw.albums, raw.tracks, raw.audio_features, curated.*.
+- Optional SQL (star schema): dim_artists, dim_albums, dim_tracks, fact_plays.
+
+Project Plan (6 weekly stages)
+1. Requirements & Use Cases  (now).
+2. Data Ingestion (batch API → MongoDB).
+3. Data Processing (Spark → curated).
+4. Streaming (Kafka → Spark).
+5. Visualization (Streamlit).
+6. Final Demo + Notebook.
+
