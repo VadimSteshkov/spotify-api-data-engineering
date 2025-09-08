@@ -4,3 +4,7 @@
 1. Als Künstler will ich nachvollziehen, wie sich die Popularität meiner Songs im Zeitverlauf verändert, um Erfolg von Releases und Kampagnen auswerten zu können
 1. Als Musiklabel will ich Streaming-Daten verschiedener Künstler zusammenführen, um Trends erkennen und Talente frühzeitig entdecken
 1. Als User will ich meine gestreamten Stunden im aktuellen Monat wissen, um zu prüfen, ob sich das Abo überhaupt lohnt
+2. Ich als DJ will wissen, welches Genre im Schnitt die höchste Danability hat um meine Musikauswahl zu verbessern.
+3. Ich als Podcasterwprde gerne wissen, welche Themen am erfolgreichsten sind um mich besser auf meine Podcasts vorzubereiten.
+4. Als Radiosender würde ich gerne die am meist vertretesten Songs in den top Playlists wissen, um den Musikgeschmack des Mainstreams zu treffen.
+5. Als Label will ich wissen, welches Genre in welchen Ländern am beliebtesten sind um bessere Touren für meine Künstler zu planen.
