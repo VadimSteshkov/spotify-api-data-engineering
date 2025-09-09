@@ -1,0 +1,18 @@
+Alex:
+- Als Radiosender würde ich gerne die am meist vertretesten Songs in den top Playlists wissen, um den Musikgeschmack des Mainstreams zu treffen.
+- Als Musiker will ich sehen, in welchen Ländern meine Songs am meisten gestreamt werden, um Marketingstrategie gezielt anpassen zu können
+
+Dorin:
+- Als Festival-Organisator will ich wissen, welche Künstler in meiner Region am meisten gestreamt werden, um ein passendes Line-up zu planen.
+- Als Fitness-Trainer will ich Playlists mit Songs hoher Energie zusammenstellen, um meine Kunden beim Training zu motivieren.
+
+Gilian:
+- Ich als DJ will wissen, welches Genre im Schnitt die höchste Danability hat um meine Musikauswahl zu verbessern.
+- Als DJ will ich Brücken zwischen Subgenres: eine kurze Liste mit 5 Tracks, die zwei Stile im Set nahtlos verbinden.
+
+
+Vadim:
+- Als User will ich meine gestreamten Stunden im aktuellen Monat wissen, um zu prüfen, ob sich das Abo überhaupt lohnt.
+- Friend Match & Blind Spots: Ich will meine Playlists mit denen der Freunde vergleichen, gemeinsame Genres, einen Ähnlichkeitsscore und „Blind Spots“ sehen – was mir fehlt, bei Freunden aber gut läuft.
+- Weekly Genre Drift & Activity Digest: Ich will jeden Montag einen 7-Tage-Digest mit Hörstunden, Genre-Verschiebung (↑/↓ je Wochentag), neu entdeckten Artists/Alben, meistgespielten/neu gespeicherten Alben sowie kurzen, trendbasierten Vorschlägen.
+
