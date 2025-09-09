@@ -8,3 +8,8 @@
 3. Ich als Podcasterwprde gerne wissen, welche Themen am erfolgreichsten sind um mich besser auf meine Podcasts vorzubereiten.
 4. Als Radiosender würde ich gerne die am meist vertretesten Songs in den top Playlists wissen, um den Musikgeschmack des Mainstreams zu treffen.
 5. Als Label will ich wissen, welches Genre in welchen Ländern am beliebtesten sind um bessere Touren für meine Künstler zu planen.
+1. Als Musikjournalist will ich Trends bei neuen Releases analysieren, um Artikel über aktuelle Musikrichtungen schreiben zu können.
+2. Als Festival-Organisator will ich wissen, welche Künstler in meiner Region am meisten gestreamt werden, um ein passendes Line-up zu planen.
+3. Als Werbungstreibender will ich herausfinden, zu welchen Tageszeiten am meisten Musik gehört wird, um zielgerichtete Werbung zu schalten.
+4. Als Fitness-Trainer will ich Playlists mit Songs hoher Energie zusammenstellen, um meine Kunden beim Training zu motivieren.
+5. Als Event-Planer will ich wissen, welche Songs in einer Stadt am beliebtesten sind, um passende Musik auf Veranstaltungen zu spielen.
