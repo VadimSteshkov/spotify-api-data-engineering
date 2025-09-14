@@ -1,5 +1,6 @@
 Alex:
 - Als User will ich wissen, inwiefern meine playlists für Partys geeignet sind. (danceability, energy)
+- Als Musiker will ich den zusammenhang zwischen popularität und anderen Eigenschaften verstehen (speechiness, instrumentalness,..) um meine Musik populärer zu machen
 
 Dorin:
 - Als Festival-Organisator will ich wissen, welche Künstler in meiner Region am meisten gestreamt werden, um ein passendes Line-up zu planen.
