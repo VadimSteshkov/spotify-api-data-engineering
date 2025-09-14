@@ -1,6 +1,5 @@
 Alex:
-- Als Radiosender würde ich gerne die am meist vertretesten Songs in den top Playlists wissen, um den Musikgeschmack des Mainstreams zu treffen.
-- Als Musiker will ich sehen, in welchen Ländern meine Songs am meisten gestreamt werden, um Marketingstrategie gezielt anpassen zu können
+- Als User will ich wissen, inwiefern meine playlists für Partys geeignet sind. (danceability, energy)
 
 Dorin:
 - Als Festival-Organisator will ich wissen, welche Künstler in meiner Region am meisten gestreamt werden, um ein passendes Line-up zu planen.
