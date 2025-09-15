@@ -248,6 +248,32 @@ def debug_print_top_artists_from_recent(recent_json: Dict, top_n: int = 5, app_t
         print(f"  - {aj.get('name','?')} ({aid}): {c}")
 
 
+def debug_print_identity(user_token: str) -> None:
+    if not DEBUG:
+        return
+    r = get("https://api.spotify.com/v1/me", headers=_bearer_headers(user_token), timeout=30)
+    if r.ok:
+        p = r.json()
+        print(f"[DEBUG] Profile: id={p.get('id')} display_name={p.get('display_name')} email={p.get('email')} country={p.get('country')}")
+
+def debug_print_currently_playing(user_token: str) -> None:
+    if not DEBUG:
+        return
+    r = get("https://api.spotify.com/v1/me/player/currently-playing", headers=_bearer_headers(user_token), timeout=30)
+    if r.status_code == 204:
+        print("[DEBUG] Currently playing: nothing (204)")
+        return
+    if r.ok:
+        js = r.json()
+        item = js.get("item") or {}
+        name = item.get("name")
+        artists = ", ".join(a.get("name","?") for a in item.get("artists", []))
+        prog = js.get("progress_ms", 0) // 1000
+        print(f"[DEBUG] Now playing: {name} — {artists} (progress {prog}s, is_playing={js.get('is_playing')})")
+    else:
+        print(f"[DEBUG] Currently playing fetch failed: {r.status_code} {r.text}")
+
+
 # ---------------- Main ----------------
 def main():
     # 1) Tokens
@@ -285,6 +311,9 @@ def main():
         print_top_tracks_for_artist(app_token, artist_id, market=market, limit=10)
     else:
         print("\nNo dominant artist found in your recent plays; skipping US2.")
+
+    debug_print_identity(user_token)
+    debug_print_currently_playing(user_token)
 
 
 if __name__ == "__main__":
