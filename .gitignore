@@ -1,16 +1,26 @@
-# secrets
+# Secrets
 .env
+.envrc
+*.key
+*.pem
 
-# python
+# Spotify cache (Spotipy token cache files)
+.cache-*
+.cache/
+
+# Python
 __pycache__/
 *.pyc
 *.pyo
+*.pyd
 
-# venv
+# Virtual env
+.venv/
 venv/
-.envrc
 
-# OS
+# OS / Editor
 .DS_Store
 Thumbs.db
+.idea/
+.vscode/
 
