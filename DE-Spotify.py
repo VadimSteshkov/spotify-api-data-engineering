@@ -1,9 +1,8 @@
-# file: auto_spotify.py
 import os
 import json
 import time
 import base64
-from typing import List, Dict, Set, Tuple
+from typing import List, Dict, Set, Tuple, Optional
 from collections import Counter
 
 from requests import get, post
@@ -19,6 +18,9 @@ CLIENT_ID = os.getenv("CLIENT_ID")
 CLIENT_SECRET = os.getenv("CLIENT_SECRET")
 USERNAME = os.getenv("USERNAME")
 REDIRECT_URI = os.getenv("REDIRECT_URI")
+
+# Optional market override; if set, it will be used instead of the profile country
+MARKET_OVERRIDE = os.getenv("MARKET_OVERRIDE")
 
 # Scope needed for /v1/me/* endpoints
 SCOPE = "user-read-private user-read-email user-read-recently-played user-read-currently-playing user-top-read"
@@ -61,11 +63,14 @@ def get_app_token() -> str:
     return r.json()["access_token"]
 
 def get_user_token() -> str:
-    """Authorization Code flow – needed for /v1/me/* endpoints."""
+    """
+    Authorization Code flow – required for /v1/me/* endpoints.
+    Spotipy caches a refresh token in `.cache-<USERNAME>` so subsequent runs shouldn't prompt.
+    """
     _require_env("CLIENT_ID"); _require_env("CLIENT_SECRET")
     username = _require_env("USERNAME"); redirect_uri = _require_env("REDIRECT_URI")
 
-    # Initializes Spotipy's credential manager (not strictly needed but harmless)
+    # Initialize Spotipy (harmless no-op here; keeps imports consistent)
     _ = spotipy.Spotify(
         auth_manager=SpotifyClientCredentials(client_id=CLIENT_ID, client_secret=CLIENT_SECRET)
     )
@@ -77,17 +82,20 @@ def get_user_token() -> str:
         redirect_uri=redirect_uri,
     )
     if not token:
-        raise RuntimeError("Failed to obtain user token.")
+        raise RuntimeError("Failed to obtain user token. Check .env values and redirect URI.")
     return token
 
 
 # ---------------- Basic fetchers ----------------
 def get_profile_and_market(user_token: str) -> Tuple[Dict, str]:
-    """Return user profile JSON and preferred market (country code) fallback to 'AT'."""
+    """
+    Return user profile JSON and selected market.
+    Priority: MARKET_OVERRIDE (.env) > profile['country'] > 'AT'
+    """
     r = get("https://api.spotify.com/v1/me", headers=_bearer_headers(user_token), timeout=30)
     r.raise_for_status()
     profile = r.json()
-    market = profile.get("country") or "AT"
+    market = MARKET_OVERRIDE or profile.get("country") or "AT"
     return profile, market
 
 def get_recently_played(user_token: str, limit: int = 50) -> Dict:
@@ -106,7 +114,7 @@ def get_album_meta(app_token: str, album_id: str) -> Dict:
     return r.json()
 
 def get_album_tracks(app_token: str, album_id: str) -> List[Dict]:
-    """Fetch full tracklist with pagination (if needed)."""
+    """Fetch full tracklist with pagination if needed."""
     tracks: List[Dict] = []
     url = f"https://api.spotify.com/v1/albums/{album_id}/tracks"
     params = {"limit": 50, "offset": 0}
@@ -149,8 +157,8 @@ def collect_recent_album_ids(recent_json: Dict, max_unique: int = 10) -> List[st
             break
     return ordered
 
-def most_common_artist_id_from_recent(recent_json: Dict) -> str | None:
-    """Pick the most frequent artist from recently played items; return its ID."""
+def most_common_artist_id_from_recent(recent_json: Dict) -> Optional[str]:
+    """Return the most frequent artist ID from recently played items."""
     ids: List[str] = []
     for item in recent_json.get("items", []):
         track = item.get("track") or {}
@@ -197,7 +205,16 @@ def print_top_tracks_for_artist(app_token: str, artist_id: str, market: str, lim
     if not tracks:
         print("No top tracks found for that artist.")
         return
-    print(f"\n=== Top {min(limit, len(tracks))} tracks (market={market}) ===")
+
+    # Fetch artist name for clarity
+    a = get(
+        f"https://api.spotify.com/v1/artists/{artist_id}",
+        headers=_bearer_headers(app_token),
+        timeout=30
+    ).json()
+    artist_name = a.get("name", "?")
+
+    print(f"\n=== Top {min(limit, len(tracks))} tracks for {artist_name} (market={market}) ===")
     for i, t in enumerate(tracks[:limit], start=1):
         name = t.get("name", "?")
         artists = ", ".join(a.get("name", "?") for a in t.get("artists", []))
@@ -205,7 +222,7 @@ def print_top_tracks_for_artist(app_token: str, artist_id: str, market: str, lim
         print(f"{i:02d}. {name} — {artists} ({dur})")
 
 
-# ---------------- Main (no CLI, no prompts) ----------------
+# ---------------- Main (no CLI prompts after first login) ----------------
 def main():
     # 1) Tokens
     app_token = get_app_token()
@@ -213,20 +230,30 @@ def main():
 
     # 2) Profile + market
     _, market = get_profile_and_market(user_token)
+    print(f"[INFO] Using market: {market}")
 
     # 3) Pull recent plays once
     recent = get_recently_played(user_token, limit=50)
 
-    # 4) US1 automatically: last 10 unique albums from recent plays
+    # 4) US1
     album_ids = collect_recent_album_ids(recent, max_unique=10)
     print_tracklists_for_albums(app_token, album_ids)
 
-    # 5) US2 automatically: most common recent artist → top tracks for user market
+    # 5) US2
     artist_id = most_common_artist_id_from_recent(recent)
     if artist_id:
+        # Log the dominant artist for visibility
+        a = get(
+            f"https://api.spotify.com/v1/artists/{artist_id}",
+            headers=_bearer_headers(app_token),
+            timeout=30
+        ).json()
+        print(f"[INFO] Dominant recent artist: {a.get('name','?')} (id={artist_id})")
+
         print_top_tracks_for_artist(app_token, artist_id, market=market, limit=10)
     else:
         print("\nNo dominant artist found in your recent plays; skipping US2.")
+
 
 if __name__ == "__main__":
     main()
