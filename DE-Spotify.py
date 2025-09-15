@@ -1,5 +1,4 @@
 import os
-import json
 import time
 import base64
 from typing import List, Dict, Set, Tuple, Optional
@@ -19,8 +18,11 @@ CLIENT_SECRET = os.getenv("CLIENT_SECRET")
 USERNAME = os.getenv("USERNAME")
 REDIRECT_URI = os.getenv("REDIRECT_URI")
 
-# Optional market override; if set, it will be used instead of the profile country
+# Optional override for market (e.g., "RO", "AT"); if set, overrides profile country
 MARKET_OVERRIDE = os.getenv("MARKET_OVERRIDE")
+
+# Debug flag (set DEBUG=true in .env to enable debug logs)
+DEBUG = os.getenv("DEBUG", "false").lower() == "true"
 
 # Scope needed for /v1/me/* endpoints
 SCOPE = "user-read-private user-read-email user-read-recently-played user-read-currently-playing user-top-read"
@@ -28,6 +30,10 @@ SCOPE = "user-read-private user-read-email user-read-recently-played user-read-c
 
 
 # ---------------- Utilities ----------------
+def debug(msg: str) -> None:
+    if DEBUG:
+        print(f"[DEBUG] {msg}")
+
 def _bearer_headers(token: str) -> Dict[str, str]:
     return {"Authorization": f"Bearer {token}"}
 
@@ -70,7 +76,7 @@ def get_user_token() -> str:
     _require_env("CLIENT_ID"); _require_env("CLIENT_SECRET")
     username = _require_env("USERNAME"); redirect_uri = _require_env("REDIRECT_URI")
 
-    # Initialize Spotipy (harmless no-op here; keeps imports consistent)
+    # Initialize Spotipy (keeps imports consistent)
     _ = spotipy.Spotify(
         auth_manager=SpotifyClientCredentials(client_id=CLIENT_ID, client_secret=CLIENT_SECRET)
     )
@@ -222,7 +228,27 @@ def print_top_tracks_for_artist(app_token: str, artist_id: str, market: str, lim
         print(f"{i:02d}. {name} — {artists} ({dur})")
 
 
-# ---------------- Main (no CLI prompts after first login) ----------------
+# ---------------- Debug helpers ----------------
+def debug_print_top_artists_from_recent(recent_json: Dict, top_n: int = 5, app_token: Optional[str] = None) -> None:
+    """Print a frequency table of artist IDs from recently played."""
+    if not DEBUG:
+        return
+    ids: List[str] = []
+    for item in recent_json.get("items", []):
+        track = item.get("track") or {}
+        for a in (track.get("artists") or []):
+            if a.get("id"):
+                ids.append(a["id"])
+    counts = Counter(ids).most_common(top_n)
+    print("[DEBUG] Top artists in recently played:")
+    # Use provided app_token if available, otherwise fetch a fresh one
+    token = app_token or get_app_token()
+    for aid, c in counts:
+        aj = get(f"https://api.spotify.com/v1/artists/{aid}", headers=_bearer_headers(token), timeout=30).json()
+        print(f"  - {aj.get('name','?')} ({aid}): {c}")
+
+
+# ---------------- Main ----------------
 def main():
     # 1) Tokens
     app_token = get_app_token()
@@ -232,24 +258,30 @@ def main():
     _, market = get_profile_and_market(user_token)
     print(f"[INFO] Using market: {market}")
 
-    # 3) Pull recent plays once
+    # 3) Recently played
     recent = get_recently_played(user_token, limit=50)
+    debug(f"Recently played count: {len(recent.get('items', []))}")
+    if recent.get("items"):
+        newest = recent["items"][0].get("played_at")
+        if newest:
+            debug(f"Most recent played_at: {newest}")
 
-    # 4) US1
+    # 4) US1 – tracklists for last up to 10 distinct recently-played albums
     album_ids = collect_recent_album_ids(recent, max_unique=10)
     print_tracklists_for_albums(app_token, album_ids)
 
-    # 5) US2
+    # Debug table of most common artists in recent plays
+    debug_print_top_artists_from_recent(recent, top_n=5, app_token=app_token)
+
+    # 5) US2 – top tracks for dominant recent artist in selected market
     artist_id = most_common_artist_id_from_recent(recent)
     if artist_id:
-        # Log the dominant artist for visibility
         a = get(
             f"https://api.spotify.com/v1/artists/{artist_id}",
             headers=_bearer_headers(app_token),
             timeout=30
         ).json()
         print(f"[INFO] Dominant recent artist: {a.get('name','?')} (id={artist_id})")
-
         print_top_tracks_for_artist(app_token, artist_id, market=market, limit=10)
     else:
         print("\nNo dominant artist found in your recent plays; skipping US2.")
