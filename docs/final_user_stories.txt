@@ -3,8 +3,8 @@ Alex:
 - Als Musiker will ich den zusammenhang zwischen popularität und anderen Eigenschaften verstehen (speechiness, instrumentalness,..) um meine Musik populärer zu machen
 
 Dorin:
-- Als Festival-Organisator will ich wissen, welche Künstler in meiner Region am meisten gestreamt werden, um ein passendes Line-up zu planen.
-- Als Fitness-Trainer will ich Playlists mit Songs hoher Energie zusammenstellen, um meine Kunden beim Training zu motivieren.
+- Als User will ich die Trackliste eines Albums mit Titeln und Dauer sehen, damit ich entscheiden kann, welche Songs ich zuerst anhöre.
+- Als Musikfan will ich die Top-Tracks eines Künstlers abrufen, damit ich schnell einen Überblick über seine bekanntesten Songs bekomme.
 
 Gilian:
 - Ich als DJ will wissen, welches Genre im Schnitt die höchste Danability hat um meine Musikauswahl zu verbessern.
