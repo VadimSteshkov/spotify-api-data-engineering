@@ -7,12 +7,14 @@
   - Retrieve **tracklist of an album** (title + duration).
   - Retrieve **top tracks of an artist**.
   - Retrieve **recently played tracks** and push events into **Kafka**.
-- **Infrastructure (Kafka/Zookeeper)**:
-  - `docker-compose.yml` available to spin up services.
-  - `makefile` provided to initialize and list topics (`spotify_recent_events`, `spotify_recent_snapshot`).
-  - Kafka ingestion tested: events are visible in the terminal (`kcat`).
+- **Infrastructure (Kafka/Zookeeper/MongoDB)**:
+  - `docker-compose.yml` spins up Kafka, Zookeeper, and MongoDB.
+  - `makefile` initializes and lists topics (`spotify_recent_events`, `spotify_recent_snapshot`) and provides `consume` target.
+  - Kafka ingestion tested: events visible via `kcat`.
+  - MongoDB consumer added: events/snapshots are persisted into MongoDB (`kafka_consumer.py`).
 - **Documentation**:
-  - `run-and-start.md` explains how to set up the environment, `.env`, Docker, and Makefile usage.
+  - `run-and-start.md` explains setup for `.env`, Docker, and Makefile usage.
+  - `STATUS.md` updated with today’s progress.
 
 ## Implemented User Stories (so far, from Dorin)
 
@@ -24,29 +26,17 @@
      - Album title and release date.  
      - Complete list of songs (title + duration).  
      - Total runtime of the album.  
-   - Example from output:  
-     ```
-     === Album #2: A Iesit Soarele Din Nori — Florin Salam (release: 2015-05-21) ===
-     01. A Iesit Soarele Din Nori (03:41)
-     02. Viata Mea E Si Buna Si Rea (04:27)
-     ...
-     --- Total album length: 60:33 ---
-     ```  
-   - Implemented with the **market parameter** (e.g., `AT`) to ensure that the tracklist reflects availability in the user’s country.  
 
 2. **As a music fan, I want to fetch the top tracks of an artist, so I can quickly get an overview of their most popular songs.**  
    - Implemented via the Spotify API endpoint for an artist’s top tracks.  
    - The system automatically selects the **dominant artist** (most frequently played) from the user’s recent history.  
    - Then it retrieves and prints the **Top 10 tracks** of that artist, including title and duration.  
-   - Example from output:  
-     ```
-     === Top 10 tracks for Tzanca Uraganu (market=AT) ===
-     01. Tu blondina,eu brunet — Tzanca Uraganu (02:25)
-     02. Damelo — Tzanca Uraganu, Mr. Juve (02:37)
-     ...
-     ```  
-   - The **market parameter** ensures that the top tracks list is relevant to the user’s country (e.g., AT = Austria).  
-   - This gives the user an accurate view of the artist’s popularity in their region.  
+   - The **market parameter** ensures the list is relevant for the user’s country.  
+
+3. **As a data engineer, I want to persist streaming data into MongoDB, so I can query and analyze later.**  
+   - Implemented by adding `kafka_consumer.py`, which consumes from Kafka and inserts into MongoDB.  
+   - Each insert is logged with a **UTC timestamp** using `datetime.now(timezone.utc)`.  
+   - Verified end-to-end: Spotify API → Kafka → MongoDB.
 
 ---
 
@@ -61,24 +51,25 @@
   - Persist results into storage.
 
 - **Storage & Persistence**:
-  - Decide on storage format: Parquet files, or a database (NoSQL/SQL).
+  - Explore queries over MongoDB data.
+  - Decide on additional storage format: Parquet files, or SQL/NoSQL DB.
 
 - **Visualization (Streamlit)**:
   - Build a dashboard to display top artists and tracks.
   - Use simple charts (bar charts, timelines).
 
 - **Documentation (Jupyter Notebook)**:
-  - Create an end-to-end pipeline notebook: API → Kafka → Spark → Storage → Visualization.
+  - Create an end-to-end pipeline notebook: API → Kafka → MongoDB/Spark → Storage → Visualization.
   - Include screenshots, code snippets, and explanations.
 
 - **Optional Enhancements**:
-  - Extend `docker-compose.yml` with Spark, database, and Streamlit services.
+  - Extend `docker-compose.yml` with Spark and Streamlit services.
   - Automate the entire pipeline for one-command startup.
 
 ---
 
 ## 📌 Conclusion
-- Current stage: **Data ingestion + Kafka working** ✅  
+- Current stage: **Data ingestion + Kafka + MongoDB working** ✅  
 - Next stage: **Spark Streaming for real-time processing and storage**.  
 - Final stage: **Visualization and documentation** to deliver a complete project that satisfies the professor’s requirements.
 
