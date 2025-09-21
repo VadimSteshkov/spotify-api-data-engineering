@@ -3,8 +3,8 @@ Alex:
 - Als Musiker will ich den zusammenhang zwischen popularität und anderen Eigenschaften verstehen (speechiness, instrumentalness,..) um meine Musik populärer zu machen
 
 Dorin:
-- Als User will ich die Trackliste eines Albums mit Titeln und Dauer sehen, damit ich entscheiden kann, welche Songs ich zuerst anhöre.
-- Als Musikfan will ich die Top-Tracks eines Künstlers abrufen, damit ich schnell einen Überblick über seine bekanntesten Songs bekomme.
+- Als Musikfan will ich die Trackliste eines Albums (Titel + Dauer + Gesamtlänge) sehen, damit ich entscheiden kann, welche Songs ich zuerst anhöre.
+- Als Musikfan will ich für den dominanten Künstler aus meinen letzten Plays die Top-10-Tracks in einem gewählten Markt (z. B. AT/RO) sehen, damit ich schnell einen Überblick über seine bekanntesten Songs in dieser Region bekomme.
 
 Gilian:
 - Ich als DJ will wissen, welches Genre im Schnitt die höchste Danability hat um meine Musikauswahl zu verbessern.
