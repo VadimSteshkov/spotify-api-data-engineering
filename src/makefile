@@ -28,3 +28,6 @@ run-consumers:
 	$(MAKE) -s kafka-events & \
 	$(MAKE) -s kafka-snapshot
 
+#Run Kafka ->oMongoDB cnsumer
+consume:
+	.venv/bin/python3 kafka_consumer.py
