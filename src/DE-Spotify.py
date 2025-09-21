@@ -3,7 +3,8 @@
 Main script:
 - Authenticates to Spotify
 - Pulls last 50 "recently played"
-- Prints leaderboards (albums/tracks), album tracklists (US1), and top tracks for the dominant recent artist (US2)
+- Prints leaderboards (albums/tracks), album tracklists (US1),
+  and top tracks for the dominant recent artist (US2)
 - Builds JSON payloads and (optionally) produces them to Kafka
 """
 
@@ -15,33 +16,52 @@ from typing import List, Dict, Set, Tuple, Optional
 from collections import Counter
 
 from requests import get, post
-from dotenv import load_dotenv
+from dotenv import load_dotenv, find_dotenv
 import spotipy
-from spotipy.oauth2 import SpotifyClientCredentials
+from spotipy.oauth2 import SpotifyClientCredentials, SpotifyOAuth
 import spotipy.util as util
 
-from schemas.spotify_payloads import (
+from spotify_payloads import (
     build_events_from_recent_json,
     build_snapshot,
     TOPIC_RECENT_EVENTS,
     TOPIC_RECENT_SNAPSHOT,
 )
 
-from schemas.kafka_producer import KafkaJsonProducer
+from kafka_producer import KafkaJsonProducer
 
 # ================== ENV / CONFIG ==================
-load_dotenv()
+# Load .env from either repo root or src/, whichever exists
+load_dotenv(find_dotenv(), override=False)
 
-CLIENT_ID = os.getenv("CLIENT_ID")
-CLIENT_SECRET = os.getenv("CLIENT_SECRET")
-USERNAME = os.getenv("USERNAME")
-REDIRECT_URI = os.getenv("REDIRECT_URI")
+def _env_any(*keys: str, required: bool = False, default: Optional[str] = None) -> Optional[str]:
+    """Return first non-empty env var among keys."""
+    for k in keys:
+        v = os.getenv(k)
+        if v and str(v).strip():
+            return v.strip()
+    if required and default is None:
+        keys_fmt = ", ".join(keys)
+        raise RuntimeError(f"Missing environment variable (any of): {keys_fmt}. Check your .env")
+    return default
 
-MARKET_OVERRIDE = os.getenv("MARKET_OVERRIDE")  # optional market override, e.g. "RO" or "AT"
-DEBUG = os.getenv("DEBUG", "false").lower() == "true"
+def _require_env(name: str) -> str:
+    v = os.getenv(name)
+    if not v or not str(v).strip():
+        raise RuntimeError(f"Missing environment variable: {name} (check your .env)")
+    return v.strip()
+
+# Accept both legacy and SPOTIFY_* names so your team can use either style
+CLIENT_ID      = _env_any("CLIENT_ID", "SPOTIFY_APP_CLIENT_ID", required=True)
+CLIENT_SECRET  = _env_any("CLIENT_SECRET", "SPOTIFY_APP_CLIENT_SECRET", required=True)
+USERNAME       = _env_any("USERNAME", "SPOTIFY_USERNAME", required=True)
+REDIRECT_URI   = _env_any("REDIRECT_URI", "SPOTIFY_REDIRECT_URI", required=True)
+
+MARKET_OVERRIDE = _env_any("MARKET_OVERRIDE", default=None)  # e.g. "AT" / "RO"
+DEBUG = str(os.getenv("DEBUG", "false")).lower() == "true"
 
 # Kafka config (optional)
-KAFKA_ENABLED = os.getenv("KAFKA_ENABLED", "false").lower() == "true"
+KAFKA_ENABLED = str(os.getenv("KAFKA_ENABLED", "false")).lower() == "true"
 KAFKA_BOOTSTRAP = os.getenv("KAFKA_BOOTSTRAP", "localhost:9092")
 KAFKA_LINGER_MS = int(os.getenv("KAFKA_LINGER_MS", "50"))
 KAFKA_BATCH_SIZE = int(os.getenv("KAFKA_BATCH_SIZE", "16384"))
@@ -63,20 +83,11 @@ def _ms_to_mmss(ms: int) -> str:
     m, s = divmod(s, 60)
     return f"{m:02d}:{s:02d}"
 
-def _require_env(name: str) -> str:
-    val = os.getenv(name)
-    if not val:
-        raise RuntimeError(f"Missing environment variable: {name} (check your .env)")
-    return val
-
 
 # ---------------- Auth ----------------
 def get_app_token() -> str:
     """Client Credentials flow – for public catalog endpoints."""
-    client_id = _require_env("CLIENT_ID")
-    client_secret = _require_env("CLIENT_SECRET")
-
-    auth_b64 = base64.b64encode(f"{client_id}:{client_secret}".encode()).decode()
+    auth_b64 = base64.b64encode(f"{CLIENT_ID}:{CLIENT_SECRET}".encode()).decode()
     r = post(
         "https://accounts.spotify.com/api/token",
         headers={
@@ -86,31 +97,37 @@ def get_app_token() -> str:
         data={"grant_type": "client_credentials"},
         timeout=30,
     )
+    if r.status_code >= 400:
+        # Show helpful diagnostics to find the root cause quickly
+        print("[ERROR] App token fetch failed:",
+              f"status={r.status_code}, body={r.text[:300]}")
     r.raise_for_status()
     return r.json()["access_token"]
 
 def get_user_token() -> str:
     """
-    Authorization Code flow – required for /v1/me/* endpoints.
-    Spotipy caches a refresh token in `.cache-<USERNAME>` so subsequent runs shouldn't prompt.
+    Authorization Code flow via SpotifyOAuth.
+    Caches token in .cache-<USERNAME> so subsequent runs won't open a browser.
     """
-    _require_env("CLIENT_ID"); _require_env("CLIENT_SECRET")
-    username = _require_env("USERNAME"); redirect_uri = _require_env("REDIRECT_URI")
-
-    # Keep import usage consistent with Spotipy
-    _ = spotipy.Spotify(
-        auth_manager=SpotifyClientCredentials(client_id=CLIENT_ID, client_secret=CLIENT_SECRET)
-    )
-    token = util.prompt_for_user_token(
-        username,
-        SCOPE,
+    auth = SpotifyOAuth(
         client_id=CLIENT_ID,
         client_secret=CLIENT_SECRET,
-        redirect_uri=redirect_uri,
+        redirect_uri=REDIRECT_URI,     # must also be added in Spotify Dashboard
+        scope=SCOPE,
+        cache_path=f".cache-{USERNAME}",
+        open_browser=False,            # prevents browser auto-opening if cache exists
+        show_dialog=False,
     )
-    if not token:
-        raise RuntimeError("Failed to obtain user token. Check .env values and redirect URI.")
-    return token
+
+    # Try to load token from cache
+    token_info = auth.get_cached_token()
+    if not token_info:
+        # If no cache exists, requests user login once; afterwards cache is reused
+        token_info = auth.get_access_token(as_dict=True)
+
+    if not token_info or "access_token" not in token_info:
+        raise RuntimeError("Failed to obtain user token (SpotifyOAuth). Check .env and Redirect URI.")
+    return token_info["access_token"]
 
 
 # ---------------- Basic fetchers ----------------
