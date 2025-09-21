@@ -3,13 +3,16 @@
 Main script:
 - Authenticates to Spotify
 - Pulls last 50 "recently played"
-- Prints leaderboards (albums/tracks), album tracklists (US1),
-  and top tracks for the dominant recent artist (US2)
-- Builds JSON payloads and (optionally) produces them to Kafka
+- Prints leaderboards (albums/tracks)
+- Computes dominant artist from last 50 and fetches Top 10 tracks in a given market
+- Produces:
+    * spotify_recent_events -> per-play events (append-only)
+    * artist_market_top_tracks -> Top 10 for dominant artist in selected market
 """
 
 import os
 import time
+import json
 import base64
 from datetime import datetime, timezone
 
@@ -18,23 +21,19 @@ from typing import List, Dict, Set, Tuple, Optional
 from collections import Counter
 
 from requests import get, post
-from dotenv import load_dotenv, find_dotenv
+from dotenv import load_dotenv
 import spotipy
-from spotipy.oauth2 import SpotifyClientCredentials, SpotifyOAuth
-import spotipy.util as util
+from spotipy.oauth2 import SpotifyOAuth
 
 from spotify_payloads import (
 	build_events_from_recent_json,
-	build_snapshot,
-	TOPIC_RECENT_EVENTS,
-	TOPIC_RECENT_SNAPSHOT,
 )
 
 from kafka_producer import KafkaJsonProducer
 
 # ================== ENV / CONFIG ==================
-# Load .env from either repo root or src/, whichever exists
-load_dotenv(find_dotenv(), override=False)
+# Load .env from the current working dir
+load_dotenv(dotenv_path=".env", override=True)
 
 def _env_any(*keys: str, required: bool = False, default: Optional[str] = None) -> Optional[str]:
 	"""Return first non-empty env var among keys."""
@@ -48,12 +47,13 @@ def _env_any(*keys: str, required: bool = False, default: Optional[str] = None) 
 	return default
 
 def _require_env(name: str) -> str:
+	"""Return a required env var or raise."""
 	v = os.getenv(name)
 	if not v or not str(v).strip():
 		raise RuntimeError(f"Missing environment variable: {name} (check your .env)")
 	return v.strip()
 
-# Accept both legacy and SPOTIFY_* names so your team can use either style
+# Accept both legacy and SPOTIFY_* names
 CLIENT_ID      = _env_any("CLIENT_ID", "SPOTIFY_APP_CLIENT_ID", required=True)
 CLIENT_SECRET  = _env_any("CLIENT_SECRET", "SPOTIFY_APP_CLIENT_SECRET", required=True)
 USERNAME       = _env_any("USERNAME", "SPOTIFY_USERNAME", required=True)
@@ -62,11 +62,13 @@ REDIRECT_URI   = _env_any("REDIRECT_URI", "SPOTIFY_REDIRECT_URI", required=True)
 MARKET_OVERRIDE = _env_any("MARKET_OVERRIDE", default=None)  # e.g. "AT" / "RO"
 DEBUG = str(os.getenv("DEBUG", "false")).lower() == "true"
 
-# Kafka config (optional)
+# Kafka config
 KAFKA_ENABLED = str(os.getenv("KAFKA_ENABLED", "false")).lower() == "true"
 KAFKA_BOOTSTRAP = os.getenv("KAFKA_BOOTSTRAP", "localhost:9092")
-KAFKA_LINGER_MS = int(os.getenv("KAFKA_LINGER_MS", "50"))
-KAFKA_BATCH_SIZE = int(os.getenv("KAFKA_BATCH_SIZE", "16384"))
+
+# Topics
+TOPIC_RECENT_EVENTS = "spotify_recent_events"
+TOPIC_ARTIST_MARKET_TOP = "artist_market_top_tracks"
 
 SCOPE = "user-read-private user-read-email user-read-recently-played user-read-currently-playing user-top-read"
 # ==================================================
@@ -100,7 +102,6 @@ def get_app_token() -> str:
 		timeout=30,
 	)
 	if r.status_code >= 400:
-		# Helpful diagnostics
 		print("[ERROR] App token fetch failed:", f"status={r.status_code}, body={r.text[:300]}")
 	r.raise_for_status()
 	return r.json()["access_token"]
@@ -113,19 +114,15 @@ def get_user_token() -> str:
 	auth = SpotifyOAuth(
 		client_id=CLIENT_ID,
 		client_secret=CLIENT_SECRET,
-		redirect_uri=REDIRECT_URI,     # must also be added in Spotify Dashboard
+		redirect_uri=REDIRECT_URI,
 		scope=SCOPE,
 		cache_path=f".cache-{USERNAME}",
-		open_browser=False,            # prevents browser auto-opening if cache exists
+		open_browser=True,
 		show_dialog=False,
 	)
-
-	# Try to load token from cache
 	token_info = auth.get_cached_token()
 	if not token_info:
-		# If no cache exists, requests user login once; afterwards cache is reused
 		token_info = auth.get_access_token(as_dict=True)
-
 	if not token_info or "access_token" not in token_info:
 		raise RuntimeError("Failed to obtain user token (SpotifyOAuth). Check .env and Redirect URI.")
 	return token_info["access_token"]
@@ -133,10 +130,7 @@ def get_user_token() -> str:
 
 # ---------------- Basic fetchers ----------------
 def get_profile_and_market(user_token: str) -> Tuple[Dict, str]:
-	"""
-	Return user profile JSON and selected market.
-	Priority: MARKET_OVERRIDE (.env) > profile['country'] > 'AT'
-	"""
+	"""Return user profile JSON and selected market (env override > profile.country > 'AT')."""
 	r = get("https://api.spotify.com/v1/me", headers=_bearer_headers(user_token), timeout=30)
 	r.raise_for_status()
 	profile = r.json()
@@ -144,6 +138,7 @@ def get_profile_and_market(user_token: str) -> Tuple[Dict, str]:
 	return profile, market
 
 def get_recently_played(user_token: str, limit: int = 50) -> Dict:
+	"""Return last N recently played (max 50)."""
 	r = get(
 		"https://api.spotify.com/v1/me/player/recently-played",
 		headers=_bearer_headers(user_token),
@@ -188,24 +183,8 @@ def get_artist_top_tracks(app_token: str, artist_id: str, market: str) -> List[D
 
 
 # ---------------- Derivations from "recently played" ----------------
-def collect_recent_album_ids(recent_json: Dict, max_unique: int = 10) -> List[str]:
-	"""
-	Extract up to `max_unique` distinct album IDs from recently played items (newest first).
-	"""
-	seen: Set[str] = set()
-	ordered: List[str] = []
-	for item in recent_json.get("items", []):
-		track = item.get("track") or {}
-		album_id = (track.get("album") or {}).get("id")
-		if album_id and album_id not in seen:
-			seen.add(album_id)
-			ordered.append(album_id)
-		if len(ordered) >= max_unique:
-			break
-	return ordered
-
 def most_common_artist_id_from_recent(recent_json: Dict) -> Optional[str]:
-	"""Return the most frequent artist ID from recently played items."""
+	"""Return the most frequent artist ID from the 50 recently played items."""
 	ids: List[str] = []
 	for item in recent_json.get("items", []):
 		track = item.get("track") or {}
@@ -218,19 +197,9 @@ def most_common_artist_id_from_recent(recent_json: Dict) -> Optional[str]:
 	return cnt[0][0] if cnt else None
 
 
-# ---------------- Leaderboards from "recently played" ----------------
+# ---------------- Leaderboards (console pretty-print) ----------------
 def compute_listening_stats(recent_json: Dict) -> Tuple[Dict[str, Dict], Dict[str, Dict]]:
-	"""
-	Build frequency and recency stats for albums and tracks from recently played.
-	Returns:
-	  album_stats: {album_id: {"count": int, "first_idx": int, "latest_played_at": str,
-							   "album_name": str, "artists": str}}
-	  track_stats: {track_id: {"count": int, "first_idx": int, "latest_played_at": str,
-							   "track_name": str, "artists": str}}
-	Notes:
-	  - Items are newest-first.
-	  - first_idx is the first index encountered (smaller == more recent).
-	"""
+	"""Return frequency + recency maps for albums and tracks."""
 	album_stats: Dict[str, Dict] = {}
 	track_stats: Dict[str, Dict] = {}
 
@@ -257,7 +226,6 @@ def compute_listening_stats(recent_json: Dict) -> Tuple[Dict[str, Dict], Dict[st
 				s["count"] += 1
 				if idx < s["first_idx"]:
 					s["first_idx"] = idx
-				# Keep the most recent timestamp (items are newest-first)
 				s["latest_played_at"] = s["latest_played_at"] or played_at
 
 		# Album stats
@@ -284,7 +252,7 @@ def compute_listening_stats(recent_json: Dict) -> Tuple[Dict[str, Dict], Dict[st
 	return album_stats, track_stats
 
 def _sorted_leaderboard(entries: Dict[str, Dict]) -> List[Tuple[str, Dict]]:
-	"""Sort: count desc, first_idx asc (more recent first), name asc as tiebreaker."""
+	"""Sort by (count desc, first_idx asc, name asc)."""
 	return sorted(
 		entries.items(),
 		key=lambda kv: (
@@ -315,61 +283,9 @@ def print_track_leaderboard(recent_json: Dict, limit: int = 10) -> None:
 		print(f"{rank:02d}. {s['track_name']} — {s['artists']}  | plays={s['count']}  | latest={s['latest_played_at']}")
 
 
-# ---------------- Printers (US1 & US2) ----------------
-def print_tracklists_for_albums(app_token: str, album_ids: List[str]) -> None:
-	"""
-	US1: print ordered tracklist + total duration for each album id.
-	Albums come from the last 50 recently played items (distinct, most recent first, capped to 10 by default).
-	"""
-	if not album_ids:
-		print("No albums to print.")
-		return
-
-	for idx, album_id in enumerate(album_ids, start=1):
-		meta = get_album_meta(app_token, album_id)
-		album_name = meta.get("name", "Unknown album")
-		artists = ", ".join(a.get("name", "Unknown artist") for a in meta.get("artists", []))
-		release = meta.get("release_date", "Unknown date")
-		print(f"\n=== Album #{idx}: {album_name} — {artists} (release: {release}) ===")
-
-		tracks = get_album_tracks(app_token, album_id)
-		if not tracks:
-			print("No tracks returned for this album.")
-			continue
-
-		total_ms = 0
-		for i, t in enumerate(tracks, start=1):
-			name = t.get("name", "Unknown track")
-			dur = t.get("duration_ms", 0)
-			total_ms += dur
-			print(f"{i:02d}. {name} ({_ms_to_mmss(dur)})")
-
-		print(f"--- Total album length: {_ms_to_mmss(total_ms)} ---")
-
-def print_top_tracks_for_artist(app_token: str, artist_id: str, market: str, limit: int = 10) -> None:
-	"""US2: print top tracks for the dominant recent artist in the selected market."""
-	tracks = get_artist_top_tracks(app_token, artist_id, market)
-	if not tracks:
-		print("No top tracks found for that artist.")
-		return
-
-	a = get(
-		f"https://api.spotify.com/v1/artists/{artist_id}",
-		headers=_bearer_headers(app_token),
-		timeout=30
-	).json()
-	artist_name = a.get("name", "?")
-
-	print(f"\n=== Top {min(limit, len(tracks))} tracks for {artist_name} (market={market}) ===")
-	for i, t in enumerate(tracks[:limit], start=1):
-		name = t.get("name", "?")
-		artists = ", ".join(a.get("name", "?") for a in t.get("artists", []))
-		dur = _ms_to_mmss(t.get("duration_ms", 0))
-		print(f"{i:02d}. {name} — {artists} ({dur})")
-
-
 # ---------------- Debug helpers ----------------
 def debug_print_top_artists_from_recent(recent_json: Dict, top_n: int = 5, app_token: Optional[str] = None) -> None:
+	"""Print the most frequent artist IDs from the 'recently played' list."""
 	if not DEBUG:
 		return
 	ids: List[str] = []
@@ -386,6 +302,7 @@ def debug_print_top_artists_from_recent(recent_json: Dict, top_n: int = 5, app_t
 		print(f"  - {aj.get('name','?')} ({aid}): {c}")
 
 def debug_print_identity(user_token: str) -> None:
+	"""Print the authenticated user's profile (id, display name, email, country)."""
 	if not DEBUG:
 		return
 	r = get("https://api.spotify.com/v1/me", headers=_bearer_headers(user_token), timeout=30)
@@ -394,6 +311,7 @@ def debug_print_identity(user_token: str) -> None:
 		print(f"[DEBUG] Profile: id={p.get('id')} display_name={p.get('display_name')} email={p.get('email')} country={p.get('country')}")
 
 def debug_print_currently_playing(user_token: str) -> None:
+	"""Print the currently playing track, if any (204 means nothing playing)."""
 	if not DEBUG:
 		return
 	r = get("https://api.spotify.com/v1/me/player/currently-playing", headers=_bearer_headers(user_token), timeout=30)
@@ -405,7 +323,7 @@ def debug_print_currently_playing(user_token: str) -> None:
 		item = js.get("item") or {}
 		name = item.get("name")
 		artists = ", ".join(a.get("name","?") for a in item.get("artists", []))
-		prog = js.get("progress_ms", 0) // 1000
+		prog = (js.get("progress_ms") or 0) // 1000
 		print(f"[DEBUG] Now playing: {name} — {artists} (progress {prog}s, is_playing={js.get('is_playing')})")
 	else:
 		print(f"[DEBUG] Currently playing fetch failed: {r.status_code} {r.text}")
@@ -413,15 +331,13 @@ def debug_print_currently_playing(user_token: str) -> None:
 
 # ---------------- Main ----------------
 def main():
-	# Tokens
+	# Tokens & profile/market
 	app_token = get_app_token()
 	user_token = get_user_token()
-
-	# Profile + market
 	profile, market = get_profile_and_market(user_token)
 	print(f"[INFO] Using market: {market}")
 
-	# Recently played (last 50)
+	# Recently played (50)
 	recent = get_recently_played(user_token, limit=50)
 	debug(f"Recently played count: {len(recent.get('items', []))}")
 	if recent.get("items"):
@@ -429,52 +345,77 @@ def main():
 		if newest:
 			debug(f"Most recent played_at: {newest}")
 
-	# Build JSON payloads
+	# Build & produce per-play events (append-only plays)
 	user_id = profile.get("id")
 	country = profile.get("country")
 	events = build_events_from_recent_json(recent, user_id=user_id, country=country, market_used=market)
-	snapshot = build_snapshot(recent, user_id=user_id, country=country, market_used=market)
 
-	# Produce to Kafka if enabled
 	producer = KafkaJsonProducer()
 	print(f"[DEBUG] Kafka enabled={producer.enabled} bootstrap={KAFKA_BOOTSTRAP}")
 	if producer.enabled:
-		ev_dicts = [asdict(e) for e in events]  # dataclass -> dict
+		ev_dicts = [asdict(e) for e in events]
 		producer.send_many_json(TOPIC_RECENT_EVENTS, ev_dicts)
-		producer.send_str(TOPIC_RECENT_SNAPSHOT, snapshot.to_json())
 		producer.flush()
-		print(f"[KAFKA] Sent {len(events)} events to {TOPIC_RECENT_EVENTS} and 1 snapshot to {TOPIC_RECENT_SNAPSHOT}")
+		print(f"[KAFKA] Sent {len(ev_dicts)} events to {TOPIC_RECENT_EVENTS}")
 
-	# Leaderboards
+	# Console leaderboards
 	print_album_leaderboard(recent, limit=10)
 	print_track_leaderboard(recent, limit=10)
 
-	# US1 – album tracklists for up to 10 distinct recently-played albums
-	album_ids = collect_recent_album_ids(recent, max_unique=10)
-	print_tracklists_for_albums(app_token, album_ids)
-
-	# Debug: most common artists in recent plays
+	# Debug (controlled by DEBUG env)
 	debug_print_top_artists_from_recent(recent, top_n=5, app_token=app_token)
-
-	# US2 – top tracks for dominant recent artist in selected market
-	artist_id = most_common_artist_id_from_recent(recent)
-	if artist_id:
-		a = get(
-			f"https://api.spotify.com/v1/artists/{artist_id}",
-			headers=_bearer_headers(app_token),
-			timeout=30
-		).json()
-		print(f"[INFO] Dominant recent artist: {a.get('name','?')} (id={artist_id})")
-		print_top_tracks_for_artist(app_token, artist_id, market=market, limit=10)
-	else:
-		print("\nNo dominant artist found in your recent plays; skipping US2.")
-
-	# Debug identity and currently playing
 	debug_print_identity(user_token)
 	debug_print_currently_playing(user_token)
 
-	# Always print a UTC timestamp to align with consumer logs
+	# Dominant artist -> Top 10 tracks in selected market
+	artist_id = most_common_artist_id_from_recent(recent)
+	if artist_id:
+		artist_meta = get(f"https://api.spotify.com/v1/artists/{artist_id}",
+			headers=_bearer_headers(app_token), timeout=30).json()
+		artist_name = artist_meta.get("name", "?")
+		print(f"[INFO] Dominant recent artist: {artist_name} (id={artist_id})")
+
+		top_tracks = get_artist_top_tracks(app_token, artist_id, market)
+		print(f"\n=== Top {min(10, len(top_tracks))} tracks for {artist_name} (market={market}) ===")
+		for i, t in enumerate(top_tracks[:10], start=1):
+			name = t.get("name", "?")
+			artists = ", ".join(a.get("name", "?") for a in t.get("artists", []))
+			dur = _ms_to_mmss(t.get("duration_ms", 0))
+			print(f"{i:02d}. {name} — {artists} ({dur})")
+
+		top10 = []
+		for rank, t in enumerate(top_tracks[:10], start=1):
+			top10.append({
+				"rank": rank,
+				"track_id": t.get("id"),
+				"track_name": t.get("name"),
+				"duration_ms": t.get("duration_ms"),
+				"album_id": (t.get("album") or {}).get("id"),
+				"album_name": (t.get("album") or {}).get("name"),
+				"artists": [a.get("name") for a in (t.get("artists") or [])],
+			})
+
+		top_doc = {
+			"event_version": "1.0",
+			"event_type": "artist_market_top_tracks",
+			"generated_at": datetime.now(timezone.utc).isoformat(),
+			"user_id": user_id,
+			"country": country,
+			"market": market,
+			"artist_id": artist_id,
+			"artist_name": artist_name,
+			"tracks": top10
+		}
+
+		if producer.enabled:
+			producer.send_str(TOPIC_ARTIST_MARKET_TOP, json.dumps(top_doc))
+			producer.flush()
+			print(f"[KAFKA] Sent artist market top tracks to {TOPIC_ARTIST_MARKET_TOP}")
+	else:
+		print("\nNo dominant artist found in your recent plays; skipping market Top 10.")
+
 	print(f"[MONGO] Inserted payloads at {datetime.now(timezone.utc).isoformat()}")
+
 
 if __name__ == "__main__":
 	main()
