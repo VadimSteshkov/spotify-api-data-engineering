@@ -10,7 +10,6 @@ services:
     ports:
       - "2181:2181"
     healthcheck:
-      # no 'nc' needed; uses bash /dev/tcp and expects 'imok'
       test: ["CMD", "bash", "-lc", "exec 3<>/dev/tcp/127.0.0.1/2181 && echo ruok >&3 && head -c 4 <&3 | grep -q imok"]
       interval: 5s
       timeout: 3s
@@ -38,4 +37,32 @@ services:
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: "1"
       CONFLUENT_SUPPORT_CUSTOMER_ID: "anonymous"
     restart: unless-stopped
+
+  mongo:
+    image: mongo:6.0
+    container_name: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  mongo-express:
+    image: mongo-express:latest
+    container_name: mongo-express
+    restart: always
+    depends_on:
+      - mongo
+    environment:
+      ME_CONFIG_MONGODB_URL: "mongodb://root:example@mongo:27017/?authSource=admin"
+      ME_CONFIG_BASICAUTH_USERNAME: admin
+      ME_CONFIG_BASICAUTH_PASSWORD: secret
+    ports:
+      - "8081:8081"
+
+volumes:
+  mongo_data:
 
