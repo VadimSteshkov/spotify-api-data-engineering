@@ -1,4 +1,4 @@
-.PHONY: kafka-init kafka-list kafka-events kafka-snapshot run demo
+.PHONY: kafka-init kafka-list kafka-events kafka-snapshot run run-consumers consume
 
 # Create required Kafka topics (only once per setup)
 kafka-init:
