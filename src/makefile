@@ -18,8 +18,8 @@ consume: kafka-consumer
 
 # Create (idempotent) topics needed by the pipeline
 kafka-init:
-	docker exec -it kafka kafka-topics --create --if-not-exists --topic spotify_recent_events --bootstrap-server localhost:9092 --partitions 1 --replication-factor 1
-	docker exec -it kafka kafka-topics --create --if-not-exists --topic artist_market_top_tracks --bootstrap-server localhost:9092 --partitions 1 --replication-factor 1
+	docker exec -it kafka kafka-topics --create --if-not-exists --topic avd_spotify_recent_events --bootstrap-server localhost:9092 --partitions 1 --replication-factor 1
+	docker exec -it kafka kafka-topics --create --if-not-exists --topic avd_artist_market_top_tracks --bootstrap-server localhost:9092 --partitions 1 --replication-factor 1
 
 # List topics in the cluster
 kafka-list:
