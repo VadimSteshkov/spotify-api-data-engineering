@@ -40,4 +40,9 @@ up:
 
 down:
 	docker compose down
+delete-topic:
+	# Delete old topics
+	docker exec -it kafka kafka-topics --delete --topic spotify_recent_events --bootstrap-server localhost:9092
+	docker exec -it kafka kafka-topics --delete --topic artist_market_top_tracks --bootstrap-server localhost:9092
+
 
