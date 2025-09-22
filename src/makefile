@@ -25,12 +25,12 @@ kafka-init:
 kafka-list:
 	docker exec -it kafka kafka-topics --list --bootstrap-server localhost:9092
 
-# Produce a single test JSON message into spotify_recent_events (for quick sanity checks)
+# Produce a single test JSON message into spotify_recent_events (for quick sanity checks), put here the correct name you want
 kafka-event:
 	echo '{"event_type":"recently_played","user_id":"test-user","track_id":"test-track","played_at":"2025-01-01T00:00:00Z"}' | \
 	docker exec -i kafka kafka-console-producer --bootstrap-server localhost:9092 --topic spotify_recent_events
 
-# Tail a topic from the beginning (CTRL+C to stop)
+# Tail a topic from the beginning (CTRL+C to stop), put here the correct name you want
 kafka-tail:
 	docker exec -it kafka kafka-console-consumer --bootstrap-server localhost:9092 --topic spotify_recent_events --from-beginning --property print.key=true --property print.value=true
 
@@ -41,7 +41,7 @@ up:
 down:
 	docker compose down
 delete-topic:
-	# Delete old topics
+	# Delete old topics-put the correct name you want to delete
 	docker exec -it kafka kafka-topics --delete --topic spotify_recent_events --bootstrap-server localhost:9092
 	docker exec -it kafka kafka-topics --delete --topic artist_market_top_tracks --bootstrap-server localhost:9092
 
