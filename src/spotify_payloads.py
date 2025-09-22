@@ -16,7 +16,6 @@ from datetime import datetime, timezone
 # Constants
 # ----------------------------
 EVENT_VERSION = "1.0"
-TOPIC_RECENT_EVENTS = "spotify_recent_events"  # kept for convenience (used by producer)
 
 # ----------------------------
 # Helpers
