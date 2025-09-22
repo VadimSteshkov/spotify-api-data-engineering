@@ -17,8 +17,8 @@ GROUP_ID = os.getenv("GROUP_ID", "spotify-consumer")
 MONGO_URL = os.getenv("MONGO_URL", "mongodb://root:example@localhost:27017/?authSource=admin")
 DB_NAME = os.getenv("MONGO_DB", "spotify_db")
 
-TOPIC_EVENTS = os.getenv("TOPIC_EVENTS", "spotify_recent_events")
-TOPIC_TOP10 = os.getenv("TOPIC_TOP10", "artist_market_top_tracks")
+TOPIC_EVENTS = os.getenv("TOPIC_EVENTS", "avd_spotify_recent_events")
+TOPIC_TOP10 = os.getenv("TOPIC_TOP10", "avd_artist_market_top_tracks")
 
 # =========================
 # Mongo helpers
@@ -31,8 +31,8 @@ def _build_mongo():
 	client = MongoClient(MONGO_URL)
 	db = client[DB_NAME]
 
-	c_events = db["recent_events"]
-	c_top = db["artist_market_top_tracks"]
+	c_events = db["avd_recent_events"]
+	c_top = db["avd_artist_market_top_tracks"]
 
 	# Query index for timelines (newest first by played_at)
 	c_events.create_index([("user_id", ASCENDING), ("played_at", DESCENDING)])
@@ -45,7 +45,7 @@ def _build_mongo():
 			unique=True
 		)
 	except PyMongoError as e:
-		print(f"[WARN] create_index (recent_events unique) warning: {e}")
+		print(f"[WARN] create_index (avd_recent_events unique) warning: {e}")
 
 	# Top10 per (user, artist, market) — keep latest via upsert on (user_id, artist_id, market)
 	c_top.create_index([("user_id", ASCENDING), ("artist_id", ASCENDING), ("market", ASCENDING)], unique=True)
@@ -100,7 +100,7 @@ def _upsert_artist_market_top10(c_top, payload: dict):
 	Upsert Top 10 tracks for (user, artist, market).
 	We keep only the latest document per triplet by replacing on upsert.
 	"""
-	if payload.get("event_type") != "artist_market_top_tracks":
+	if payload.get("event_type") != "avd_artist_market_top_tracks":
 		raise ValueError("unexpected event_type for top10 payload")
 
 	uid = payload.get("user_id")
