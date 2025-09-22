@@ -6,8 +6,8 @@ Main script:
 - Prints leaderboards (albums/tracks)
 - Computes dominant artist from last 50 and fetches Top 10 tracks in a given market
 - Produces:
-    * spotify_recent_events -> per-play events (append-only)
-    * artist_market_top_tracks -> Top 10 for dominant artist in selected market
+    * avd_spotify_recent_events -> per-play events (append-only)
+    * avd_artist_market_top_tracks -> Top 10 for dominant artist in selected market
 """
 
 import os
@@ -67,8 +67,8 @@ KAFKA_ENABLED = str(os.getenv("KAFKA_ENABLED", "false")).lower() == "true"
 KAFKA_BOOTSTRAP = os.getenv("KAFKA_BOOTSTRAP", "localhost:9092")
 
 # Topics
-TOPIC_RECENT_EVENTS = "spotify_recent_events"
-TOPIC_ARTIST_MARKET_TOP = "artist_market_top_tracks"
+TOPIC_RECENT_EVENTS = "avd_spotify_recent_events"
+TOPIC_ARTIST_MARKET_TOP = "avd_artist_market_top_tracks"
 
 SCOPE = "user-read-private user-read-email user-read-recently-played user-read-currently-playing user-top-read"
 # ==================================================
@@ -397,7 +397,7 @@ def main():
 
 		top_doc = {
 			"event_version": "1.0",
-			"event_type": "artist_market_top_tracks",
+			"event_type": "avd_artist_market_top_tracks",
 			"generated_at": datetime.now(timezone.utc).isoformat(),
 			"user_id": user_id,
 			"country": country,
