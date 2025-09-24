@@ -27,4 +27,4 @@ Thumbs.db
 
 #Mongo
 src/mongo_data
-
+*.idea
