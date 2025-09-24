@@ -1,5 +1,1 @@
-requests
-python-dotenv
-spotipy
-confluent-kafka
-
+pymongo
