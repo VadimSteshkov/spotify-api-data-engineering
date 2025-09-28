@@ -5,10 +5,11 @@ Runs as a plugin inside the orchestrator (db handle is injected).
 
 import os
 from datetime import datetime, timezone, date, time
-from typing import Optional, Tuple, List
+from typing import Tuple, List
 
 import pandas as pd
 import streamlit as st
+import altair as alt
 from pymongo.errors import PyMongoError
 
 # =========================
@@ -186,7 +187,7 @@ def render(db, cfg, prefix: str):
 	"""
 	Render a tab for the given prefix.
 	- Uses its own filters (date range, limits)
-	- Shows: recent plays, top artists, top tracks, latest Top-10 docs
+	- Shows: daily plays, plays per market, recent plays, top artists, top tracks, latest Top-10 docs
 	"""
 	# Expose db handle to cached functions
 	st.session_state._orchestrator_mongo_db = db
@@ -216,6 +217,66 @@ def render(db, cfg, prefix: str):
 
 	start_dt, end_dt = _utc_range(date_from, date_to)
 	start_iso, end_iso = start_dt.isoformat(), end_dt.isoformat()
+
+	# === Daily plays (by selected date range) ===
+	st.subheader("Daily plays (selected range)")
+
+	coll_daily = f"{prefix}_recent_events"
+	pipeline_daily = [
+		{"$match": {"played_at": {"$gte": start_iso, "$lte": end_iso}}},
+		{
+			"$group": {
+				"_id": {"$substr": ["$played_at", 0, 10]},  # YYYY-MM-DD
+				"plays": {"$sum": 1}
+			}
+		},
+		{"$sort": {"_id": 1}}
+	]
+
+	try:
+		rows_daily = list(st.session_state._orchestrator_mongo_db[coll_daily].aggregate(pipeline_daily))
+		df_daily = pd.DataFrame(rows_daily)
+		if not df_daily.empty:
+			df_daily.rename(columns={"_id": "date"}, inplace=True)
+			st.line_chart(df_daily.set_index("date")["plays"])
+			st.dataframe(df_daily, use_container_width=True)
+		else:
+			st.info("No data in the selected date range.")
+	except PyMongoError as e:
+		st.error(f"Mongo error while computing daily plays: {e}")
+
+	# === Plays per market (selected range) ===
+	st.subheader("Plays per market")
+
+	pipeline_market = [
+		{"$match": {"played_at": {"$gte": start_iso, "$lte": end_iso}}},
+		{
+			"$group": {
+				"_id": "$market_used",
+				"plays": {"$sum": 1}
+			}
+		},
+		{"$sort": {"plays": -1}}
+	]
+
+	try:
+		rows_market = list(st.session_state._orchestrator_mongo_db[coll_events].aggregate(pipeline_market))
+		df_market = pd.DataFrame(rows_market)
+		if not df_market.empty:
+			df_market.rename(columns={"_id": "market"}, inplace=True)
+			st.bar_chart(df_market.set_index("market")["plays"])
+			# Optional: pie chart with Altair
+			chart = alt.Chart(df_market).mark_arc().encode(
+				theta="plays",
+				color="market",
+				tooltip=["market", "plays"]
+			)
+			st.altair_chart(chart, use_container_width=True)
+			st.dataframe(df_market, use_container_width=True)
+		else:
+			st.info("No market data in the selected range.")
+	except PyMongoError as e:
+		st.error(f"Mongo error while computing plays per market: {e}")
 
 	# ============ Recent plays ============
 	st.subheader("Recent plays")
