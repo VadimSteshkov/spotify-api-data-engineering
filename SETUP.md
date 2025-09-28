@@ -1,45 +1,38 @@
-# Project Setup Guide (with team onboarding)
 
-This guide explains how to **run the project**, how **my** part (Dorin, prefix `avd_`) works, and how teammates can plug in their **own user stories** without interfering. All steps are **Docker‑first**; local installs are optional.
+# Project Setup Guide
+
 
 ---
 
 ## 1) Prerequisites
 
 - Docker & Docker Compose
-- Python 3.11+ (only if you want to run producer/consumer locally, outside of containers)
+- Python 3.11+ (for running producer/consumer locally outside containers)
 - Spotify Developer credentials (per teammate): `CLIENT_ID`, `CLIENT_SECRET`, `REDIRECT_URI`
-- A personal `.env` with your Spotify auth settings (never commit it).
+- A personal `.env` file in `src/` (keep it local, do not commit)
 
-Repo layout (top‑level):
+### Repository layout (relevant parts)
 ```
-/docs
-/notebooks
 /src
-  /app                 # Streamlit UI
-  docker-compose.yml   # (sometimes placed at repo root; adapt paths accordingly)
-  makefile
-  DE-Spotify.py        # Producer
-  kafka_consumer.py    # Consumer
-  kafka_producer.py    # Kafka helper
-  spotify_payloads.py  # Payload dataclasses
-  mongo_init/          # (optional seed/init)
-  envs/                # (optional) per-user env files, e.g. .env.avd, .env.alex
+  /app/                    # Streamlit UI
+  /consumers/              # Kafka → Mongo consumer(s)
+    kafka_consumer.py
+  /lib/                    # shared helpers & dataclasses
+    kafka_producer.py
+    spotify_payloads.py
+  /producers/              # Spotify → Kafka producer(s)
+    avd_producer.py
+    example_producer.py
+  docker-compose.yml       # infra: Zookeeper, Kafka, Mongo, Mongo-Express
+  makefile                 # run targets
 ```
-> Your actual repo may keep `docker-compose.yml` at root — both patterns work as long as Makefile paths match.
 
 ---
 
-## 2) Environment management (per teammate)
+## 2) Environment
 
-Each teammate keeps **their own** `.env`. For team demos you can store copies in `src/envs/`:
-```
-src/envs/.env.avd
-src/envs/.env.alex
-```
-**Important:** these files are **local only**; do not commit secrets.
+Place your runtime variables in `src/.env` or export them in your shell. Typical keys:
 
-### Example `.env` (minimal)
 ```ini
 # Spotify
 CLIENT_ID=...
@@ -48,205 +41,157 @@ USERNAME=...
 REDIRECT_URI=http://localhost:8080/callback
 
 # Market/country
-MARKET_OVERRIDE=AT
+MARKET_OVERRIDE=AT  # optional; defaults to Spotify profile country
 
 # Kafka & Mongo
-KAFKA_ENABLED=true
 KAFKA_BOOTSTRAP=localhost:9092
+GROUP_ID=spotify-consumer
 MONGO_URL=mongodb://root:example@localhost:27017/?authSource=admin
 MONGO_DB=spotify_db
-GROUP_ID=spotify-consumer
 
-# Misc
+# Optional overrides (defaults exist in code)
+TOPIC_EVENTS=avd_spotify_recent_events
+TOPIC_TOP10=avd_artist_market_top_tracks
+COLL_EVENTS=avd_recent_events
+COLL_TOP10=avd_artist_market_top_tracks
 DEBUG=true
 ```
-
-### Makefile env helpers
-The Makefile exposes convenience targets (copy your env then run):
-```make
-env-avd:      ## copy src/envs/.env.avd to src/.env
-	cp src/envs/.env.avd src/.env
-
-env-alex:
-	cp src/envs/.env.alex src/.env
-
-
-run-avd: env-avd run   ## run producer with Dorin's env
-run-alex: env-alex run ## run producer with Alex's env
-
-```
-> If your Makefile doesn’t have these yet, add them (safe to include; they don’t affect others).
 
 ---
 
 ## 3) Start infrastructure
 
-From `src/` (where the Makefile lives):
-```bash
-make up              # docker compose up -d (Kafka, ZK, Mongo, Mongo-Express)
-make kafka-init      # creates topics if not existing
-make kafka-list      # sanity check topics
-```
-**Defaults**
-- `KAFKA_CONTAINER=kafka` (override if your container has a different name)
-- Topics (mine): `avd_spotify_recent_events`, `avd_artist_market_top_tracks`
+From `src/`:
 
-If `kafka-init` prints “Broker may not be available”, wait a few seconds. If still failing:
 ```bash
-make down && make up && make kafka-init
+make up           # docker compose up -d (ZK, Kafka, Mongo, Mongo-Express)
+make kafka-init   # create topics if missing
+make kafka-list   # list topics
 ```
+
+Docker Compose file: `src/docker-compose.yml`
+
+Default topics created:
+- `avd_spotify_recent_events`
+- `avd_artist_market_top_tracks`
 
 ---
 
-## 4) Run the pipeline (mine)
+## 4) Run the pipeline
 
-Open **two terminals** in `src/`:
+Open two terminals in `src/`:
 
 **Terminal A — Consumer → Mongo**
 ```bash
-make consume   # runs kafka_consumer.py (idempotent upserts)
+make consume        # runs: python -m consumers.kafka_consumer
 ```
 
 **Terminal B — Producer → Kafka**
 ```bash
-make run       # runs DE-Spotify.py with your current src/.env
-# or, if you use per-user env shortcuts:
-make run-avd
-# make run-alex
+make run            # runs: python -m producers.avd_producer
 ```
 
 What happens:
-- Producer sends **per‑play events** to `avd_spotify_recent_events`.
-- Producer also sends **Top‑10 snapshot** for dominant artist to `avd_artist_market_top_tracks`.
-- Consumer writes to Mongo:
-  - `avd_recent_events` (unique key `(user_id, track_id, played_at)`)
-  - `avd_artist_market_top_tracks` (upsert key `(user_id, artist_id, market)`)
+- Producer publishes per-play events to **Kafka topic** `avd_spotify_recent_events`.
+- Producer also publishes the **Top-10 snapshot for the dominant artist/market** to **Kafka topic** `avd_artist_market_top_tracks`.
+- Consumer writes to MongoDB:
+  - **Collection `avd_recent_events`** (append-only, unique on `(user_id, track_id, played_at)`).
+  - **Collection `avd_artist_market_top_tracks`** (upsert on `(user_id, artist_id, market)`, plus index on `generated_at` DESC).
 
 ---
 
 ## 5) Streamlit dashboard
 
-Run locally (from repo root or `src/` — adjust path accordingly):
+From `src/`:
 ```bash
-# inside the project venv (recommended):
-.venv/bin/streamlit run src/app/streamlit_app.py
-# or, if streamlit is installed globally:
-streamlit run src/app/streamlit_app.py
+.venv/bin/streamlit run app/streamlit_app.py
+# or: make app
 ```
-What you get:
-- **Recent plays** table (UTC time), **Top artists**, **Top tracks** bar charts.
-- **Latest Top‑10** snapshot viewer.
-- Date filters & page‑level caches.
 
-> The app expects the collections to be named like mine. If teammates add their own collections, they can either extend the app with tabs or spin a separate app file for their prefix.
-
----
-
-## 6) Add **your** user story (template & steps)
-
-### Naming convention (critical)
-Use **your own prefix** everywhere (Kafka topic name + Mongo collection name). Example for Alex (`ap_`):
-- Topic: `ap_playlist_quality`
-- Collection: `ap_playlist_quality`
-
-### Files to touch
-1) **`src/spotify_payloads.py`**
-   - Add a **dataclass** for your event/snapshot payload(s).
-   - Add **builder(s)** that turn Spotify JSON into your dataclass(es).
-
-2) **`src/DE-Spotify.py`** (producer)
-   - After/around my code paths, call your Spotify API, build your payload(s), then publish to **your** topic using the existing Kafka helper.
-
-3) **`src/kafka_consumer.py`** (consumer)
-   - In `_build_mongo()`: create **your** collection and indexes (unique key for events; upsert key for snapshots).
-   - In `subscribe([...])`: add **your** topic.
-   - In the message router: add a handler like `_upsert_ap_playlist_quality(...)` to insert/upsert in your collection.
-
-4) **`docs/_template_user_story.md`** → copy to `docs/<prefix>_user_story.md` and fill it in.
-
-> Do **not** rename or modify my topics/collections; add your own in parallel. This keeps data clean for each teammate.
+Includes:
+- Recent plays (table, UTC)
+- Top artists, Top tracks (bar charts)
+- Latest Top-10 documents viewer
 
 ---
 
-## 7) Quick Mongo sanity checks
+## 6) Add your own producer
 
-```bash
-# One recent play
-docker exec -it mongo mongosh "mongodb://root:example@mongo:27017/spotify_db?authSource=admin" \
-  --eval 'db.avd_recent_events.findOne({}, {track_name:1, artist_names:1, played_at:1, _id:0})'
+1. Create a producer under `src/producers/<prefix>_producer.py`.
+2. Publish to your own topic(s) (use a personal prefix to avoid collisions).
+3. Extend the consumer in `src/consumers/kafka_consumer.py` (subscribe to your topic; route messages to a collection with your prefix; add indexes).
+4. Optionally add a Streamlit tab or a separate app file.
 
-# Top artists by plays
-docker exec -it mongo mongosh "mongodb://root:example@mongo:27017/spotify_db?authSource=admin" \
-  --eval 'db.avd_recent_events.aggregate([{$unwind:"$artist_ids"},{$group:{_id:"$artist_ids",plays:{$sum:1}}},{$sort:{plays:-1}},{$limit:10}]).toArray()'
-
-# Latest Top-10 doc
-docker exec -it mongo mongosh "mongodb://root:example@mongo:27017/spotify_db?authSource=admin" \
-  --eval 'db.avd_artist_market_top_tracks.find().sort({generated_at:-1}).limit(1).pretty()'
+Example Makefile snippet:
+```make
+run-alex:
+	$(PY) -m producers.alex_producer
 ```
 
 ---
 
-## 8) Troubleshooting
 
-- **Kafka “Broker may not be available”**: containers might still be starting. `make down && make up`, then `make kafka-init`.
-- **Consumer stuck / offsets**: stop `make consume`, start again; for full replay create a **new** consumer group (`GROUP_ID`) or reset offsets.
-- **Topic cleanup** (dev only): `make kafka-delete TOPIC=name` to remove a bad topic; then `make kafka-init`.
-- **Mongo index conflicts**: if you changed index names manually earlier, drop the collection in dev and let the consumer recreate clean indexes.
-- **`__consumer_offsets`**: Kafka’s system topic, expected to be there.
+## 7) Team demo plan
 
----
+Each teammate runs their own producer against their own Spotify account (with their personal `.env`).  
+For a single-laptop demo, you can import Mongo backups from everyone into one Mongo instance. **Prefixes** avoid collisions.  
 
-## 9) Team demo plan
-
-- Each teammate runs **their own** producer against **their own** Spotify account (with their `.env`).
-- For a single‑laptop demo, you can **import Mongo backups** from everyone into one Mongo instance. Prefixes avoid collisions.
-- Use the Makefile env helpers (`run-avd`, `run-alex`) to switch identities quickly.
-- Streamlit can either show **Dorin’s** data only (current file) or be extended with tabs for each prefix.
+- Use Makefile run targets (e.g. `make run-avd`, `make run-alex`) to switch identities quickly.  
+- Streamlit can either show one user’s data only (default `streamlit_app.py`) or be extended with tabs per prefix.  
 
 ---
 
-## 10) Security
+## 8) Security
 
-- Never commit any `.env` or tokens.
-- If you back up Mongo, do not share raw dumps publicly — keep them within the team or anonymize.
+- Never commit any `.env` file or tokens.  
+- If you back up Mongo, do not share raw dumps publicly — keep them within the team or anonymize them.  
 
+---
 
-## 11) How to add your own producer
+## 9) How to add your own producer
 
 Each team member can implement their own Kafka producer without interfering with others.  
 The convention is to use your own prefix (e.g., `avd_`, `alex_`, etc.) for both Kafka topics and MongoDB collections.
 
 ### Steps
 
-1. **Create your producer file**  
-   - Copy the existing `src/kafka_producer.py` or `src/topic_producer/example_producer.py` as a template.  
-   - Save it as `src/topic_producer/<yourname>_producer.py`.  
-   - Adjust the code to produce your own events.
+**1. Create your producer file**  
+- Copy `src/producers/example_producer.py` as a template.  
+- Save it as `src/producers/<yourname>_producer.py`.  
+- Adjust the code to produce your own events, using your prefix.
 
-2. **Define your topic(s)**  
-   - Choose a topic name with your prefix, e.g. `alex_recent_events`.  
-   - In `makefile`, add an entry under the Kafka section:  
-     ```make
-     run-alex:  # run producer with Alex's env
-     	.venv/bin/python3 src/topic_producer/alex_producer.py
-     ```
+**2. Define your Kafka topic(s)**  
+- Choose a topic name with your prefix, e.g. `alex_recent_events`.  
+- In the Makefile, add a run target, for example:  
+```make
+run-alex:  # run producer with Alex's env
+	$(PY) -m producers.alex_producer
+```
 
-3. **Configure MongoDB collection**  
-   - Make sure your consumer writes to a collection with your prefix (e.g., `alex_recent_events`).  
-   - This avoids collisions between users.
+**3. Configure MongoDB collection**  
+- Make sure the consumer writes to a collection with your prefix (e.g., `alex_recent_events`).  
+- This avoids collisions between users.
 
-4. **Add your Streamlit dashboard (optional)**  
-   - Create `src/app/streamlit_app_<yourname>.py`.  
-   - You can copy `streamlit_app.py` and adapt it to your data.
+**4. Add your Streamlit dashboard (optional)**  
+- Create `src/app/streamlit_app_<yourname>.py`.  
+- You can copy `streamlit_app.py` and adapt it to your data.
 
-5. **Test**  
-   - Run `make up` to start the infra.  
-   - Run your producer (`make run-alex`) to push events.  
-   - Start your consumer (`make consume`) and confirm events reach MongoDB.  
-   - Launch your dashboard with:  
-     ```bash
-     .venv/bin/streamlit run src/app/streamlit_app_alex.py
-     ```
+**5. Test**  
+```bash
+make up
+make run-alex
+make consume
+.venv/bin/streamlit run src/app/streamlit_app_alex.py
+```
 
 Following this pattern, each teammate can work independently but still share the same infrastructure.
 
+---
+
+
+## 10) Troubleshooting
+
+- If Kafka just started, run `make kafka-init` after a short wait.
+- If offsets are stuck, change `GROUP_ID` to replay from scratch.
+- If index conflicts occur, drop the dev collection once; consumer recreates indexes idempotently.
+- `__consumer_offsets` is Kafka’s internal topic — ignore it.
