@@ -6,4 +6,4 @@ streamlit
 pymongo
 pandas
 pyyaml
-
+altair
