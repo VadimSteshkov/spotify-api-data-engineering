@@ -25,11 +25,11 @@ from dotenv import load_dotenv
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 
-from spotify_payloads import (
+from lib.spotify_payloads import (
 	build_events_from_recent_json,
 )
 
-from kafka_producer import KafkaJsonProducer
+from lib.kafka_producer import KafkaJsonProducer
 
 # ================== ENV / CONFIG ==================
 # Load .env from the current working dir

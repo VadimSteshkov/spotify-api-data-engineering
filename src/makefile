@@ -12,7 +12,7 @@ TOPIC_TOP10  ?= avd_artist_market_top_tracks
 # ===========
 # Phony
 # ===========
-.PHONY: up down logs run run-only consume kafka-init kafka-list kafka-tail kafka-event kafka-delete-avd kafka-wait
+.PHONY: up down logs run run-only run-avd consume kafka-init kafka-list kafka-tail kafka-event kafka-delete-avd kafka-wait
 
 # ===========
 # Docker stack
@@ -68,13 +68,17 @@ kafka-delete-avd:
 # ===========
 # End-to-end run: ensure stack up, wait Kafka, create topics, then run producer
 run: up kafka-init
-	$(PY) DE-Spotify.py
+	$(PY) -m producers.avd_producer
 
 # Same as run, but DO NOT (re)create topics (useful when Kafka is already ready)
 run-only:
-	$(PY) DE-Spotify.py
+	$(PY) -m producers.avd_producer
+
+# Run specifically Dorin's producer (shortcut)
+run-avd:
+	$(PY) -m producers.avd_producer
 
 # Start the Mongo writer (Kafka consumer)
 consume:
-	$(PY) kafka_consumer.py
+	$(PY) -m consumers.kafka_consumer
 
