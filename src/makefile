@@ -7,7 +7,7 @@ BROKER_INTERNAL ?= kafka:19092    # inside Kafka container
 BROKER_EXTERNAL ?= localhost:9092 # from host (for manual tools)
 
 # AVD topics (Dorin)
-TOPIC_EVENTS ?= avd_spotify_recent_events
+TOPIC_EVENTS ?= avd_recent_events
 TOPIC_TOP10  ?= avd_artist_market_top_tracks
 
 # ===========
