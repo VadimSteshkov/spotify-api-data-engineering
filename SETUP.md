@@ -100,18 +100,24 @@ What happens:
 
 ---
 
-## 5) Streamlit dashboard
+## 5) Streamlit dashboards (team tabs)
 
+### 5.1 Run the dashboard
 From `src/`:
 ```bash
 .venv/bin/streamlit run app/streamlit_app.py
 # or: make app
-```
 
-Includes:
-- Recent plays (table, UTC)
-- Top artists, Top tracks (bar charts)
-- Latest Top-10 documents viewer
+### 5.2 Configure teammates and tab labels
+
+Example configuration (src/app/team_config.yaml):
+
+
+### 5.3 Add a new tab
+
+Each teammate has a Python file under src/app/tabs/.
+
+Example (src/app/tabs/avd.py)
 
 ---
 

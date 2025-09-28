@@ -1,0 +1,16 @@
+team:
+  - prefix: avd
+    display_name: "Avram Dorin-Emilian"
+  - prefix: gilian
+    display_name: "Rehm Gilian"
+  - prefix: vadim
+    display_name: "Steshkov Vadim"
+  - prefix: alex
+    display_name: "Manzl Alexander"
+
+defaults:
+  mongo_url: "mongodb://root:example@localhost:27017/?authSource=admin"
+  db_name: "spotify_db"
+
+ui:
+  tabs_order: ["Overview", "dorin", "gilian", "vadim", "alex"]
