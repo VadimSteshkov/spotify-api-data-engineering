@@ -1,58 +1,80 @@
-# ---- Makefile for spotify-api-data-engineering/src ----
-# Assumes containers named: kafka, mongo
-# Python venv: .venv/bin/python3
-# All recipes MUST be indented with TABs.
+# ===========
+# Variables
+# ===========
+PY := .venv/bin/python3
+KAFKA_CONTAINER ?= kafka
+BROKER_INTERNAL ?= kafka:19092    # inside the Kafka container
+BROKER_EXTERNAL ?= localhost:9092 # from the host
 
-.PHONY: run consume kafka-consumer kafka-init kafka-list kafka-event kafka-tail delete-old-topic up down
+TOPIC_EVENTS ?= avd_spotify_recent_events
+TOPIC_TOP10  ?= avd_artist_market_top_tracks
 
-# Create topics, then run the producer script once
-run: kafka-init
-	.venv/bin/python3 DE-Spotify.py
+# ===========
+# Phony
+# ===========
+.PHONY: up down logs run run-only consume kafka-init kafka-list kafka-tail kafka-event kafka-delete-avd kafka-wait
 
-# Start the Kafka→MongoDB consumer
-kafka-consumer:
-	.venv/bin/python3 kafka_consumer.py
-
-# Alias for convenience
-consume: kafka-consumer
-
-# wait the broker
-kafka-wait:
-	@echo "Waiting for Kafka @ localhost:9092 ..."
-	@for i in $$(seq 1 30); do \
-	  docker exec -it kafka bash -lc "kafka-topics --list --bootstrap-server localhost:9092 >/dev/null 2>&1" && { echo "Kafka is up"; exit 0; }; \
-	  sleep 1; \
-	done; \
-	echo "Kafka not ready" && exit 1
-
-
-# Create (idempotent) topics needed by the pipeline
-kafka-init: kafka-wait
-	docker exec -it kafka kafka-topics --create --if-not-exists --topic avd_spotify_recent_events --bootstrap-server localhost:9092 --partitions 1 --replication-factor 1
-	docker exec -it kafka kafka-topics --create --if-not-exists --topic avd_artist_market_top_tracks --bootstrap-server localhost:9092 --partitions 1 --replication-factor 1
-
-# List topics in the cluster
-kafka-list:
-	docker exec -it kafka kafka-topics --list --bootstrap-server localhost:9092
-
-# Produce a single test JSON message into spotify_recent_events (for quick sanity checks), put here the correct name you want
-kafka-event:
-	echo '{"event_type":"recently_played","user_id":"test-user","track_id":"test-track","played_at":"2025-01-01T00:00:00Z"}' | \
-	docker exec -i kafka kafka-console-producer --bootstrap-server localhost:9092 --topic spotify_recent_events
-
-# Tail a topic from the beginning (CTRL+C to stop), put here the correct name you want
-kafka-tail:
-	docker exec -it kafka kafka-console-consumer --bootstrap-server localhost:9092 --topic spotify_recent_events --from-beginning --property print.key=true --property print.value=true
-
-# (Optional) compose helpers if you keep docker-compose.yml in this folder
+# ===========
+# Docker stack
+# ===========
 up:
 	docker compose up -d
 
 down:
 	docker compose down
-delete-topic:
-	# Delete old topics-put the correct name you want to delete
-	docker exec -it kafka kafka-topics --delete --topic spotify_recent_events --bootstrap-server localhost:9092
-	docker exec -it kafka kafka-topics --delete --topic artist_market_top_tracks --bootstrap-server localhost:9092
 
+logs:
+	docker compose logs -f
+
+# ===========
+# Kafka helpers
+# ===========
+kafka-wait:
+	@echo "[WAIT] Waiting for Kafka to be ready..."
+	@docker exec -it $(KAFKA_CONTAINER) bash -lc '\
+	for i in $$(seq 1 30); do \
+		kafka-topics --bootstrap-server $(BROKER_INTERNAL) --list >/dev/null 2>&1 && { echo "Kafka is ready."; exit 0; }; \
+		echo "  ...not ready yet ($$i)"; \
+		sleep 2; \
+	done; \
+	echo "ERROR: Kafka not ready in time." >&2; \
+	exit 1'
+
+# Create (idempotent) topics for my pipeline
+kafka-init: kafka-wait
+	docker exec -it $(KAFKA_CONTAINER) kafka-topics --create --if-not-exists --topic $(TOPIC_EVENTS) --bootstrap-server $(BROKER_INTERNAL) --partitions 1 --replication-factor 1
+	docker exec -it $(KAFKA_CONTAINER) kafka-topics --create --if-not-exists --topic $(TOPIC_TOP10)  --bootstrap-server $(BROKER_INTERNAL) --partitions 1 --replication-factor 1
+
+# List topics
+kafka-list:
+	docker exec -it $(KAFKA_CONTAINER) kafka-topics --list --bootstrap-server $(BROKER_INTERNAL)
+
+# Tail a topic from the beginning (events stream)
+kafka-tail:
+	docker exec -it $(KAFKA_CONTAINER) kafka-console-consumer --bootstrap-server $(BROKER_INTERNAL) --topic $(TOPIC_EVENTS) --from-beginning --property print.key=true --property print.value=true
+
+# Produce a one-off JSON line manually into my events topic (paste a single line, Ctrl+D to end)
+kafka-event:
+	@echo '# Paste ONE line of JSON, then Ctrl+D'
+	docker exec -i $(KAFKA_CONTAINER) kafka-console-producer --bootstrap-server $(BROKER_INTERNAL) --topic $(TOPIC_EVENTS)
+
+# Delete my topics (careful!)
+kafka-delete-avd:
+	docker exec -it $(KAFKA_CONTAINER) kafka-topics --delete --topic $(TOPIC_EVENTS) --bootstrap-server $(BROKER_INTERNAL) || true
+	docker exec -it $(KAFKA_CONTAINER) kafka-topics --delete --topic $(TOPIC_TOP10)  --bootstrap-server $(BROKER_INTERNAL) || true
+
+# ===========
+# Python apps
+# ===========
+# End-to-end run: ensure stack up, wait Kafka, create topics, then run producer
+run: up kafka-init
+	$(PY) DE-Spotify.py
+
+# Same as run, but DO NOT (re)create topics (useful when Kafka is already ready)
+run-only:
+	$(PY) DE-Spotify.py
+
+# Start the Mongo writer (Kafka consumer)
+consume:
+	$(PY) kafka_consumer.py
 
