@@ -16,8 +16,18 @@ kafka-consumer:
 # Alias for convenience
 consume: kafka-consumer
 
+# wait the broker
+kafka-wait:
+	@echo "Waiting for Kafka @ localhost:9092 ..."
+	@for i in $$(seq 1 30); do \
+	  docker exec -it kafka bash -lc "kafka-topics --list --bootstrap-server localhost:9092 >/dev/null 2>&1" && { echo "Kafka is up"; exit 0; }; \
+	  sleep 1; \
+	done; \
+	echo "Kafka not ready" && exit 1
+
+
 # Create (idempotent) topics needed by the pipeline
-kafka-init:
+kafka-init: kafka-wait
 	docker exec -it kafka kafka-topics --create --if-not-exists --topic avd_spotify_recent_events --bootstrap-server localhost:9092 --partitions 1 --replication-factor 1
 	docker exec -it kafka kafka-topics --create --if-not-exists --topic avd_artist_market_top_tracks --bootstrap-server localhost:9092 --partitions 1 --replication-factor 1
 

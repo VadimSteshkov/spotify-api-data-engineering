@@ -21,7 +21,7 @@ EVENT_VERSION = "1.0"
 # Helpers
 # ----------------------------
 def _now_iso_utc() -> str:
-	"""Return current UTC timestamp as ISO-8601."""
+	"""Return current UTC timestamp"""
 	return datetime.now(timezone.utc).isoformat()
 
 # ----------------------------
@@ -35,13 +35,13 @@ class SpotifyPlayEvent:
 	"""
 	event_version: str
 	event_type: str          # "recent_play"
-	generated_at: str        # producer timestamp (ISO-8601, UTC)
+	generated_at: str        # producer timestamp (UTC)
 
 	user_id: str
 	country: Optional[str]
 	market_used: Optional[str]
 
-	played_at: str           # Spotify "played_at" (ISO-8601)
+	played_at: str           # Spotify "played_at"
 	track_id: str
 	track_name: str
 	track_duration_ms: int
