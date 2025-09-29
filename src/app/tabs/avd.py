@@ -78,6 +78,7 @@ def _load_recent_events(db_name: str, coll_name: str, d_from: str, d_to: str, li
 				"album_name": 1,
 				"country": 1,
 				"market_used": 1,
+				"track_duration_ms": 1,
 			},
 		).sort("played_at", -1).limit(int(limit))
 		df = pd.DataFrame(list(cur))
@@ -187,7 +188,7 @@ def render(db, cfg, prefix: str):
 	"""
 	Render a tab for the given prefix.
 	- Uses its own filters (date range, limits)
-	- Shows: daily plays, plays per market, recent plays, top artists, top tracks, latest Top-10 docs
+	- Shows: daily plays, plays per market, recent plays, extra insights, top artists, top tracks, latest Top-10 docs
 	"""
 	# Expose db handle to cached functions
 	st.session_state._orchestrator_mongo_db = db
@@ -207,10 +208,10 @@ def render(db, cfg, prefix: str):
 	with col_f2:
 		date_to = st.date_input("To (UTC date)", utc_now.date(), key=f"{prefix}_to")
 	with col_f3:
-		top_k = st.slider("Top N items", min_value=5, max_value=50, value=10, step=5, key=f"{prefix}_topk")
+		top_k = st.slider("Top N items (Artists or Tracks)", min_value=5, max_value=50, value=10, step=5, key=f"{prefix}_topk")
 	show_limit = st.selectbox(
 		"Recent plays limit",
-		options=[100, 250, 500, 1000, 5000],
+		options=[100, 250, 500, 1000, 5000, 10000],
 		index=2,
 		key=f"{prefix}_limit",
 	)
@@ -265,7 +266,7 @@ def render(db, cfg, prefix: str):
 		if not df_market.empty:
 			df_market.rename(columns={"_id": "market"}, inplace=True)
 			st.bar_chart(df_market.set_index("market")["plays"])
-			# Optional: pie chart with Altair
+			# Optional pie chart with Altair
 			chart = alt.Chart(df_market).mark_arc().encode(
 				theta="plays",
 				color="market",
@@ -286,10 +287,51 @@ def render(db, cfg, prefix: str):
 		st.info(f"No data found in {coll_events} for the selected range.")
 	else:
 		st.dataframe(
-			df_recent[["played_at_dt", "track_name", "artist_names", "album_name", "market_used"]]
+			df_recent[["played_at_dt", "track_name", "artist_names", "album_name", "market_used", "track_duration_ms"]]
 				.rename(columns={"played_at_dt": "played_at"}),
 			use_container_width=True,
 		)
+
+	# ============ Extra insights ============
+	st.subheader("Extra insights")
+
+	if not df_recent.empty:
+		# Weekly listening pattern (Mon..Sun)
+		try:
+			df_recent["weekday"] = df_recent["played_at_dt"].dt.day_name()
+			order = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+			weekday_counts = df_recent["weekday"].value_counts().reindex(order).fillna(0).astype(int)
+			st.markdown("**Weekly listening pattern**")
+			st.bar_chart(weekday_counts)
+		except Exception:
+			st.info("Could not compute weekly listening pattern.")
+
+		# Listening by hour of day (0..23)
+		try:
+			df_recent["hour"] = df_recent["played_at_dt"].dt.hour
+			hour_counts = df_recent["hour"].value_counts().sort_index()
+			st.markdown("**Listening by hour of day**")
+			st.bar_chart(hour_counts)
+		except Exception:
+			st.info("Could not compute hourly distribution.")
+
+		# Average track duration (minutes)
+		try:
+			if "track_duration_ms" in df_recent.columns and df_recent["track_duration_ms"].notna().any():
+				avg_duration_min = df_recent["track_duration_ms"].dropna().mean() / 60000.0
+				st.metric("Average track duration (min)", f"{avg_duration_min:.2f}")
+		except Exception:
+			pass
+
+		# Most played album
+		try:
+			if "album_name" in df_recent.columns and df_recent["album_name"].notna().any():
+				top_album = df_recent["album_name"].value_counts().idxmax()
+				st.metric("Most played album", top_album)
+		except Exception:
+			pass
+	else:
+		st.info("No extra insights available without recent data.")
 
 	# ============ Side-by-side: Top artists / Top tracks ============
 	col1, col2 = st.columns(2, gap="large")
@@ -343,4 +385,46 @@ def render(db, cfg, prefix: str):
 						st.dataframe(tracks[show_cols], use_container_width=True)
 				else:
 					st.write("No tracks array.")
+
+
+	# Unique artists & tracks
+	try:
+		# Unique tracks by track_id
+		unique_tracks = df_recent["track_id"].nunique(dropna=True) if "track_id" in df_recent.columns else 0
+
+		# Unique artists by flattening artist_ids (handles list/str/None)
+		def _to_list(v):
+			if isinstance(v, list):
+				return v
+			if v is None:
+				return []
+			return [v]
+
+		unique_artist_ids = set()
+		if "artist_ids" in df_recent.columns and df_recent["artist_ids"].notna().any():
+			for v in df_recent["artist_ids"].dropna():
+				for a in _to_list(v):
+					unique_artist_ids.add(a)
+		unique_artists = len(unique_artist_ids)
+
+		c1, c2 = st.columns(2)
+		with c1:
+			st.markdown(
+		f"<div style='text-align:center'>"
+		f"<span style='font-size:18px; color:gray'>Unique artists</span><br>"
+		f"<span style='font-size:32px; font-weight:bold'>{unique_artists}</span>"
+		f"</div>",
+		unsafe_allow_html=True
+	)
+
+		with c2:
+			st.markdown(
+		f"<div style='text-align:center'>"
+		f"<span style='font-size:18px; color:gray'>Unique tracks</span><br>"
+		f"<span style='font-size:32px; font-weight:bold'>{unique_tracks}</span>"
+		f"</div>",
+		unsafe_allow_html=True
+	)
+	except Exception:
+		st.info("Could not compute unique artists/tracks.")
 
