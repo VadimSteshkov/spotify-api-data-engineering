@@ -6,7 +6,7 @@ Main script:
 - Prints leaderboards (albums/tracks)
 - Computes dominant artist from last 50 and fetches Top 10 tracks in a given market
 - Produces:
-    * avd_spotify_recent_events -> per-play events (append-only)
+    * avd_recent_events -> per-play events (append-only)
     * avd_artist_market_top_tracks -> Top 10 for dominant artist in selected market
 """
 
@@ -25,11 +25,11 @@ from dotenv import load_dotenv
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 
-from spotify_payloads import (
+from lib.spotify_payloads import (
 	build_events_from_recent_json,
 )
 
-from kafka_producer import KafkaJsonProducer
+from lib.kafka_producer import KafkaJsonProducer
 
 # ================== ENV / CONFIG ==================
 # Load .env from the current working dir
@@ -67,7 +67,7 @@ KAFKA_ENABLED = str(os.getenv("KAFKA_ENABLED", "false")).lower() == "true"
 KAFKA_BOOTSTRAP = os.getenv("KAFKA_BOOTSTRAP", "localhost:9092")
 
 # Topics
-TOPIC_RECENT_EVENTS = "avd_spotify_recent_events"
+TOPIC_RECENT_EVENTS = "avd_recent_events"
 TOPIC_ARTIST_MARKET_TOP = "avd_artist_market_top_tracks"
 
 SCOPE = "user-read-private user-read-email user-read-recently-played user-read-currently-playing user-top-read"

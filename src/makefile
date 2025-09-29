@@ -3,16 +3,19 @@
 # ===========
 PY := .venv/bin/python3
 KAFKA_CONTAINER ?= kafka
-BROKER_INTERNAL ?= kafka:19092    # inside the Kafka container
-BROKER_EXTERNAL ?= localhost:9092 # from the host
+BROKER_INTERNAL ?= kafka:19092    # inside Kafka container
+BROKER_EXTERNAL ?= localhost:9092 # from host (for manual tools)
 
-TOPIC_EVENTS ?= avd_spotify_recent_events
+# AVD topics (Dorin)
+TOPIC_EVENTS ?= avd_recent_events
 TOPIC_TOP10  ?= avd_artist_market_top_tracks
 
 # ===========
 # Phony
 # ===========
-.PHONY: up down logs run run-only consume kafka-init kafka-list kafka-tail kafka-event kafka-delete-avd kafka-wait
+.PHONY: up down logs \
+	kafka-wait kafka-init kafka-list kafka-tail kafka-event kafka-delete-avd \
+	run run-avd consume app
 
 # ===========
 # Docker stack
@@ -40,7 +43,7 @@ kafka-wait:
 	echo "ERROR: Kafka not ready in time." >&2; \
 	exit 1'
 
-# Create (idempotent) topics for my pipeline
+# Create (idempotent) topics for AVD pipeline
 kafka-init: kafka-wait
 	docker exec -it $(KAFKA_CONTAINER) kafka-topics --create --if-not-exists --topic $(TOPIC_EVENTS) --bootstrap-server $(BROKER_INTERNAL) --partitions 1 --replication-factor 1
 	docker exec -it $(KAFKA_CONTAINER) kafka-topics --create --if-not-exists --topic $(TOPIC_TOP10)  --bootstrap-server $(BROKER_INTERNAL) --partitions 1 --replication-factor 1
@@ -49,32 +52,36 @@ kafka-init: kafka-wait
 kafka-list:
 	docker exec -it $(KAFKA_CONTAINER) kafka-topics --list --bootstrap-server $(BROKER_INTERNAL)
 
-# Tail a topic from the beginning (events stream)
+# Tail events topic from beginning
 kafka-tail:
 	docker exec -it $(KAFKA_CONTAINER) kafka-console-consumer --bootstrap-server $(BROKER_INTERNAL) --topic $(TOPIC_EVENTS) --from-beginning --property print.key=true --property print.value=true
 
-# Produce a one-off JSON line manually into my events topic (paste a single line, Ctrl+D to end)
+# Produce a one-off JSON line manually (paste one line, Ctrl+D to end)
 kafka-event:
 	@echo '# Paste ONE line of JSON, then Ctrl+D'
 	docker exec -i $(KAFKA_CONTAINER) kafka-console-producer --bootstrap-server $(BROKER_INTERNAL) --topic $(TOPIC_EVENTS)
 
-# Delete my topics (careful!)
+# Delete AVD topics (careful!)
 kafka-delete-avd:
 	docker exec -it $(KAFKA_CONTAINER) kafka-topics --delete --topic $(TOPIC_EVENTS) --bootstrap-server $(BROKER_INTERNAL) || true
 	docker exec -it $(KAFKA_CONTAINER) kafka-topics --delete --topic $(TOPIC_TOP10)  --bootstrap-server $(BROKER_INTERNAL) || true
 
 # ===========
-# Python apps
+# Python apps (module-style to match new structure)
 # ===========
-# End-to-end run: ensure stack up, wait Kafka, create topics, then run producer
+# End-to-end: stack up, create topics, run AVD producer
 run: up kafka-init
-	$(PY) DE-Spotify.py
+	$(PY) -m producers.avd_producer
 
-# Same as run, but DO NOT (re)create topics (useful when Kafka is already ready)
-run-only:
-	$(PY) DE-Spotify.py
+# Run producer only (Kafka already up & topics exist)
+run-avd:
+	$(PY) -m producers.avd_producer
 
-# Start the Mongo writer (Kafka consumer)
+# Start Mongo writer (Kafka consumer)
 consume:
-	$(PY) kafka_consumer.py
+	$(PY) -m consumers.kafka_consumer
+
+# Streamlit app (runs from project root)
+app:
+	$(PY) -m streamlit run app/streamlit_app.py
 
