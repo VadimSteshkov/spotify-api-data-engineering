@@ -8,21 +8,18 @@ DB_NAME = "spotify_db"
 COLLECTION_NAMES = ["track_playlist", "track_analysis"]
 
 if __name__ == "__main__":
-    try:
-        client = MongoClient(MONGO_URI, serverSelectionTimeoutMS=2000)
+    with MongoClient(MONGO_URI) as client:
         client.server_info()
         print("MongoDB is ready")
-    except errors.ServerSelectionTimeoutError:
-        raise Exception("MongoDB not reachable after retries")
-    db = client[DB_NAME]
-    for collection in COLLECTION_NAMES:
-        if collection not in db.list_collection_names():
-            db.create_collection(collection)
-            print(f"Created collection: {collection}")
-        if db[collection].count_documents({}) == 0:
-            with open(collection + ".json", "r") as f:
-                data = json.load(f)
-            db[collection].insert_many(data)
-            print("Inserted documents")
-        else:
-            print("Collection already has data, skipping initialization")
+        db = client[DB_NAME]
+        for collection in COLLECTION_NAMES:
+            if collection not in db.list_collection_names():
+                db.create_collection(collection)
+                print(f"Created collection: {collection}")
+            if db[collection].count_documents({}) == 0:
+                with open(collection + ".json", "r") as f:
+                    data = json.load(f)
+                db[collection].insert_many(data)
+                print("Inserted documents")
+            else:
+                print(f"Documents already exists in collection: {collection}")
