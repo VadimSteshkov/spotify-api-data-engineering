@@ -2,13 +2,24 @@
 # Variables
 # ===========
 PY := .venv/bin/python3
-KAFKA_CONTAINER ?= kafka
-BROKER_INTERNAL ?= kafka:19092    # inside Kafka container (used from docker exec)
-BROKER_EXTERNAL ?= localhost:9092 # from host (manual tools)
 
-# AVD topics (Dorin) — kept for backward compatibility
+# Containers in docker-compose.yml
+KAFKA_CONTAINER ?= kafka
+MONGO_CONTAINER ?= mongo
+
+# Kafka brokers
+BROKER_INTERNAL ?= kafka:19092    # used from inside containers (docker exec)
+BROKER_EXTERNAL ?= localhost:9092 # used from host tools
+
+# AVD Kafka topics (Dorin) — kept for backward compatibility
 TOPIC_EVENTS ?= avd_recent_events
 TOPIC_TOP10  ?= avd_artist_market_top_tracks
+
+# Default Spark packages (can be overridden via environment/.env)
+export SPARK_PACKAGES ?= org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.1,org.apache.kafka:kafka-clients:3.5.2
+
+# Allow 'python -m' imports from current folder
+export PYTHONPATH := $(shell pwd)
 
 # ===========
 # Phony
@@ -18,7 +29,17 @@ TOPIC_TOP10  ?= avd_artist_market_top_tracks
 	kafka-tail kafka-tail-topic kafka-event kafka-event-topic \
 	kafka-delete-avd kafka-delete-topic \
 	run-avd run-% consume app \
-	env-avd env-alex env-vadim
+	env-avd env-alex env-vadim \
+	spark-run
+
+# ===========
+# Spark (Structured Streaming)
+# ===========
+spark-run:
+	$(PY) -m pip install -r spark/requirements.txt
+	PYSPARK_SUBMIT_ARGS="--packages $(SPARK_PACKAGES) pyspark-shell" \
+	$(PY) -m spark.streaming_job
+
 
 # ===========
 # Docker stack

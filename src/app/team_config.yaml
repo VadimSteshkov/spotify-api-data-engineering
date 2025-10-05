@@ -7,10 +7,12 @@ team:
     display_name: "Steshkov Vadim"
   - prefix: alex
     display_name: "Manzl Alexander"
+  - prefix: raw
+    display_name: Generic RAW
 
 defaults:
   mongo_url: "mongodb://root:example@localhost:27017/?authSource=admin"
   db_name: "spotify_db"
 
 ui:
-  tabs_order: ["Overview", "dorin", "gilian", "vadim", "alex"]
+  tabs_order: ["Overview", "dorin", "gilian", "vadim", "alex", "Generic RAW"]
