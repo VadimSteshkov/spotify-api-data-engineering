@@ -64,9 +64,9 @@ make app
 
 ## Open items / next steps
 
-- Add a minimal **Generic Collections Explorer** tab that lists collections by `GENERIC_COLL_NAMESPACE` and shows last N docs.
+- Doku
 - Optional Spark Structured Streaming job for real‑time aggregates per user/topic.
-- CI guardrails: detect committed `.env` accidentally; run `flake8` / `ruff` on PRs.
+
 
 ---
 
