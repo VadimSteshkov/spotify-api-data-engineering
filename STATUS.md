@@ -1,93 +1,80 @@
+# Project Status — Generic, Multi‑User Spotify Data Engineering
 
-# Project Status — Spotify Data Engineering
-
+_Last updated: today_
 
 ---
 
-## End-to-end pipeline (prefix `avd_`)
+## Current pipeline (Dorin / `avd`)
 
-### 1) Spotify → Kafka (producer)
-- Module: **`src/producers/avd_producer.py`** (invoked via `python -m producers.avd_producer`).
-- Pulls last 50 recently played tracks; builds one event per play.
-- Publishes per-play events to Kafka topic: **`avd_spotify_recent_events`**.
+**Producer**: `src/producers/avd_producer.py`  
+- Pulls last 50 recent plays from Spotify and computes a "dominant artist Top‑10" for a market.  
+- Publishes to Kafka topics listed in `.env`:
+  - `avd_spotify_recent_events` (events)
+  - `avd_artist_market_top_tracks` (top10 snapshot)
 
-**Event schema (simplified):**
-```json
-{
-  "event_version": "1.0",
-  "event_type": "recent_play",
-  "generated_at": "...",
-  "user_id": "...",
-  "country": "AT",
-  "market_used": "DE",
-  "played_at": "...",
-  "track_id": "...",
-  "track_name": "...",
-  "album_id": "...",
-  "album_name": "...",
-  "album_release_date": "...",
-  "artist_ids": ["..."],
-  "artist_names": ["..."]
-}
+**Consumer**: `src/consumers/kafka_consumer.py`  
+- Subscribes to **all** topics from `KAFKA_TOPICS` (env).  
+- Routing:
+  - Topics mapped in `KAFKA_TOPIC_ROUTES`:
+    - `*:events`  → normalized plays → **`MONGO_COLL_EVENTS`** (or inferred)
+    - `*:top10`   → snapshot docs → **`MONGO_COLL_TOP10`** (or inferred)
+  - Others → RAW docs under **`<GENERIC_COLL_NAMESPACE><topic>`**.
+
+**Mongo**
+- Classic collections used by AVD tab:
+  - `avd_recent_events` (historical) or `avd_spotify_recent_events` (new) — pick via `.env`
+  - `avd_artist_market_top_tracks`
+- Generic collections (examples): `avd__topic__alex_events`, etc.
+
+**Streamlit**
+- Orchestrator: `app/streamlit_app.py` (loads tab modules under `app/tabs/`).  
+- Dorin’s tab: `app/tabs/avd.py` (robust schema handling; daily plays, per‑market, top artists/tracks, extra insights).
+
+**Makefile highlights**
+- `make up / down / logs`
+- `make kafka-init-from-env` — create topics from `KAFKA_TOPICS`
+- `make kafka-list` / `kafka-tail-topic TOPIC=...` / `kafka-event-topic TOPIC=...` / `kafka-delete-topic TOPIC=...`
+- `make consume` — start Kafka→Mongo writer
+- `make run-avd` — run Dorin’s producer
+- `make run-<prefix>` — run teammate (uses `envs/.env.<prefix>` → `.env` then runs `PRODUCER_ENTRY`)
+
+---
+
+## How teammates add their pipeline
+
+1) Create `src/envs/.env.<prefix>` with:
+- `APP_PREFIX=<prefix>`
+- `KAFKA_TOPICS=<topic_a>,<topic_b>`
+- `GENERIC_COLL_NAMESPACE=<prefix>__topic__`
+- `PRODUCER_ENTRY=src/producers/<prefix>_producer.py`
+- (optional) `MONGO_COLL_EVENTS` / `MONGO_COLL_TOP10`
+
+2) Write producer at `src/producers/<prefix>_producer.py` and publish to your topics.
+
+3) Run:
+```bash
+make run-<prefix>    # copies envs/.env.<prefix> → .env, creates topics, runs producer
+make consume
+make app
 ```
 
-### 2) Kafka → MongoDB (consumer)
-- Module: **`src/consumers/kafka_consumer.py`** (invoked via `python -m consumers.kafka_consumer`).
-- Subscribes to:
-  - `avd_spotify_recent_events`
-  - `avd_artist_market_top_tracks`
-- Writes to MongoDB:
-  - **`avd_recent_events`** (append-only). Indexes:
-    - Query index: `(user_id ASC, played_at DESC)`
-    - Unique: `(user_id, track_id, played_at)`
-  - **`avd_artist_market_top_tracks`** (snapshot per user/artist/market). Indexes:
-    - Unique: `(user_id, artist_id, market)`
-    - Sort index: `(generated_at DESC)`
-
-### 3) Dominant artist & Top-10 snapshot
-- Producer computes the dominant artist from the last 50 tracks, fetches Top-10 tracks for the market.
-- Publishes snapshot to `avd_artist_market_top_tracks`.
-
-### 4) Streamlit dashboard
-- Module: **`src/app/streamlit_app.py`**.
-- Pages: Recent plays, Top artists, Top tracks, latest Top-10 docs.
+4) (Optional) Add a Streamlit tab under `src/app/tabs/<prefix>.py` exposing `render(db, cfg, prefix)`.
 
 ---
 
-## Key files
+## Open items / next steps
 
-- `src/producers/avd_producer.py` — Spotify producer
-- `src/consumers/kafka_consumer.py` — Kafka → Mongo consumer
-- `src/lib/spotify_payloads.py` — Payload dataclasses & builders
-- `src/lib/kafka_producer.py` — Kafka helper
-- `src/app/streamlit_app.py` — Streamlit dashboard
-- `src/makefile` — Makefile (run & infra targets)
-- `src/docker-compose.yml` — Infrastructure (ZK, Kafka, Mongo, Mongo-Express)
+- Add a minimal **Generic Collections Explorer** tab that lists collections by `GENERIC_COLL_NAMESPACE` and shows last N docs.
+- Optional Spark Structured Streaming job for real‑time aggregates per user/topic.
+- CI guardrails: detect committed `.env` accidentally; run `flake8` / `ruff` on PRs.
 
 ---
 
-## Topics & collections
+## Changelog (most recent first)
 
-| Layer  | Name                               | Purpose                                    |
-|--------|------------------------------------|--------------------------------------------|
-| Kafka  | `avd_spotify_recent_events`        | Per-play events                             |
-| Kafka  | `avd_artist_market_top_tracks`     | Top-10 snapshot (dominant artist / market) |
-| Mongo  | `avd_recent_events`                | Append-only (unique `(user, track, played)`) |
-| Mongo  | `avd_artist_market_top_tracks`     | One doc per `(user, artist, market)`       |
-
----
-
-## Recent changes
-
-- Refactored to package structure: producer in `producers/`, consumer in `consumers/`, helpers in `lib/`.
-- Module entry points: run with `python -m producers.avd_producer` / `python -m consumers.kafka_consumer`.
-- Makefile simplified: only core targets (`run`, `consume`, `app`, `up`, `down`, `kafka-init`, `kafka-list`).
-- Documentation updated to match paths and defaults. Topic and collection names unchanged.
-
----
-
-## Next steps
-
-- Extend Streamlit with filters (market, date range) and separate tabs per teammate.
-- Allow additional producers under `src/producers/` with personal prefixes.
-- Optional: add Spark Structured Streaming for real-time aggregates.
+- **Generic multi‑user refactor**
+  - New env schema in `src/.env.example` with detailed comments.
+  - `make run-%` / `kafka-init-from-env` / generic tail/produce/delete targets.
+  - `app/tabs/avd.py` hardened (normalization, daily/market charts, extra insights, better caching).
+  - Backward compatibility for AVD topics kept.
+- Previous: initial single‑user pipeline (Spotify→Kafka→Mongo) + simple Streamlit dashboard.
