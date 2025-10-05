@@ -1,11 +1,22 @@
 # -*- coding: utf-8 -*-
 """
-Runs as a plugin inside the orchestrator (db handle is injected).
+Runs as a plugin inside the orchestrator (db handle is injected by the parent app).
+
+Expose a single entrypoint:
+	render(db, cfg, prefix) -> None
+
+This tab focuses on:
+- recent plays (with robust schema handling)
+- daily plays in selected period
+- plays per market
+- top artists / top tracks
+- latest "dominant artist per market" Top-10 docs
+- extra insights (weekday/hour distributions, avg duration, most played album)
 """
 
 import os
 from datetime import datetime, timezone, date, time
-from typing import Tuple, List
+from typing import Tuple, List, Optional
 
 import pandas as pd
 import streamlit as st
@@ -16,23 +27,34 @@ from pymongo.errors import PyMongoError
 # Helpers (prefix-based collections)
 # =========================
 def _coll_names(prefix: str) -> Tuple[str, str]:
-	"""Return (events_collection, top10_collection) for a given prefix."""
+	"""Return (events_collection, top10_collection) for a given prefix.
+
+	By convention:
+		<prefix>_recent_events
+		<prefix>_artist_market_top_tracks
+
+	Explicit overrides:
+		- COLL_EVENTS, COLL_TOP10 (env) — mainly for local experiments
+	"""
 	coll_events = f"{prefix}_recent_events"
 	coll_top10 = f"{prefix}_artist_market_top_tracks"
-	# Allow explicit overrides via env if someone really wants custom names per tab
+
 	coll_events = os.getenv("COLL_EVENTS", coll_events)
 	coll_top10 = os.getenv("COLL_TOP10", coll_top10)
 	return coll_events, coll_top10
 
 
 def _utc_range(d_from: date, d_to: date) -> Tuple[datetime, datetime]:
-	"""Convert two date objects to full-day UTC datetime interval."""
+	"""Convert two date objects to a full-day UTC datetime interval."""
 	start = datetime.combine(d_from, time.min, tzinfo=timezone.utc)
 	end = datetime.combine(d_to, time.max, tzinfo=timezone.utc)
 	return start, end
 
 
-# Normalization pipe (robust to older docs)
+# =========================
+# Normalization stage(s)
+# =========================
+# Make artist_ids / artist_names arrays, even when older docs stored a string/null.
 PIPE_NORMALIZE_ARTISTS = [
 	{
 		"$set": {
@@ -59,10 +81,14 @@ PIPE_NORMALIZE_ARTISTS = [
 # Data loaders / computations (cached)
 # =========================
 @st.cache_data(show_spinner=False, ttl=60)
-def _load_recent_events(db_name: str, coll_name: str, d_from: str, d_to: str, limit: int) -> pd.DataFrame:
-	"""Load recent events with safe projection; attach parsed datetime for UI."""
+def _load_recent_events(coll_name: str, d_from: str, d_to: str, limit: int) -> pd.DataFrame:
+	"""Load recent events with safe projection; attach parsed datetime for UI.
+
+	Relies on:
+		st.session_state._orchestrator_mongo_db  (set in render())
+	"""
 	try:
-		db = st.session_state._orchestrator_mongo_db  # injected by orchestrator render()
+		db = st.session_state._orchestrator_mongo_db
 		q = {"played_at": {"$gte": d_from, "$lte": d_to}} if (d_from and d_to) else {}
 		cur = db[coll_name].find(
 			q,
@@ -91,7 +117,7 @@ def _load_recent_events(db_name: str, coll_name: str, d_from: str, d_to: str, li
 
 
 @st.cache_data(show_spinner=False, ttl=60)
-def _top_artists(db_name: str, coll_name: str, d_from: str, d_to: str, limit: int) -> pd.DataFrame:
+def _top_artists(coll_name: str, d_from: str, d_to: str, limit: int) -> pd.DataFrame:
 	"""Compute top artists by play count, robust to mixed schemas."""
 	try:
 		db = st.session_state._orchestrator_mongo_db
@@ -105,6 +131,8 @@ def _top_artists(db_name: str, coll_name: str, d_from: str, d_to: str, limit: in
 			{"$group": {"_id": "$artist_ids_norm", "plays": {"$sum": 1}}},
 			{"$sort": {"plays": -1}},
 			{"$limit": int(limit)},
+
+			# Try to recover a display name for each artist id
 			{
 				"$lookup": {
 					"from": coll_name,
@@ -140,8 +168,8 @@ def _top_artists(db_name: str, coll_name: str, d_from: str, d_to: str, limit: in
 
 
 @st.cache_data(show_spinner=False, ttl=60)
-def _top_tracks(db_name: str, coll_name: str, d_from: str, d_to: str, limit: int) -> pd.DataFrame:
-	"""Compute top tracks by play count (groups by track_id & track_name)."""
+def _top_tracks(coll_name: str, d_from: str, d_to: str, limit: int) -> pd.DataFrame:
+	"""Compute top tracks by play count (group by track_id & track_name)."""
 	try:
 		db = st.session_state._orchestrator_mongo_db
 		match = {"played_at": {"$gte": d_from, "$lte": d_to}} if (d_from and d_to) else {}
@@ -157,8 +185,7 @@ def _top_tracks(db_name: str, coll_name: str, d_from: str, d_to: str, limit: int
 			{"$sort": {"plays": -1}},
 			{"$limit": int(limit)},
 		]
-		rows = list(db[coll_name].aggregate(pipeline))
-		df = pd.DataFrame(rows)
+		df = pd.DataFrame(list(db[coll_name].aggregate(pipeline)))
 		if not df.empty:
 			df["track_id"] = df["_id"].apply(lambda x: (x or {}).get("track_id"))
 			df["track_name"] = df["_id"].apply(lambda x: (x or {}).get("track_name"))
@@ -170,7 +197,7 @@ def _top_tracks(db_name: str, coll_name: str, d_from: str, d_to: str, limit: int
 
 
 @st.cache_data(show_spinner=False, ttl=60)
-def _latest_top10_docs(db_name: str, coll_name: str, limit: int) -> pd.DataFrame:
+def _latest_top10_docs(coll_name: str, limit: int) -> pd.DataFrame:
 	"""Load the latest generated 'Top 10 for dominant artist' documents."""
 	try:
 		db = st.session_state._orchestrator_mongo_db
@@ -184,18 +211,19 @@ def _latest_top10_docs(db_name: str, coll_name: str, limit: int) -> pd.DataFrame
 # =========================
 # Main render (tab)
 # =========================
-def render(db, cfg, prefix: str):
+def render(db, cfg, prefix: str) -> None:
 	"""
 	Render a tab for the given prefix.
 	- Uses its own filters (date range, limits)
-	- Shows: daily plays, plays per market, recent plays, extra insights, top artists, top tracks, latest Top-10 docs
+	- Shows: daily plays, plays per market, recent plays, extra insights,
+	         top artists, top tracks, latest Top-10 docs
 	"""
-	# Expose db handle to cached functions
+	# Expose db handle to cached functions (avoid reconnects)
 	st.session_state._orchestrator_mongo_db = db
 
 	coll_events, coll_top10 = _coll_names(prefix)
 
-	# Filters (tab-level, independent from other tabs)
+	# ---------- Filters (tab-level) ----------
 	with st.sidebar:
 		st.markdown(f"**[{prefix}]** Collections: `{coll_events}`, `{coll_top10}`")
 
@@ -209,33 +237,31 @@ def render(db, cfg, prefix: str):
 		date_to = st.date_input("To (UTC date)", utc_now.date(), key=f"{prefix}_to")
 	with col_f3:
 		top_k = st.slider("Top N items (Artists or Tracks)", min_value=5, max_value=50, value=10, step=5, key=f"{prefix}_topk")
+
 	show_limit = st.selectbox(
 		"Recent plays limit",
 		options=[100, 250, 500, 1000, 5000, 10000],
-		index=2,
+		index=4,
 		key=f"{prefix}_limit",
 	)
 
 	start_dt, end_dt = _utc_range(date_from, date_to)
 	start_iso, end_iso = start_dt.isoformat(), end_dt.isoformat()
 
-	# === Daily plays (by selected date range) ===
+	# ---------- Daily plays ----------
 	st.subheader("Daily plays (selected range)")
-
-	coll_daily = f"{prefix}_recent_events"
 	pipeline_daily = [
 		{"$match": {"played_at": {"$gte": start_iso, "$lte": end_iso}}},
 		{
 			"$group": {
 				"_id": {"$substr": ["$played_at", 0, 10]},  # YYYY-MM-DD
-				"plays": {"$sum": 1}
+				"plays": {"$sum": 1},
 			}
 		},
-		{"$sort": {"_id": 1}}
+		{"$sort": {"_id": 1}},
 	]
-
 	try:
-		rows_daily = list(st.session_state._orchestrator_mongo_db[coll_daily].aggregate(pipeline_daily))
+		rows_daily = list(db[coll_events].aggregate(pipeline_daily))
 		df_daily = pd.DataFrame(rows_daily)
 		if not df_daily.empty:
 			df_daily.rename(columns={"_id": "date"}, inplace=True)
@@ -246,22 +272,15 @@ def render(db, cfg, prefix: str):
 	except PyMongoError as e:
 		st.error(f"Mongo error while computing daily plays: {e}")
 
-	# === Plays per market (selected range) ===
+	# ---------- Plays per market ----------
 	st.subheader("Plays per market")
-
 	pipeline_market = [
 		{"$match": {"played_at": {"$gte": start_iso, "$lte": end_iso}}},
-		{
-			"$group": {
-				"_id": "$market_used",
-				"plays": {"$sum": 1}
-			}
-		},
-		{"$sort": {"plays": -1}}
+		{"$group": {"_id": "$market_used", "plays": {"$sum": 1}}},
+		{"$sort": {"plays": -1}},
 	]
-
 	try:
-		rows_market = list(st.session_state._orchestrator_mongo_db[coll_events].aggregate(pipeline_market))
+		rows_market = list(db[coll_events].aggregate(pipeline_market))
 		df_market = pd.DataFrame(rows_market)
 		if not df_market.empty:
 			df_market.rename(columns={"_id": "market"}, inplace=True)
@@ -270,7 +289,7 @@ def render(db, cfg, prefix: str):
 			chart = alt.Chart(df_market).mark_arc().encode(
 				theta="plays",
 				color="market",
-				tooltip=["market", "plays"]
+				tooltip=["market", "plays"],
 			)
 			st.altair_chart(chart, use_container_width=True)
 			st.dataframe(df_market, use_container_width=True)
@@ -279,9 +298,9 @@ def render(db, cfg, prefix: str):
 	except PyMongoError as e:
 		st.error(f"Mongo error while computing plays per market: {e}")
 
-	# ============ Recent plays ============
+	# ---------- Recent plays ----------
 	st.subheader("Recent plays")
-	df_recent = _load_recent_events(db.name, coll_events, start_iso, end_iso, int(show_limit))
+	df_recent = _load_recent_events(coll_events, start_iso, end_iso, int(show_limit))
 	st.caption(f"{len(df_recent)} rows")
 	if df_recent.empty:
 		st.info(f"No data found in {coll_events} for the selected range.")
@@ -292,9 +311,8 @@ def render(db, cfg, prefix: str):
 			use_container_width=True,
 		)
 
-	# ============ Extra insights ============
+	# ---------- Extra insights ----------
 	st.subheader("Extra insights")
-
 	if not df_recent.empty:
 		# Weekly listening pattern (Mon..Sun)
 		try:
@@ -333,12 +351,12 @@ def render(db, cfg, prefix: str):
 	else:
 		st.info("No extra insights available without recent data.")
 
-	# ============ Side-by-side: Top artists / Top tracks ============
+	# ---------- Side-by-side: Top artists / Top tracks ----------
 	col1, col2 = st.columns(2, gap="large")
 
 	with col1:
 		st.subheader("Top artists (by plays)")
-		df_art = _top_artists(db.name, coll_events, start_iso, end_iso, int(top_k))
+		df_art = _top_artists(coll_events, start_iso, end_iso, int(top_k))
 		if df_art.empty:
 			st.info("No artist data found.")
 		else:
@@ -348,7 +366,7 @@ def render(db, cfg, prefix: str):
 
 	with col2:
 		st.subheader("Top tracks (by plays)")
-		df_tr = _top_tracks(db.name, coll_events, start_iso, end_iso, int(top_k))
+		df_tr = _top_tracks(coll_events, start_iso, end_iso, int(top_k))
 		if df_tr.empty:
 			st.info("No track data found.")
 		else:
@@ -360,9 +378,9 @@ def render(db, cfg, prefix: str):
 				use_container_width=True,
 			)
 
-	# ============ Latest Top 10 docs ============
+	# ---------- Latest Top-10 docs ----------
 	st.subheader("Latest ‘Top 10 for dominant artist in market’ docs")
-	df_top10 = _latest_top10_docs(db.name, coll_top10, limit=10)
+	df_top10 = _latest_top10_docs(coll_top10, limit=10)
 	if df_top10.empty:
 		st.info(f"No documents in {coll_top10} yet.")
 	else:
@@ -386,8 +404,7 @@ def render(db, cfg, prefix: str):
 				else:
 					st.write("No tracks array.")
 
-
-	# Unique artists & tracks
+	# ---------- Unique artists & tracks ----------
 	try:
 		# Unique tracks by track_id
 		unique_tracks = df_recent["track_id"].nunique(dropna=True) if "track_id" in df_recent.columns else 0
@@ -410,21 +427,21 @@ def render(db, cfg, prefix: str):
 		c1, c2 = st.columns(2)
 		with c1:
 			st.markdown(
-		f"<div style='text-align:center'>"
-		f"<span style='font-size:18px; color:gray'>Unique artists</span><br>"
-		f"<span style='font-size:32px; font-weight:bold'>{unique_artists}</span>"
-		f"</div>",
-		unsafe_allow_html=True
-	)
+				f"<div style='text-align:center'>"
+				f"<span style='font-size:18px; color:gray'>Unique artists</span><br>"
+				f"<span style='font-size:32px; font-weight:bold'>{unique_artists}</span>"
+				f"</div>",
+				unsafe_allow_html=True,
+			)
 
 		with c2:
 			st.markdown(
-		f"<div style='text-align:center'>"
-		f"<span style='font-size:18px; color:gray'>Unique tracks</span><br>"
-		f"<span style='font-size:32px; font-weight:bold'>{unique_tracks}</span>"
-		f"</div>",
-		unsafe_allow_html=True
-	)
+				f"<div style='text-align:center'>"
+				f"<span style='font-size:18px; color:gray'>Unique tracks</span><br>"
+				f"<span style='font-size:32px; font-weight:bold'>{unique_tracks}</span>"
+				f"</div>",
+				unsafe_allow_html=True,
+			)
 	except Exception:
 		st.info("Could not compute unique artists/tracks.")
 
