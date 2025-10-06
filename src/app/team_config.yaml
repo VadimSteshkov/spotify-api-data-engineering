@@ -1,12 +1,52 @@
-ui:
-  tabs_order:
-    - Overview
-    - avd
-    - avd_spark
+# ==========================================
+# Team configuration for Streamlit dashboard
+# ==========================================
 
+# Mongo database name (shared by all teammates)
+mongo_db: spotify_db
+
+# Default collections to show for overview
+overview_collections:
+  - "{prefix}_recent_events"
+  - "{prefix}_artist_market_top_tracks"
+
+# ==========================================
+# Team members
+# Each teammate gets:
+#   prefix        -> used in Kafka, Mongo, Spark naming
+#   display_name  -> tab name in UI
+#   tabs          -> list of Streamlit tab modules (in src/app/tabs/)
+# ==========================================
 team:
   - prefix: avd
-    display_name: Dorin-Emilian Avram
-  - prefix: avd_spark
-    display_name: AVD · Spark
+    display_name: Dorin
+    tabs:
+      - dorin        # main dashboard
+      # (avd_spark removed — no longer visible)
+
+  - prefix: alex
+    display_name: Alex
+    tabs:
+      - alex       # each teammate will create src/app/tabs/alex.py
+
+  - prefix: gilian
+    display_name: Gilian
+    tabs:
+      - gilian
+
+  - prefix: vadim
+    display_name: Vadim
+    tabs:
+      - vadim
+
+# ==========================================
+# Notes:
+# - Each teammate only needs to create `src/app/tabs/<prefix>.py`
+#   with a function:
+#       def render(db, cfg, prefix):
+#           st.header(f"{prefix.upper()} Dashboard")
+#           ...
+# - Collections are auto-detected using the prefix (no edits required here)
+# - The overview tab always appears first, showing global info
+# ==========================================
 

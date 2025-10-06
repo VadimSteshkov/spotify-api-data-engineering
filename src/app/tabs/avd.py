@@ -30,7 +30,7 @@ def render(db, cfg, prefix: str = "avd"):
 	- Classic: your original AVD dashboard (from avd_classic.py)
 	- Spark:   generic Spark collections for <prefix>_spark_*
 	"""
-	st.title("🎧 AVD — Unified Dashboard")
+	st.title("🎧 Dorin's Dashboard")
 	tab_classic, tab_spark = st.tabs(["Classic", "Spark"])
 
 	# -------- Classic (your existing code) --------
