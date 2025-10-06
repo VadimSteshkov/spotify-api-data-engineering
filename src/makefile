@@ -1,49 +1,50 @@
-# ===========
-# Variables
-# ===========
+# ======================================================
+# Generic Makefile (tabs only) — comments in English
+# Supports:
+#   - Host mode: producer/consumer/streamlit using localhost
+#   - Docker mode: ephemeral python containers on Docker network
+#   - Spark Structured Streaming container (docker-compose service)
+# ======================================================
+
+# ----------------
+# Python / paths
+# ----------------
 PY := .venv/bin/python3
 
-# Containers in docker-compose.yml
+# Environment presets
+ENV_HOST  := envs/.env.host     # host: KAFKA_BOOTSTRAP=localhost:9092, MONGO_URL=...localhost...
+ENV_SPARK := envs/.env.spark    # docker: KAFKA_BOOTSTRAP=kafka:19092, MONGO_URL=...mongo...
+
+# Docker container names (see docker-compose.yml)
 KAFKA_CONTAINER ?= kafka
 MONGO_CONTAINER ?= mongo
 
-# Kafka brokers
-BROKER_INTERNAL ?= kafka:19092    # used from inside containers (docker exec)
-BROKER_EXTERNAL ?= localhost:9092 # used from host tools
+# Kafka brokers (reference)
+BROKER_INTERNAL ?= kafka:19092     # used inside Docker network
+BROKER_EXTERNAL ?= localhost:9092  # used from host tools
 
-# AVD Kafka topics (Dorin) — kept for backward compatibility
-TOPIC_EVENTS ?= avd_recent_events
-TOPIC_TOP10  ?= avd_artist_market_top_tracks
-
-# Default Spark packages (can be overridden via environment/.env)
+# Spark extra packages
 export SPARK_PACKAGES ?= org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.1,org.apache.kafka:kafka-clients:3.5.2
 
-# Allow 'python -m' imports from current folder
+# Allow "python -m" imports from project root
 export PYTHONPATH := $(shell pwd)
 
-# ===========
-# Phony
-# ===========
-.PHONY: up down logs \
-	kafka-wait kafka-init kafka-init-from-env kafka-list \
-	kafka-tail kafka-tail-topic kafka-event kafka-event-topic \
-	kafka-delete-avd kafka-delete-topic \
-	run-avd run-% consume app \
-	env-avd env-alex env-vadim \
-	spark-run
+# ----------------
+# PHONY targets
+# ----------------
+.PHONY: \
+	up down logs \
+	env-host env-spark show-env \
+	kafka-wait kafka-init-from-env kafka-list kafka-tail-topic kafka-event-topic kafka-delete-topic \
+	run run-host run-avd run-docker \
+	consume-host consume-docker \
+	app-host app-docker \
+	spark-build spark-up spark-logs spark-down spark-run-local
 
-# ===========
-# Spark (Structured Streaming)
-# ===========
-spark-run:
-	$(PY) -m pip install -r spark/requirements.txt
-	PYSPARK_SUBMIT_ARGS="--packages $(SPARK_PACKAGES) pyspark-shell" \
-	$(PY) -m spark.streaming_job
+# ======================================================
+# Docker stack (Kafka, Mongo, Spark service)
+# ======================================================
 
-
-# ===========
-# Docker stack
-# ===========
 up:
 	docker compose up -d
 
@@ -53,9 +54,29 @@ down:
 logs:
 	docker compose logs -f
 
-# ===========
-# Kafka helpers (readiness)
-# ===========
+# ======================================================
+# Environment helpers
+# ======================================================
+
+env-host:
+	@if [ ! -f $(ENV_HOST) ]; then echo "Missing $(ENV_HOST)"; exit 1; fi
+	@cp $(ENV_HOST) .env
+	@echo "Loaded host environment -> .env"
+
+env-spark:
+	@if [ ! -f $(ENV_SPARK) ]; then echo "Missing $(ENV_SPARK)"; exit 1; fi
+	@cp $(ENV_SPARK) .env
+	@echo "Loaded spark/docker environment -> .env"
+
+show-env:
+	@echo "Active .env (key vars):"
+	@grep -E '^(APP_PREFIX|KAFKA_BOOTSTRAP|MONGO_URL|KAFKA_TOPICS|SPARK_MODE|SPARK_FEATURE|SPARK_GROUP)=' .env || true
+
+# ======================================================
+# Kafka utilities
+# ======================================================
+
+# Wait for Kafka to accept commands
 kafka-wait:
 	@echo "[WAIT] Waiting for Kafka to be ready..."
 	@docker exec -it $(KAFKA_CONTAINER) bash -lc '\
@@ -67,20 +88,10 @@ kafka-wait:
 	echo "ERROR: Kafka not ready in time." >&2; \
 	exit 1'
 
-# ===========
-# Topic management
-# ===========
-# AVD: create Dorin's topics (idempotent)
-kafka-init: kafka-wait
-	docker exec -it $(KAFKA_CONTAINER) kafka-topics --create --if-not-exists --topic $(TOPIC_EVENTS) --bootstrap-server $(BROKER_INTERNAL) --partitions 1 --replication-factor 1
-	docker exec -it $(KAFKA_CONTAINER) kafka-topics --create --if-not-exists --topic $(TOPIC_TOP10)  --bootstrap-server $(BROKER_INTERNAL) --partitions 1 --replication-factor 1
-
-# Generic: create topics listed in KAFKA_TOPICS from current .env
+# Create topics from KAFKA_TOPICS in .env (idempotent)
 kafka-init-from-env: kafka-wait
 	@bash -lc 'set -a; [ -f .env ] && . .env; \
-	if [ -z "$$KAFKA_TOPICS" ]; then \
-		echo "No KAFKA_TOPICS in .env. Skipping."; exit 0; \
-	fi; \
+	if [ -z "$$KAFKA_TOPICS" ]; then echo "No KAFKA_TOPICS found. Skipping."; exit 0; fi; \
 	for t in $${KAFKA_TOPICS//,/ }; do \
 		echo "Creating topic: $$t"; \
 		docker exec -it $(KAFKA_CONTAINER) kafka-topics --create --if-not-exists --topic $$t --bootstrap-server $(BROKER_INTERNAL) --partitions 1 --replication-factor 1; \
@@ -90,73 +101,143 @@ kafka-init-from-env: kafka-wait
 kafka-list:
 	docker exec -it $(KAFKA_CONTAINER) kafka-topics --list --bootstrap-server $(BROKER_INTERNAL)
 
-# Tail AVD events from beginning
-kafka-tail:
-	docker exec -it $(KAFKA_CONTAINER) kafka-console-consumer --bootstrap-server $(BROKER_INTERNAL) --topic $(TOPIC_EVENTS) --from-beginning --property print.key=true --property print.value=true
-
-# Tail an arbitrary topic: make kafka-tail-topic TOPIC=alex_events
+# Tail a topic from beginning (Usage: make kafka-tail-topic TOPIC=name)
 kafka-tail-topic:
 	@if [ -z "$(TOPIC)" ]; then echo "Usage: make kafka-tail-topic TOPIC=<name>"; exit 1; fi
 	docker exec -it $(KAFKA_CONTAINER) kafka-console-consumer --bootstrap-server $(BROKER_INTERNAL) --topic $(TOPIC) --from-beginning --property print.key=true --property print.value=true
 
-# Produce a one-off JSON line to AVD events (paste one line, Ctrl+D to end)
-kafka-event:
-	@echo '# Paste ONE line of JSON, then Ctrl+D'
-	docker exec -i $(KAFKA_CONTAINER) kafka-console-producer --bootstrap-server $(BROKER_INTERNAL) --topic $(TOPIC_EVENTS)
-
-# Produce a one-off JSON line to arbitrary topic: make kafka-event-topic TOPIC=alex_events
+# Produce one JSON line to a topic (Usage: make kafka-event-topic TOPIC=name)
 kafka-event-topic:
 	@if [ -z "$(TOPIC)" ]; then echo "Usage: make kafka-event-topic TOPIC=<name>"; exit 1; fi
 	@echo '# Paste ONE line of JSON, then Ctrl+D'
 	docker exec -i $(KAFKA_CONTAINER) kafka-console-producer --bootstrap-server $(BROKER_INTERNAL) --topic $(TOPIC)
 
-# Delete AVD topics (careful!)
-kafka-delete-avd:
-	docker exec -it $(KAFKA_CONTAINER) kafka-topics --delete --topic $(TOPIC_EVENTS) --bootstrap-server $(BROKER_INTERNAL) || true
-	docker exec -it $(KAFKA_CONTAINER) kafka-topics --delete --topic $(TOPIC_TOP10)  --bootstrap-server $(BROKER_INTERNAL) || true
-
-# Delete arbitrary topic: make kafka-delete-topic TOPIC=alex_events
+# Delete a topic (Usage: make kafka-delete-topic TOPIC=name)
 kafka-delete-topic:
 	@if [ -z "$(TOPIC)" ]; then echo "Usage: make kafka-delete-topic TOPIC=<name>"; exit 1; fi
 	docker exec -it $(KAFKA_CONTAINER) kafka-topics --delete --topic $(TOPIC) --bootstrap-server $(BROKER_INTERNAL) || true
 
-# ===========
-# Python apps
-# ===========
-# Dorin (AVD) end-to-end: stack up, create AVD topics, run producer
-run-avd: up kafka-init-from-env
+# ======================================================
+# HOST MODE (your default workflow on laptop)
+# ======================================================
+
+# Alias: "make run" should run Dorin's AVD producer on host
+run: run-avd
+
+# Run AVD producer on host (uses envs/.env.host)
+run-host run-avd: env-host up kafka-init-from-env
 	$(PY) -m producers.avd_producer
 
-# Generic: run teammate by prefix (expects envs/.env.<prefix> that sets PRODUCER_ENTRY + KAFKA_TOPICS)
-# Example: make run-alex  -> copies envs/.env.alex to .env, creates topics from KAFKA_TOPICS, runs PRODUCER_ENTRY
-run-%: env-% up kafka-init-from-env
-	@bash -lc 'set -a; . .env; \
-	if [ -z "$$PRODUCER_ENTRY" ]; then \
-		echo "ERROR: PRODUCER_ENTRY not set in .env.$*"; exit 1; \
-	fi; \
-	echo "Running producer: $$PRODUCER_ENTRY"; \
-	$(PY) $$PRODUCER_ENTRY'
-
-# Start the Mongo writer (Kafka consumer)
-consume:
+# Run Mongo writer (consumer) on host
+consume-host: env-host up
 	$(PY) -m consumers.kafka_consumer
 
-# Streamlit app (runs from src/)
-app:
+# Run Streamlit dashboard on host
+app-host: env-host up
 	$(PY) -m streamlit run app/streamlit_app.py
 
-# ===========
-# Env shortcuts
-# ===========
-env-avd:
-	cp envs/.env.avd .env
-	@echo "Loaded env: envs/.env.avd -> .env"
+# ======================================================
+# DOCKER MODE (no localhost assumptions)
+# ======================================================
 
-env-alex:
-	cp envs/.env.alex .env
-	@echo "Loaded env: envs/.env.alex -> .env"
+# Run producer in a temporary Python container on Docker network
+run-docker: up
+	docker run --rm -it \
+		--network src_default \
+		--env-file $(ENV_SPARK) \
+		-v $(PWD):/app -w /app \
+		python:3.11-slim bash -lc "\
+			apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && \
+			pip install --no-cache-dir spotipy pymongo confluent-kafka python-dotenv && \
+			python3 -m producers.avd_producer \
+		"
 
-env-vadim:
-	cp envs/.env.vadim .env
-	@echo "Loaded env: envs/.env.vadim -> .env"
+# Run consumer in a temporary Python container on Docker network
+consume-docker: up
+	docker run --rm -it \
+		--network src_default \
+		--env-file $(ENV_SPARK) \
+		-v $(PWD):/app -w /app \
+		python:3.11-slim bash -lc "\
+			pip install --no-cache-dir pymongo confluent-kafka python-dotenv && \
+			python3 -m consumers.kafka_consumer \
+		"
+
+# Run Streamlit from a throwaway Python container (no local Python needed)
+# - Installs minimal deps (includes PyYAML for team_config.yaml)
+# - Binds current folder into /app
+# - Exposes PORT on the host (default 8501)
+PORT ?= 8501
+
+app-docker:
+	docker compose up -d
+	docker run --rm -it \
+		--network src_default \
+		--env-file envs/.env.spark \
+		-p $(PORT):8501 \
+		-v "$(shell pwd)":/app -w /app \
+		python:3.11-slim bash -lc "\
+			pip install --no-cache-dir streamlit pymongo python-dotenv pyyaml && \
+			python3 -m streamlit run app/streamlit_app.py \
+				--server.headless=true \
+				--server.address=0.0.0.0 \
+				--server.port=8501 \
+				--browser.gatherUsageStats=false"
+
+# Tail logs from the ephemeral app-docker run (if you wrap it into 'docker compose run', keep this)
+app-docker-logs:
+	docker logs -f $$(docker ps -q --filter "ancestor=python:3.11-slim") || true
+
+# Free the port in case a stray container or process still owns it
+app-docker-kill-port:
+	-@lsof -ti :$(PORT) | xargs -r kill -9
+	
+# ======================================================
+# SPARK (Structured Streaming) — docker-compose service
+# ======================================================
+
+# Build the Spark image
+spark-build:
+	docker compose build spark-app
+
+# Start Spark service with envs/.env.spark (uses kafka:19092, mongo:27017)
+spark-up:
+	docker compose --env-file $(ENV_SPARK) up -d spark-app
+
+# Stream Spark logs
+spark-logs:
+	docker compose logs -f spark-app
+
+# Remove Spark service container
+spark-down:
+	docker compose rm -sf spark-app
+
+# ======================================================
+# SPARK local (debug only)
+# ======================================================
+
+spark-run-local:
+	$(PY) -m pip install -r spark/requirements.txt
+	PYSPARK_SUBMIT_ARGS="--packages $(SPARK_PACKAGES) pyspark-shell" \
+	$(PY) -m spark.streaming_job
+	
+# ============================
+# Environment quick test
+# ============================
+# Displays key environment variables loaded from .env
+# Useful for verifying Docker vs Local configurations
+.PHONY: test-env
+test-env:
+	@echo ""
+	@echo "  Environment check:"
+	@echo "----------------------------"
+	@bash -lc 'set -a; [ -f .env ] && . .env; \
+		echo "APP_PREFIX       = $$APP_PREFIX"; \
+		echo "KAFKA_BOOTSTRAP  = $$KAFKA_BOOTSTRAP"; \
+		echo "MONGO_URL        = $$MONGO_URL"; \
+		echo "SPARK_MODE       = $$SPARK_MODE"; \
+		echo "PRODUCER_ENTRY   = $$PRODUCER_ENTRY"; \
+		echo "----------------------------"; \
+		echo " Environment loaded successfully."'
+
 
