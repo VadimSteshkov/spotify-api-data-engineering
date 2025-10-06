@@ -16,6 +16,33 @@ services:
       retries: 30
       start_period: 10s
     restart: unless-stopped
+    
+  spark-app:
+    build:
+      context: .
+      dockerfile: spark/Dockerfile
+    container_name: spark-app
+    environment:
+      # OVERRIDE endpoints for inside-container networking
+      KAFKA_BOOTSTRAP: "kafka:19092"
+      MONGO_URL: "mongodb://root:example@mongo:27017/?authSource=admin"
+
+      # restul pot rămâne ca la tine:
+      KAFKA_TOPICS: "${KAFKA_TOPICS}"
+      MONGO_DB: "${MONGO_DB}"
+      APP_PREFIX: "${APP_PREFIX}"
+      SPARK_PACKAGES: "${SPARK_PACKAGES}"
+    depends_on:
+      - kafka
+      - mongo
+    volumes:
+      - ./:/app
+    command: >
+      bash -lc "
+      python3 -m pip install -r spark/requirements.txt &&
+      PYSPARK_SUBMIT_ARGS='--packages ${SPARK_PACKAGES} pyspark-shell' python3 -m spark.streaming_job
+      "
+
 
   kafka:
     image: confluentinc/cp-kafka:7.5.0
@@ -65,4 +92,5 @@ services:
 
 volumes:
   mongo_data:
+
 

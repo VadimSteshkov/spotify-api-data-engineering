@@ -33,7 +33,7 @@ from lib.kafka_producer import KafkaJsonProducer
 
 # ================== ENV / CONFIG ==================
 # Load .env from the current working dir
-load_dotenv(dotenv_path=".env", override=True)
+load_dotenv(dotenv_path=".env", override=False) #do not override env that already comes from Docker
 
 def _env_any(*keys: str, required: bool = False, default: Optional[str] = None) -> Optional[str]:
 	"""Return first non-empty env var among keys."""
