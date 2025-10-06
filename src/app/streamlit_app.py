@@ -2,120 +2,79 @@
 # -*- coding: utf-8 -*-
 
 """
-Orchestrator Streamlit app (team tabs loader).
-
-This application dynamically loads per-teammate tabs from modules under:
-  src/app/tabs/<prefix>.py  (each must expose: render(db, cfg, prefix))
-
-Configuration file:
-  src/app/team_config.yaml
-
-Environment (optional):
-  MONGO_URL = "mongodb://root:example@localhost:27017/?authSource=admin"
-  MONGO_DB  = "spotify_db"
-
-Run:
-  streamlit run src/app/streamlit_app.py
+Streamlit orchestrator:
+- Reads team_config.yaml
+- Builds tabs with user-friendly labels (display_name)
+- Imports each teammate's tab module by prefix: app.tabs.<prefix>
 """
 
 import os
 import importlib
-from pathlib import Path
-from typing import Dict, Any, List
-
-import streamlit as st
 import yaml
+import streamlit as st
 from pymongo import MongoClient
-from pymongo.errors import PyMongoError
 
+# ---------- Load config ----------
+CFG_PATH = os.path.join(os.path.dirname(__file__), "team_config.yaml")
+with open(CFG_PATH, "r", encoding="utf-8") as f:
+	cfg = yaml.safe_load(f) or {}
 
-# =========================
-# Config helpers
-# =========================
-def _load_config() -> Dict[str, Any]:
-	"""Load team configuration from team_config.yaml (same folder as this file)."""
-	cfg_path = Path(__file__).resolve().parent / "team_config.yaml"
-	if not cfg_path.exists():
-		st.error(f"Missing config file: {cfg_path}")
-		return {}
-	try:
-		with cfg_path.open("r", encoding="utf-8") as f:
-			return yaml.safe_load(f) or {}
-	except Exception as e:
-		st.error(f"Failed to read team_config.yaml: {e}")
-		return {}
+team = cfg.get("team", [])
+mongo_dbname = cfg.get("mongo_db", "spotify_db")
 
+# ---------- Mongo client ----------
+# Prefer env MONGO_URL; fall back to localhost
+mongo_url = os.getenv("MONGO_URL", "mongodb://root:example@localhost:27017/?authSource=admin")
+client = MongoClient(mongo_url)
+db = client[mongo_dbname]
 
-def _get_db(mongo_url: str, db_name: str):
-	"""Create a single Mongo client per Streamlit session and return the DB handle."""
-	try:
-		client = MongoClient(mongo_url)
-		return client[db_name]
-	except PyMongoError as e:
-		st.error(f"Mongo connection error: {e}")
-		return None
+# ---------- Page setup ----------
+st.set_page_config(page_title="Team Dashboard", layout="wide")
+st.sidebar.header("Settings")
+st.sidebar.caption(f"DB: {mongo_dbname} | URL: {mongo_url}")
 
+# ---------- Build tab labels (display_name) and load modules ----------
+tab_labels = []
+tab_modules = []
 
-# =========================
-# Main UI
-# =========================
-st.set_page_config(page_title="Spotify Dashboard (Team Orchestrator)", layout="wide")
-
-cfg = _load_config()
-if not cfg:
-	st.stop()
-
-# Resolve defaults from config and/or env
-defaults = cfg.get("defaults", {})
-mongo_url = os.getenv("MONGO_URL", defaults.get("mongo_url", "mongodb://root:example@localhost:27017/?authSource=admin"))
-db_name   = os.getenv("MONGO_DB",  defaults.get("db_name", "spotify_db"))
-team: List[Dict[str, Any]] = cfg.get("team", [])
-tabs_order: List[str] = cfg.get("ui", {}).get("tabs_order", ["Overview"] + [m.get("prefix", "") for m in team])
-
-db = _get_db(mongo_url, db_name)
-if db is None:
-	st.stop()
-
-# Sidebar info
-with st.sidebar:
-	st.header("Settings")
-	st.caption(f"DB: **{db_name}**  |  URL: **{mongo_url}**")
-	st.caption("Tabs are driven by team_config.yaml and modules in app/tabs/*.py")
-
-# Build tabs
-tabs = st.tabs(tabs_order)
-
-# Overview tab
-with tabs[0]:
-	st.header("Overview")
-	st.write("This is the team orchestrator dashboard. Use the tabs to view each teammate's data.")
-	st.write("To add a new teammate tab:")
-	st.code("""1) Add an entry in src/app/team_config.yaml under 'team:' with {prefix, display_name}
-2) Create src/app/tabs/<prefix>.py exposing: render(db, cfg, prefix)
-3) Restart Streamlit (or hot-reload)""", language="text")
-
-# Per-teammate tabs
-for i, member in enumerate(team, start=1):
+for member in team:
 	prefix = member.get("prefix", "").strip()
-	disp = member.get("display_name", prefix or "Unknown")
+	display = member.get("display_name", prefix).strip() or prefix
+
+	# Import module app.tabs.<prefix> but show display_name as label
+	module_name = f"app.tabs.{prefix}"
+	try:
+		mod = importlib.import_module(module_name)
+		tab_labels.append(display)
+		tab_modules.append((mod, prefix))
+	except Exception as e:
+		tab_labels.append(f"{display} (missing)")
+		tab_modules.append((None, prefix))
+
+# Prepend Overview tab
+tabs = st.tabs(["Overview", *tab_labels])
+
+# ---------- Overview ----------
+with tabs[0]:
+	st.title("Overview")
+	st.write("This is the team orchestrator dashboard. Use the tabs to view each teammate’s data.")
+
+	# Show common collections for the first teammate as hint
+	if team:
+		pfx = team[0].get("prefix", "demo")
+		#st.sidebar.subheader(f"[{pfx}] Collections")
+		#st.sidebar.markdown(f"- `{pfx}_recent_events`")
+		#st.sidebar.markdown(f"- `{pfx}_artist_market_top_tracks`")
+
+# ---------- Teammate tabs ----------
+for i, ((mod, prefix), label) in enumerate(zip(tab_modules, tab_labels), start=1):
 	with tabs[i]:
-		st.header(disp)
-		if not prefix:
-			st.warning("Missing 'prefix' in team_config.yaml entry.")
-			continue
+		st.header(label)
+		if mod and hasattr(mod, "render"):
+			try:
+				mod.render(db=db, cfg=cfg, prefix=prefix)
+			except Exception as e:
+				st.error(f"Tab '{label}' failed: {e}")
+		else:
+			st.warning(f"Module for '{label}' not found or has no render(db,cfg,prefix).")
 
-		module_name = f"app.tabs.{prefix}"
-		try:
-			mod = importlib.import_module(module_name)
-		except ModuleNotFoundError:
-			st.info(f"Tab module not found: {module_name}. Create src/app/tabs/{prefix}.py with a render() function.")
-			continue
-
-		if not hasattr(mod, "render"):
-			st.warning(f"Module {module_name} has no 'render(db, cfg, prefix)' function.")
-			continue
-
-		try:
-			mod.render(db=db, cfg=cfg, prefix=prefix)
-		except Exception as e:
-			st.error(f"Error while rendering tab '{prefix}': {e}")
