@@ -4,6 +4,10 @@
 *.key
 *.pem
 
+# Team envs: ignore real env files, keep only examples
+src/envs/.env.*
+!src/envs/.env.*.example
+
 # Spotify cache (Spotipy token cache files)
 .cache-*
 .cache/
@@ -29,5 +33,4 @@ Thumbs.db
 src/mongo_data
 *.idea
 
-notebooks/
-notebooks/*
+.cache
