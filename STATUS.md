@@ -1,80 +1,106 @@
-# Project Status — Generic, Multi‑User Spotify Data Engineering
+# Project Status — Docker‑only, Multi‑User Spotify Data Engineering
 
 _Last updated: today_
 
 ---
 
-## Current pipeline (Dorin / `avd`)
+## What’s running (Docker Compose)
 
-**Producer**: `src/producers/avd_producer.py`  
-- Pulls last 50 recent plays from Spotify and computes a "dominant artist Top‑10" for a market.  
-- Publishes to Kafka topics listed in `.env`:
+- **Zookeeper** (`2181`), **Kafka** (`9092`), **MongoDB** (`27017`), **Mongo‑Express** (`8081`)
+- **Producer** (module from `PRODUCER_ENTRY`), **Consumer** (Kafka → Mongo), **Spark** (optional), **Streamlit App** (`8501`)
+
+Internal container endpoints used by app/producer/consumer/spark:
+- `KAFKA_BOOTSTRAP = kafka:19092`
+- `MONGO_URL = mongodb://root:example@mongo:27017/?authSource=admin`
+
+Host endpoints for tooling:
+- Kafka: `localhost:9092`
+- Mongo: `localhost:27017`
+- UI: `http://localhost:8081` (Mongo‑Express), `http://localhost:8501` (Streamlit)
+
+---
+
+## Current AVD pipeline (example reference)
+
+**Producer**: `producers/avd_producer.py`  
+- Fetches recent plays from Spotify and computes Top‑10 for the dominant recent artist (per market).  
+- Publishes to topics listed in `.env` such as:
   - `avd_spotify_recent_events` (events)
-  - `avd_artist_market_top_tracks` (top10 snapshot)
+  - `avd_artist_market_top_tracks` (top‑10 snapshot)
 
-**Consumer**: `src/consumers/kafka_consumer.py`  
-- Subscribes to **all** topics from `KAFKA_TOPICS` (env).  
+**Consumer**: `consumers/kafka_consumer.py`  
+- Subscribes to **all** topics from `KAFKA_TOPICS`.  
 - Routing:
-  - Topics mapped in `KAFKA_TOPIC_ROUTES`:
-    - `*:events`  → normalized plays → **`MONGO_COLL_EVENTS`** (or inferred)
-    - `*:top10`   → snapshot docs → **`MONGO_COLL_TOP10`** (or inferred)
-  - Others → RAW docs under **`<GENERIC_COLL_NAMESPACE><topic>`**.
+  - `KAFKA_TOPIC_ROUTES`: `*:events` → normalized plays → **MONGO_COLL_EVENTS** (or inferred)
+  - `KAFKA_TOPIC_ROUTES`: `*:top10`  → snapshots → **MONGO_COLL_TOP10** (or inferred)
+  - Any other topic → RAW doc to **`<GENERIC_COLL_NAMESPACE><topic>`**.
 
 **Mongo**
-- Classic collections used by AVD tab:
-  - `avd_recent_events` (historical) or `avd_spotify_recent_events` (new) — pick via `.env`
-  - `avd_artist_market_top_tracks`
-- Generic collections (examples): `avd__topic__alex_events`, etc.
+- Classic collections (if configured): `avd_spotify_recent_events`, `avd_artist_market_top_tracks`
+- Generic RAW examples: `avd__topic__<your_topic>`
 
 **Streamlit**
-- Orchestrator: `app/streamlit_app.py` (loads tab modules under `app/tabs/`).  
-- Dorin’s tab: `app/tabs/avd.py` (robust schema handling; daily plays, per‑market, top artists/tracks, extra insights).
-
-**Makefile highlights**
-- `make up / down / logs`
-- `make kafka-init-from-env` — create topics from `KAFKA_TOPICS`
-- `make kafka-list` / `kafka-tail-topic TOPIC=...` / `kafka-event-topic TOPIC=...` / `kafka-delete-topic TOPIC=...`
-- `make consume` — start Kafka→Mongo writer
-- `make run-avd` — run Dorin’s producer
-- `make run-<prefix>` — run teammate (uses `envs/.env.<prefix>` → `.env` then runs `PRODUCER_ENTRY`)
+- App: `app/streamlit_app.py` (loads tabs from `app/tabs/`)
+- Dorin’s tab: `app/tabs/avd.py` (shows Recent plays, Top artists/tracks, Daily, Per‑market, Top‑10 snapshots, extra insights).
 
 ---
 
-## How teammates add their pipeline
+## Makefile highlights (docker‑only)
 
-1) Create `src/envs/.env.<prefix>` with:
-- `APP_PREFIX=<prefix>`
-- `KAFKA_TOPICS=<topic_a>,<topic_b>`
-- `GENERIC_COLL_NAMESPACE=<prefix>__topic__`
-- `PRODUCER_ENTRY=src/producers/<prefix>_producer.py`
-- (optional) `MONGO_COLL_EVENTS` / `MONGO_COLL_TOP10`
+- Infra: `make up | down | logs`
+- Kafka utils: `make kafka-init-from-env`, `kafka-list`, `kafka-tail-topic TOPIC=...`, `kafka-event-topic TOPIC=...`, `kafka-delete-topic TOPIC=...`
+- Producer: `make producer-build`, `make producer-run`, `make producer-logs`
+- Consumer: `make consumer-build`, `make consumer-run`
+- Spark: `make spark-build`, `make spark-up`, `make spark-logs`, `make spark-down`
+- App: `make app-build`, `make app-up`, `make app-logs`, `make app-stop`
+- Quick demos: `make avd-demo` (Dorin), `make demo` (with existing `.env`)
+- Env helpers: `make avd-env | alex-env | gilian-env | vadim-env`, or `make env-user USR=<prefix>`, and `make show-env`
 
-2) Write producer at `src/producers/<prefix>_producer.py` and publish to your topics.
+---
 
-3) Run:
+## How a teammate onboards (their own pipeline)
+
+1. Create `src/envs/.env.<prefix>` (and **do not** commit secrets). Set at least:
+   - `APP_PREFIX=<prefix>`
+   - `KAFKA_TOPICS=<topic_a>,<topic_b>`
+   - `GENERIC_COLL_NAMESPACE=<prefix>__topic__`
+   - `PRODUCER_ENTRY=<prefix>_producer`
+   - (optional) `MONGO_COLL_EVENTS` / `MONGO_COLL_TOP10`
+2. Add `producers/<prefix>_producer.py` and publish to those topics.
+3. Run:
 ```bash
-make run-<prefix>    # copies envs/.env.<prefix> → .env, creates topics, runs producer
-make consume
-make app
+cd src
+make env-user USR=<prefix>
+make up && make kafka-init-from-env
+make producer-build && make producer-run
+make consumer-build && make consumer-run
+make app-build && make app-up
 ```
-
-4) (Optional) Add a Streamlit tab under `src/app/tabs/<prefix>.py` exposing `render(db, cfg, prefix)`.
-
----
-
-## Open items / next steps
-
-- Doku
-- Optional Spark Structured Streaming job for real‑time aggregates per user/topic.
-
+4. (Optional) Add `app/tabs/<prefix>.py` exposing `render(db, cfg, prefix)` for a custom UI.
 
 ---
 
-## Changelog (most recent first)
+## Next steps / ideas
 
-- **Generic multi‑user refactor**
-  - New env schema in `src/.env.example` with detailed comments.
-  - `make run-%` / `kafka-init-from-env` / generic tail/produce/delete targets.
-  - `app/tabs/avd.py` hardened (normalization, daily/market charts, extra insights, better caching).
-  - Backward compatibility for AVD topics kept.
-- Previous: initial single‑user pipeline (Spotify→Kafka→Mongo) + simple Streamlit dashboard.
+- Document minimal examples for a generic RAW data explorer tab.
+- Optional: enable schema-registry + Avro/JSON‑Schema if needed.
+- Optional: CI to lint Dockerfiles and validate `envs/.env.*.example` templates.
+
+---
+
+## Changelog (this refactor)
+
+- **Docker‑only migration**
+  - Removed host/venv execution paths; all services run in containers.
+  - New Dockerfiles for `app/`, `docker/producer.Dockerfile`, and `consumers/`.
+  - Updated `spark/Dockerfile` to Java 21 JRE and PySpark pinned via `requirements.txt`.
+  - Compose rewired for internal endpoints (`kafka:19092`, `mongo:27017`) and dev-friendly bind mounts.
+- **Makefile overhaul**
+  - Added `env-user`, per‑user shortcuts, and `*-demo` flows.
+  - Centralized Kafka helpers (`kafka-init-from-env`, tail/produce/delete).
+  - Clean targets for producer/consumer/app/spark.
+- **.gitignore hardened**
+  - Ignore real `.env` everywhere; keep only `*.example`.
+  - Ignore caches, build artefacts, logs, and local Mongo bind directories.
+- **Docs**
+  - This `SETUP.md` & `STATUS.md` now describe the Docker-only multi‑user workflow.

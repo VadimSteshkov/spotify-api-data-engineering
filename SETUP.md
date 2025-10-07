@@ -1,191 +1,179 @@
-# Project Setup Guide (Generic • Multi‑User)
+# Docker‑only Setup Guide (Multi‑User)
 
-This repo is now **env‑driven and prefix‑agnostic**. Every teammate can run their own pipeline (own topics, own Mongo collections, optional own Streamlit tab) **without code changes**—just by providing a personal `.env` and, optionally, a small tab module.
+This project now runs **entirely in Docker**. Each teammate uses their own `.env` so you can run isolated pipelines (own Kafka topics / Mongo collections / optional Streamlit tab) without touching code.
 
 ---
 
 ## 1) Prerequisites
 
-- Docker & Docker Compose
-- Python 3.11+ (local dev; the infra runs in Docker)
-- (Optional) Spotify Developer credentials for producers that query Spotify
-- A **personal** `src/.env` (never commit secrets)
+- Docker Engine + Docker Compose plugin
+- Open host ports (or change them in `src/docker-compose.yml`):
+  - Zookeeper **2181**
+  - Kafka **9092**
+  - MongoDB **27017**
+  - Mongo‑Express **8081**
+  - Streamlit **8501**
 
-### Repository layout (relevant)
+> No local Python or Java is required for running the stack — everything is containerized.
+
+Repository layout (relevant):
 ```
 /src
-  app/                     # Streamlit UI (orchestrator + teammate tabs)
+  app/                     # Streamlit UI
     streamlit_app.py
     tabs/
-      avd.py               # Dorin's tab (example)
+      avd.py               # Dorin's example tab
   consumers/               # Kafka → Mongo consumer(s)
     kafka_consumer.py
+  docker/                  # Dockerfiles for app/producer/consumer
   lib/                     # shared utils
-    kafka_producer.py
-    spotify_payloads.py
   producers/               # producers (one per teammate or per use case)
     avd_producer.py
-    example_producer.py
-  docker-compose.yml       # infra (ZK, Kafka, Mongo, Mongo-Express)
-  makefile                 # common tasks
-.env.example               # document all env vars
-envs/                      # per-user .env templates (NOT secrets)
+  spark/                   # Spark Structured Streaming job + Dockerfile
+  docker-compose.yml       # infra (ZK, Kafka, Mongo, Mongo-Express, Producer, Spark, App)
+  makefile                 # docker-only tasks
+  envs/                    # per-user .env templates (NOT secrets)
 ```
-> Tip: put your templates in `src/envs/.env.<prefix>` and **never** commit a real `src/.env`.
 
 ---
 
-## 2) Your `.env` (one per teammate)
+## 2) Configure your environment
 
-Copy `src/.env.example` to `src/.env` (or use a template in `src/envs/`). Fill only what you need.
+Pick one of these flows.
 
-```ini
-# Identity
-APP_PREFIX=alex
-
-# Kafka (host broker)
-KAFKA_BOOTSTRAP=localhost:9092
-
-# The topics you will use (comma separated)
-KAFKA_TOPICS=alex_events,alex_metrics
-
-# Optional: route a topic to a semantic handler
-# Recognized handlers in consumer: events | top10
-# Unmapped topics are written RAW under GENERIC_COLL_NAMESPACE
-KAFKA_TOPIC_ROUTES=alex_events:events
-
-# Mongo
-MONGO_URL=mongodb://root:example@localhost:27017/?authSource=admin
-MONGO_DB=spotify_db
-
-# Collections for classic Spotify views (optional)
-# Leave empty if you don't have these; Streamlit hides sections automatically.
-MONGO_COLL_EVENTS=
-MONGO_COLL_TOP10=
-
-# Namespace for RAW topics → Mongo collections (required for generic flow)
-# e.g., topic "alex_events" → collection "alex__topic__alex_events"
-GENERIC_COLL_NAMESPACE=alex__topic__
-
-# (Optional) Spotify credentials if your producer hits Spotify
-CLIENT_ID=<...>
-CLIENT_SECRET=<...>
-USERNAME=<...>
-SPOTIPY_CLIENT_ID=<...>
-SPOTIPY_CLIENT_SECRET=<...>
-SPOTIPY_REDIRECT_URI=http://127.0.0.1:8888/callback
-
-# Which producer file to run on `make run-<prefix>`
-PRODUCER_ENTRY=src/producers/alex_producer.py
-
-# Misc
-DEBUG=true
-KAFKA_ENABLED=true
+### A) Quick: built-ins for teammates
+We ship convenience targets that copy a personal env and run:
+```bash
+cd src
+make avd-env         # or: alex-env / gilian-env / vadim-env
+make show-env        # sanity-check key vars
 ```
 
-**Rules of thumb**
-- Always set `APP_PREFIX`, `KAFKA_TOPICS`, `GENERIC_COLL_NAMESPACE`, and `PRODUCER_ENTRY`.
-- Only set `MONGO_COLL_EVENTS` / `MONGO_COLL_TOP10` if you actually produce that schema.
-- Use `KAFKA_TOPIC_ROUTES` only when a topic must be parsed with a specific handler (`events`, `top10`). Everything else is stored RAW safely.
+### B) Generic (any teammate)
+Copy your template into `.env`:
+```bash
+cd src
+make env-user USR=<your_prefix>     # copies envs/.env.<prefix> → .env
+make show-env
+```
+
+### Required/important `.env` keys
+- **APP_PREFIX** — your short id (e.g. `avd`, `alex`).
+- **KAFKA_TOPICS** — comma-separated list of topics you produce to.
+- **KAFKA_BOOTSTRAP** — inside containers use `kafka:19092`. (From host tools use `localhost:9092`.)
+- **MONGO_URL** — inside containers use `mongodb://root:example@mongo:27017/?authSource=admin`. (From host tools use `localhost`.)
+- **PRODUCER_ENTRY** — python module name, e.g. `avd_producer`, `alex_producer` (resolved under `producers/`).
+
+Optional:
+- **KAFKA_TOPIC_ROUTES** — map topics to semantic handlers in the consumer (e.g. `avd_spotify_recent_events:events,avd_artist_market_top_tracks:top10`).
+- **MONGO_DB**, **MONGO_COLL_EVENTS**, **MONGO_COLL_TOP10** — if you use the classic AVD dashboards.
 
 ---
 
-## 3) Start infrastructure
+## 3) Start the infrastructure
 
 From `src/`:
 ```bash
-make up                 # docker compose up -d (Kafka, ZK, Mongo, Mongo-Express)
-make kafka-init-from-env  # create topics found in KAFKA_TOPICS from current .env
-make kafka-list         # sanity-check topics
+make up                     # start ZK, Kafka, Mongo, Mongo-Express, plus build other images
+make logs                   # follow all service logs
+docker compose ps           # verify status
 ```
 
-Useful debugging:
+Create your topics from `.env`:
 ```bash
-make kafka-tail-topic TOPIC=alex_events
-make kafka-event-topic TOPIC=alex_events   # paste one JSON line, Ctrl+D
-make kafka-delete-topic TOPIC=alex_events  # careful
+make kafka-init-from-env
+make kafka-list
+```
+
+Kafka helpers:
+```bash
+make kafka-tail-topic TOPIC=<name>   # consume from beginning
+make kafka-event-topic TOPIC=<name>  # produce one JSON line (Ctrl+D to send)
+make kafka-delete-topic TOPIC=<name>
 ```
 
 ---
 
-## 4) Run consumer & your producer
+## 4) Run producer / consumer / app
 
-Open two terminals in `src/`.
+Open one terminal (or run sequentially). All run **in containers**.
 
-**A) Consumer (Kafka → Mongo)**
 ```bash
-make consume           # runs: python -m consumers.kafka_consumer
+# Producer (honors PRODUCER_ENTRY from .env; override with -e)
+make producer-build
+make producer-run
+# or one-shot for Dorin's producer:
+docker compose run --rm -e PRODUCER_ENTRY=avd_producer -e PYTHONPATH=/app/src producer
+
+# Consumer (Kafka → Mongo generic writer/parsers)
+make consumer-build
+make consumer-run
+
+# Spark Structured Streaming (optional)
+make spark-build
+make spark-up
+make spark-logs
+
+# Streamlit UI
+make app-build
+make app-up
+make app-logs
 ```
 
-**B) Your producer**
-
-- If you have a template `.env` at `src/envs/.env.alex`:
-```bash
-make run-alex          # copies envs/.env.alex → .env, creates topics, runs PRODUCER_ENTRY
-```
-- Or with the current `.env` already in place:
-```bash
-python -m producers.alex_producer
-# or: make run-avd   (Dorin's example producer)
-```
-
-**What the consumer does**
-- Subscribes to **all topics listed in `KAFKA_TOPICS`** (so add yours there).
-- For topics mapped in `KAFKA_TOPIC_ROUTES`:
-  - `*:events` → normalized plays written to `MONGO_COLL_EVENTS` (or inferred)
-  - `*:top10`  → snapshot docs written to `MONGO_COLL_TOP10` (or inferred)
-- For everything else:
-  - Writes RAW documents to **`<GENERIC_COLL_NAMESPACE><topic>`**, e.g. `alex__topic__alex_metrics`.
+All services/ports (host):
+- Kafka: `localhost:9092`
+- MongoDB: `mongodb://root:example@localhost:27017/?authSource=admin`
+- Mongo‑Express: `http://localhost:8081` (admin / secret by default)
+- Streamlit: `http://localhost:8501`
 
 ---
 
-## 5) Streamlit UI
+## 5) One‑command demos
 
-From `src/`:
 ```bash
-make app
-# or: python -m streamlit run app/streamlit_app.py
-```
-
-There are **two ways** to show data:
-
-1) **Classic AVD tab** (`app/tabs/avd.py`)  
-   - Set `MONGO_COLL_EVENTS` / `MONGO_COLL_TOP10` in `.env`.  
-   - Displays Recent plays, Top artists/tracks, Daily plays, Plays per market, Top‑10 snapshots, and extra insights.
-
-2) **Orchestrator with team tabs** (if you use it)  
-   - `app/streamlit_app.py` loads tabs dynamically from `app/tabs/<prefix>.py`.  
-   - Each tab module must expose `render(db, cfg, prefix)` and can read from collections derived from that prefix.
-
-If you only push RAW topics under `GENERIC_COLL_NAMESPACE`, you can build a simple explorer tab that lists collections starting with your prefix and renders them (examples exist in `avd.py`).
-
----
-
-## 6) Add your own producer (quick path)
-
-1. Copy `src/producers/example_producer.py` → `src/producers/<prefix>_producer.py` and implement your logic.
-2. Edit your `.env`:
-   - `APP_PREFIX=<prefix>`
-   - `KAFKA_TOPICS=<your_topic1>,<your_topic2>`
-   - `PRODUCER_ENTRY=src/producers/<prefix>_producer.py`
-   - `GENERIC_COLL_NAMESPACE=<prefix>__topic__`
-3. Create topics and run:
-```bash
-make run-<prefix>      # example: make run-alex
-make consume
-make app
+cd src
+make avd-demo   # sets env, brings up infra, creates topics, runs Dorin's producer, starts Spark + App
+# or, after setting your own .env:
+make demo       # infra + topics + build + run producer + spark + app
 ```
 
 ---
 
-## 7) Troubleshooting
+## 6) Troubleshooting
 
-- **Topic keeps reappearing:** A producer can auto‑create topics if `allow.auto.create.topics=true`. Remove that in producer config or keep the topic.
-- **UI section hidden:** It becomes visible only when the corresponding `MONGO_COLL_*` env var is set (and collection has documents).
-- **Nothing is inserted:** Check `KAFKA_TOPICS`, `KAFKA_BOOTSTRAP`, and consumer logs; tail your topic with `make kafka-tail-topic`.
-- **Auth errors in Spotify:** match `SPOTIPY_*` with `CLIENT_ID/SECRET`, and keep the same `REDIRECT_URI` in the Spotify app settings.
-- **Do not commit secrets:** only commit `.env.example` and `envs/.env.<prefix>.example` templates.
+### Port already in use (2181/9092/27017/8081/8501)
+Find who owns the port and kill the stray `docker-proxy` if needed:
+```bash
+sudo ss -ltnp '( sport = :2181 or sport = :9092 or sport = :27017 or sport = :8081 or sport = :8501 )'
+sudo lsof -iTCP:<PORT> -sTCP:LISTEN -n -P
+sudo kill -9 $(sudo lsof -t -iTCP:<PORT> -sTCP:LISTEN) 2>/dev/null || true
+sudo systemctl restart docker
+```
+
+### Kafka not ready yet
+`make kafka-wait` is built into `kafka-init-from-env`. If it times out, check `docker compose logs -f kafka zookeeper`.
+
+### Mongo‑Express won’t start
+If `8081` is taken, change `ports:` in `src/docker-compose.yml`, then:
+```bash
+docker compose rm -sf mongo-express
+docker compose up -d --no-deps --force-recreate mongo-express
+```
+
+### Reset the stack (without losing named volumes)
+```bash
+docker compose down
+docker compose up -d
+```
+
+If you do want a clean Mongo (named volume data loss!):
+```bash
+docker compose down -v
+```
 
 ---
 
+## 7) Don’t commit secrets
 
+- Real `.env` files are ignored by `.gitignore` (only commit `*.example`).
+- Never commit Spotify or DB credentials.
