@@ -89,8 +89,57 @@ services:
       ME_CONFIG_BASICAUTH_PASSWORD: secret
     ports:
       - "8081:8081"
+  producer:
+    build:
+      context: .
+      dockerfile: docker/producer.Dockerfile
+    container_name: producer
+    depends_on:
+      - kafka
+      - mongo
+    networks:
+      - default
+    env_file:
+      - envs/.env.spark          # inside Docker network (kafka:19092, mongo:27017)
+    working_dir: /app
+    command: ["python", "-u", "-m", "producers.avd_producer"]
+    dns:
+      - 8.8.8.8
+  # ---Consumer Service ---
+  consumer:
+    build:
+      context: .
+      dockerfile: docker/consumer.Dockerfile
+    container_name: consumer
+    depends_on:
+      - kafka
+      - mongo
+    env_file:
+      - envs/.env.spark
+    volumes:
+      - ./:/app # Mount current directory to /app
+    working_dir: /app
+    command: ["python", "-u", "-m", "consumers.kafka_consumer"] # Redundant with CMD in Dockerfile but safer
+    dns:
+      - 8.8.8.8 # Ensure external connectivity if needed (e.g., license checks)
+  app:
+    build:
+      context: .
+      dockerfile: docker/app.Dockerfile # Referă noul fișier
+    container_name: streamlit-app
+    depends_on:
+      - mongo
+    env_file:
+      - envs/.env.spark
+    volumes:
+      - ./:/app
+    ports:
+      - "8501:8501" # mapping Streamlit port to host
+    working_dir: /app
+    dns:
+      - 8.8.8.8
+
 
 volumes:
   mongo_data:
-
 
