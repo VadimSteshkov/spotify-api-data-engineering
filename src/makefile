@@ -34,11 +34,12 @@ export PYTHONPATH := $(shell pwd)
 # ----------------
 .PHONY: \
 	up down logs \
-	env-host env-spark show-env \
+	env-host env-spark show-env test-env \
 	kafka-wait kafka-init-from-env kafka-list kafka-tail-topic kafka-event-topic kafka-delete-topic \
-	run run-host run-avd run-docker \
-	consume-host consume-docker \
-	app-host app-docker \
+	run run-host run-avd \
+	producer-build producer-run producer-logs run-docker \
+	consume-host consumer-build consume-docker \
+	app-host app-docker app-build app-up app-stop app-logs app-docker-logs app-docker-kill-port \
 	spark-build spark-up spark-logs spark-down spark-run-local
 
 # ======================================================
@@ -141,57 +142,26 @@ app-host: env-host up
 # ======================================================
 
 # Run producer in a temporary Python container on Docker network
-run-docker: up
-	docker run --rm -it \
-		--network src_default \
-		--env-file $(ENV_SPARK) \
-		-v $(PWD):/app -w /app \
-		python:3.11-slim bash -lc "\
-			apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && \
-			pip install --no-cache-dir spotipy pymongo confluent-kafka python-dotenv && \
-			python3 -m producers.avd_producer \
-		"
+run-docker: producer-run
+	# This is now just an alias for producer-run
+	
+# Run consumer (this is now the efficient target added earlier)
+consume-docker: consumer-build up
+	docker compose run --rm consumer
 
-# Run consumer in a temporary Python container on Docker network
-consume-docker: up
-	docker run --rm -it \
-		--network src_default \
-		--env-file $(ENV_SPARK) \
-		-v $(PWD):/app -w /app \
-		python:3.11-slim bash -lc "\
-			pip install --no-cache-dir pymongo confluent-kafka python-dotenv && \
-			python3 -m consumers.kafka_consumer \
-		"
-
-# Run Streamlit from a throwaway Python container (no local Python needed)
-# - Installs minimal deps (includes PyYAML for team_config.yaml)
-# - Binds current folder into /app
-# - Exposes PORT on the host (default 8501)
+# Run Streamlit from the dedicated Docker Compose service
 PORT ?= 8501
 
-app-docker:
-	docker compose up -d
-	docker run --rm -it \
-		--network src_default \
-		--env-file envs/.env.spark \
-		-p $(PORT):8501 \
-		-v "$(shell pwd)":/app -w /app \
-		python:3.11-slim bash -lc "\
-			pip install --no-cache-dir streamlit pymongo python-dotenv pyyaml && \
-			python3 -m streamlit run app/streamlit_app.py \
-				--server.headless=true \
-				--server.address=0.0.0.0 \
-				--server.port=8501 \
-				--browser.gatherUsageStats=false"
+app-docker: app-build up
+	docker compose up -d app
 
-# Tail logs from the ephemeral app-docker run (if you wrap it into 'docker compose run', keep this)
+# Tail logs from the running app container
 app-docker-logs:
-	docker logs -f $$(docker ps -q --filter "ancestor=python:3.11-slim") || true
+	docker logs -f streamlit-app || true
 
 # Free the port in case a stray container or process still owns it
 app-docker-kill-port:
-	-@lsof -ti :$(PORT) | xargs -r kill -9
-	
+	-@lsof -ti :$(PORT) | xargs -r kill -9	
 # ======================================================
 # SPARK (Structured Streaming) — docker-compose service
 # ======================================================
@@ -240,4 +210,33 @@ test-env:
 		echo "----------------------------"; \
 		echo " Environment loaded successfully."'
 
+# --- Producer image (build once, then run many times) ---
+producer-build:
+	docker compose build producer
 
+producer-run: up
+	docker compose run --rm producer
+
+producer-logs:
+	docker compose logs -f producer
+
+# --- Consumer image (build once, then run many times) ---
+consumer-build:
+	docker compose build consumer
+
+# Update the consume-docker target to use the pre-built image
+consume-docker: consumer-build up
+	docker compose run --rm consumer
+	
+# --- Streamlit App image (build once, then run many times) ---
+app-build:
+	docker compose build app
+
+app-up: app-build up
+	docker compose up -d app
+
+app-stop:
+	docker compose stop app
+
+app-logs:
+	docker compose logs -f streamlit-app
