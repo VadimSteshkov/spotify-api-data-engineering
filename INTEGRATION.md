@@ -1,58 +1,131 @@
-# INTEGRATION.md
 
-> How each teammate plugs in their own Spotify producer (with *different* JSON fields), wires Kafka → Mongo, adds a Streamlit tab, and runs everything **Docker-only**.
+# INTEGRATION GUIDE — Team Producers, Consumer, Spark & Streamlit
 
----
-
-## 0) What you need installed
-
-- **Docker** + **Docker Compose** (already covered by the `scripts/install-docker-ubuntu.sh` for Ubuntu).
-- **No local Python/venv required** — everything runs in containers.
+> Read this end‑to‑end once, then follow the “Quick Start” checklists.
+> This repo is **Docker‑only** (no local venv needed).
 
 ---
 
-## 1) Naming conventions (important and consistent)
+## 0) What you will plug in
 
-We use a **per-teammate prefix** called `APP_PREFIX`. This controls *everything*:
+Each teammate adds **their own Kafka producer** that pulls from Spotify (possibly different endpoints → different JSON schemas). You will also add an optional **Streamlit tab** for your visuals, and (if needed) extend the **consumer** or **Spark** mapping.
 
-- **Kafka topics**
-  - `${APP_PREFIX}_recent_events`
-  - `${APP_PREFIX}_artist_market_top_tracks` (or your custom topics)
-- **Mongo collections**
+This guide explains exactly **where** to put files, **what** to name them, **how** to configure topics/collections, and **which Makefile targets** to run.
+
+---
+
+## 1) Requirements
+
+- Linux or Windows/macOS with **Docker Desktop** (WSL2 on Windows).
+- Internet access (to pull images & reach Spotify).
+- A valid Spotify API app (client id/secret) — each teammate uses their own creds.
+- Optional (Ubuntu): `src/tools/install_docker_ubuntu.sh` installs Docker+Compose.
+
+---
+
+## 2) Repository layout (what matters for you)
+
+```
+.
+├── INTEGRATION.md, INTEGRATION.pdf, SETUP.md, STATUS.md
+├── src
+│   ├── docker-compose.yml
+│   ├── makefile                # main Makefile (docker-only workflow)
+│   ├── make/
+│   │   ├── _template.mk        # template for per-user helpers (optional)
+│   │   └── avd.mk              # example user helper file
+│   ├── envs/                   # put your per-user .env.<prefix> here
+│   ├── producers/              # your producer goes here
+│   │   ├── avd_producer.py     # example: Dorin’s producer
+│   │   └── example_producer.py # minimal example to copy
+│   ├── consumers/
+│   │   ├── kafka_consumer.py   # Kafka → Mongo writer (generic, works for all topics)
+│   │   └── Dockerfile, requirements.txt
+│   ├── spark/
+│   │   ├── streaming_job.py    # Structured Streaming (Kafka → Mongo aggregation)
+│   │   ├── schemas.py          # example schemas/utilities
+│   │   └── Dockerfile, requirements.txt
+│   ├── app/                    # Streamlit UI
+│   │   ├── streamlit_app.py    # UI entrypoint
+│   │   ├── tabs/               # add your own <prefix>.py tab here
+│   │   └── team_config.yaml    # map users → tabs (and display names)
+│   ├── lib/
+│   │   ├── kafka_producer.py   # thin wrapper around Kafka producer
+│   │   └── spotify_payloads.py # helpers for common Spotify transforms
+│   ├── docker/                 # build contexts (app/consumer/producer images)
+│   │   ├── app.Dockerfile
+│   │   ├── consumer.Dockerfile
+│   │   └── producer.Dockerfile
+│   └── tools/
+│       └── install_docker_ubuntu.sh
+└── docs, notebooks, ...
+```
+
+> **Ports (by default):** Streamlit on `http://localhost:8501`, Mongo Express on `http://localhost:8081` (see `src/docker-compose.yml`).
+
+---
+
+## 3) Naming conventions (follow exactly)
+
+Let `<prefix>` be your short ID (e.g., `alex`, `gilian`, `vadim`).
+
+### Kafka topics
+- Two base topics are pre-wired by convention (can be extended):
   - `${APP_PREFIX}_recent_events`
   - `${APP_PREFIX}_artist_market_top_tracks`
-  - Add more as needed — keep the same prefix.
-- **Env files** live in `src/envs` as `.env.<prefix>`, e.g. `src/envs/.env.alex`.
-- **Producer module** in `src/producers/`: `<prefix>_producer.py`.
-- **Streamlit tab** in `src/app/tabs/`: `tab_<prefix>.py`.
-- **Makefile targets**: `<prefix>-env` and `<prefix>-demo`.
+- You may define **your own topics** in your `.env.<prefix>` (comma-separated list in `KAFKA_TOPICS`). **Use only lowercase, digits and underscores**. Do **not** mix dot `.` and underscore `_` in the same project.
 
-> TL;DR: pick a short lowercase prefix (e.g. `alex`) and use it everywhere.
+### MongoDB collections
+- Default collections used by consumer/Streamlit are set in `.env`:
+  - `MONGO_COLL_EVENTS=${APP_PREFIX}_recent_events`
+  - `MONGO_COLL_TOP10=${APP_PREFIX}_artist_market_top_tracks`
+- If you add **new topics**, either:
+  1) Reuse the **generic mapping** (collection name equals the topic name), or
+  2) Point your consumer/Streamlit to explicit collections via envs or code.
+
+### Files and modules
+- **Producer module:** `src/producers/<prefix>_producer.py` (export a `main()` or runnable module via `python -m producers.<prefix>_producer`).
+- **Streamlit tab:** `src/app/tabs/<prefix>.py` (expose a function `render()` or follow the existing tab style).
+- **User env:** `src/envs/.env.<prefix>` (copied into `.env` before running).
 
 ---
 
-## 2) Create your personal env file
+## 4) Your producer — where to put what
 
-Create **`src/envs/.env.<prefix>`** and fill this (adjust values):
+1) **Create your module** by copying the example:
+   ```bash
+   cp src/producers/example_producer.py src/producers/<prefix>_producer.py
+   ```
+2) Implement your Spotify logic inside `<prefix>_producer.py`:
+   - Read credentials and config from `os.environ` (already in place in example).
+   - Produce JSON **per record** to one of your topics from `KAFKA_TOPICS`.
+   - Use the helper `lib/kafka_producer.py` (already imported in example) or standard `kafka-python`/`confluent_kafka` if you prefer.
+3) **Schema differences are OK.** Spark and Streamlit tabs are written to tolerate different payloads; for tab‑specific visuals, handle your own fields safely (use `.get()` with defaults).
+
+> The container command that runs producers is:  
+> `python -m producers.${PRODUCER_ENTRY}` (from `src/docker/producer.Dockerfile` and `docker-compose.yml`).  
+> We control `PRODUCER_ENTRY` from **.env** (see next section).
+
+---
+
+## 5) Your .env — one per teammate
+
+Create `src/envs/.env.<prefix>` by copying Dorin’s reference and changing values:
 
 ```env
 # ==========================================
 # <PREFIX> — Docker-only environment configuration
 # ==========================================
+APP_PREFIX=<prefix>
 
-# Who am I?
-APP_PREFIX=<prefix>          # e.g. alex
-
-# Spotify credentials (yours)
+# Spotify API (your own app credentials)
 CLIENT_ID=...
 CLIENT_SECRET=...
-USERNAME=...
+USERNAME=<your_spotify_username_or_id>
 REDIRECT_URI=http://127.0.0.1:8888/callback
+MARKET_OVERRIDE=DE
 
-# Optional: pick a market for Top 10 lookups (ISO code)
-MARKET_OVERRIDE=US
-
-# Spotipy compatibility
+# Spotipy (keep consistent with above)
 SPOTIPY_CLIENT_ID=${CLIENT_ID}
 SPOTIPY_CLIENT_SECRET=${CLIENT_SECRET}
 SPOTIPY_REDIRECT_URI=${REDIRECT_URI}
@@ -61,294 +134,218 @@ SPOTIPY_REDIRECT_URI=${REDIRECT_URI}
 DEBUG=true
 KAFKA_ENABLED=true
 
-# Kafka inside Docker network
+# Kafka (inside Docker network)
 KAFKA_BOOTSTRAP=kafka:19092
 
-# Topics (use your prefix!)
+# Your topic(s) (comma-separated). Use your prefix in names:
 KAFKA_TOPICS=${APP_PREFIX}_recent_events,${APP_PREFIX}_artist_market_top_tracks
+
+# Optional routing hint (not mandatory)
 KAFKA_TOPIC_ROUTES=${APP_PREFIX}_recent_events:events,${APP_PREFIX}_artist_market_top_tracks:top10
 
-# Mongo inside Docker network
+# Mongo (inside Docker network)
 MONGO_URL=mongodb://root:example@mongo:27017/?authSource=admin
 MONGO_DB=spotify_db
-
-# Collections (use your prefix!)
 MONGO_COLL_EVENTS=${APP_PREFIX}_recent_events
 MONGO_COLL_TOP10=${APP_PREFIX}_artist_market_top_tracks
 GENERIC_COLL_NAMESPACE=${APP_PREFIX}__topic__
 
-# Which producer module to run (see §3)
+# Which producer module to run in the producer container
 PRODUCER_ENTRY=<prefix>_producer
 
-# Spark (optional; leave as-is if unsure)
+# Spark (only if you need to tweak; safe defaults below)
 SPARK_KAFKA_TOPICS=
 SPARK_TRIGGER_SECS=10
 SPARK_WATERMARK_MIN=5
-SPARK_COLL_EVENTS=
-SPARK_COLL_RAW=
 SPARK_MODE=top_artists
 SPARK_TOPN=10
 SPARK_FEATURE=track_duration_ms
 SPARK_GROUP=market_used
 SPARK_PACKAGES=org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.1,org.apache.kafka:kafka-clients:3.5.2
 
-# Streamlit port (host)
+# Streamlit (host port)
 PORT=8501
 ```
 
-> **Never commit secrets** — `.env` files are git-ignored by default.
+**Load your env into `.env`** with the Makefile target (see §7):  
+`make <prefix>-env`  → this copies `src/envs/.env.<prefix>` to `src/.env`.
+
+> Tip: Keep secrets locally. `.env` and real `.env.<prefix>` are git-ignored. Only commit example files like `.env.<prefix>.example` if you want to share structure.
 
 ---
 
-## 3) Add your producer
+## 6) Streamlit — add your own tab
 
-Create **`src/producers/<prefix>_producer.py`**.
-
-Minimal skeleton (send whatever JSON you fetch — your schema can differ!):
-
-```python
-# src/producers/<prefix>_producer.py
-import json, os
-from dotenv import load_dotenv
-from kafka import KafkaProducer
-import spotipy
-from spotipy.oauth2 import SpotifyOAuth
-
-load_dotenv()
-
-BOOTSTRAP = os.getenv("KAFKA_BOOTSTRAP", "kafka:19092")
-TOPIC_EVENTS = os.getenv("MONGO_COLL_EVENTS") or f"{os.getenv('APP_PREFIX')}_recent_events"
-TOPIC_TOP10  = os.getenv("MONGO_COLL_TOP10")  or f"{os.getenv('APP_PREFIX')}_artist_market_top_tracks"
-DEBUG = os.getenv("DEBUG", "false").lower() == "true"
-
-def _producer():
-    return KafkaProducer(
-        bootstrap_servers=BOOTSTRAP,
-        value_serializer=lambda v: json.dumps(v).encode("utf-8"),
-        key_serializer=lambda v: json.dumps(v).encode("utf-8") if v is not None else None,
-        linger_ms=50
-    )
-
-def auth_spotify():
-    return spotipy.Spotify(auth_manager=SpotifyOAuth(
-        client_id=os.getenv("CLIENT_ID"),
-        client_secret=os.getenv("CLIENT_SECRET"),
-        redirect_uri=os.getenv("REDIRECT_URI"),
-        scope="user-read-recently-played user-read-playback-state"
-    ))
-
-def run():
-    p = _producer()
-    sp = auth_spotify()
-
-    # Example: send “recent plays” (your schema is OK as-is)
-    recent = sp.current_user_recently_played(limit=50)
-    for item in recent.get("items", []):
-        event = {
-            "prefix": os.getenv("APP_PREFIX"),
-            "type": "recent_play",
-            "played_at": item["played_at"],
-            "track_name": item["track"]["name"],
-            "artist_names": [a["name"] for a in item["track"]["artists"]],
-            "raw": item,  # keep raw payload (optional)
-        }
-        p.send(TOPIC_EVENTS, value=event)
-    if DEBUG: print(f"[KAFKA] sent recent events -> {TOPIC_EVENTS}")
-
-    # Example: your custom payload (e.g., danceability/energy/etc.) to TOPIC_TOP10 or a new topic
-    # payload = {...}
-    # p.send(TOPIC_TOP10, value=payload)
-
-    p.flush()
-
-if __name__ == "__main__":
-    run()
-```
-
-**Important:**
-- **Your JSON schema can be different** (different fields/structure).
-- The consumer and your Streamlit tab should read **your** schema from **your** collections.
-- Keep messages **valid JSON** and **newline-free**.
+1) Create `src/app/tabs/<prefix>.py`. Start from an existing tab (e.g. `alex.py` or `avd.py`).
+2) **Do not break the app**: your tab must not crash if data is missing. Use tolerant reads with `.get()` and guard empty states.
+3) Register your tab in `src/app/team_config.yaml`:
+   ```yaml
+   users:
+     - id: alex
+       name: "Alex"
+       tab: "alex"         # file src/app/tabs/alex.py
+     - id: <prefix>
+       name: "<Your Name>"
+       tab: "<prefix>"     # file src/app/tabs/<prefix>.py
+   ```
+4) Rebuild `app` container or let Compose rebuild on change:
+   ```bash
+   make app-build && make app-up
+   # open http://localhost:8501
+   ```
 
 ---
 
-## 4) Kafka topics & Mongo collections
+## 7) Makefile targets you will use (from `src/makefile`)
 
-No code changes needed if you follow the env names:
+- **Environment (copy your env into `.env`):**
+  ```bash
+  cd src
+  make <prefix>-env         # we keep <prefix>-env targets per teammate
+  make show-env             # quick check of key vars loaded into .env
+  ```
+  > If `<prefix>-env` doesn’t exist yet in the main Makefile, add it like this:
+  ```make
+  <prefix>-env:
+  	@cp envs/.env.<prefix> .env
+  	@echo "[ENV] Loaded .env.<prefix> for <Your Name>"
+  ```
+  Or create your helper in `make/_template.mk` and include it as needed.
 
-- Topics are created with:
+- **Bring up infra (Zookeeper, Kafka, Mongo, App, etc.):**
+  ```bash
+  make up
+  make logs          # tail all service logs
+  ```
+
+- **Kafka topics from your `.env`:**
   ```bash
   make kafka-init-from-env
+  make kafka-list
+  # tail messages from a topic:
+  make kafka-tail-topic TOPIC=<your_topic>
   ```
-- The consumer writes to `${APP_PREFIX}_*` collections by default (see §5 for mapping).
+
+- **Run your producer (inside container, uses PRODUCER_ENTRY):**
+  ```bash
+  make producer-build
+  make producer-run
+  make producer-logs
+  ```
+
+- **Spark streaming job & logs:**
+  ```bash
+  make spark-build
+  make spark-up
+  make spark-logs
+  ```
+
+- **Streamlit app:**
+  ```bash
+  make app-build
+  make app-up
+  make app-logs
+  # open http://localhost:8501
+  ```
+
+- **Down / cleanup (containers only; volumes remain):**
+  ```bash
+  make down
+  ```
+
+- **One-shot per-user demo (if defined):**
+  If available (see Dorin’s `avd-demo` target):
+  ```bash
+  make <prefix>-demo
+  ```
+  It performs: infra up → `kafka-init-from-env` → run your producer once → start Spark + Streamlit.
 
 ---
 
-## 5) Consumer mapping (topic → collection)
+## 8) Consumer behavior (Kafka → Mongo)
 
-Generic consumer: **`src/consumers/kafka_consumer.py`**
+- Default consumer `src/consumers/kafka_consumer.py` reads any topics you define in `KAFKA_TOPICS` and writes to:
+  - explicitly configured collections (`MONGO_COLL_*`) **or**
+  - a **generic** collection per topic (fallback), using your topic name (or `GENERIC_COLL_NAMESPACE` if set).
+- If your payload schema differs (it will!), the consumer stores the raw JSON as-is. No schema enforcement here; do schema-aware queries in your tab or through Spark.
 
-It:
-- reads JSON from Kafka,
-- picks Mongo collection name based on topic,
-- inserts the full document.
-
-To add a **custom topic → collection** mapping, extend your env:
-
-```env
-KAFKA_TOPICS=${APP_PREFIX}_recent_events,${APP_PREFIX}_artist_market_top_tracks,${APP_PREFIX}_my_feature
-KAFKA_TOPIC_ROUTES=${APP_PREFIX}_recent_events:events,${APP_PREFIX}_artist_market_top_tracks:top10,${APP_PREFIX}_my_feature:my_feature
-```
-
-Consumer will write to collection **`${APP_PREFIX}_my_feature`** automatically.
+> If you need custom projection/transforms, either:
+> - fork the consumer (create `consumers/<prefix>_consumer.py` + compose a new service), or
+> - post-process in Spark and read from Spark output collections in your tab.
 
 ---
 
-## 6) Add your Streamlit tab
+## 9) Spark streaming
 
-Create **`src/app/tabs/tab_<prefix>.py`**:
-
-```python
-import os, streamlit as st
-from pymongo import MongoClient
-
-def get_coll(name: str):
-    client = MongoClient(os.getenv("MONGO_URL"))
-    db = client[os.getenv("MONGO_DB", "spotify_db")]
-    return db[name]
-
-def render():
-    st.header(f"{os.getenv('APP_PREFIX').upper()} — My Feature Dashboard")
-
-    coll_events = get_coll(os.getenv("MONGO_COLL_EVENTS") or f"{os.getenv('APP_PREFIX')}_recent_events")
-    coll_top10  = get_coll(os.getenv("MONGO_COLL_TOP10")  or f"{os.getenv('APP_PREFIX')}_artist_market_top_tracks")
-
-    recent = list(coll_events.find().sort("played_at", -1).limit(50))
-    st.subheader("Recent events (last 50)")
-    st.code(recent[:3])
-
-    # Example custom collection
-    # my_coll = get_coll(f\"{os.getenv('APP_PREFIX')}_my_feature\")
-    # rows = list(my_coll.find().limit(20))
-    # st.write(rows)
-```
-
-The app auto-discovers files in `app/tabs` named `tab_*.py` that expose `render()`.
+- `spark/streaming_job.py` reads Kafka topics (from `.env`) and writes aggregations to Mongo.
+- Modes available (via `SPARK_MODE`): `top_artists`, `top_tracks`, `feature_avg` (with `SPARK_FEATURE` and `SPARK_GROUP`).
+- For **custom schemas**, add parsing logic in `spark/schemas.py` (or within the job) and wire your topics with your own branch in `streaming_job.py`.
+- Packages required are set in env (`SPARK_PACKAGES`). No need to edit the container unless you add exotic connectors.
 
 ---
 
-## 7) Spark (optional)
+## 10) Docker Compose services (what gets started)
 
-Spark is already configured. If your schema differs:
+- **zookeeper**, **kafka**, **mongo**, **mongo-express** (port usually `8081` → check compose), **producer**, **consumer**, **spark-app**, **streamlit-app**.
+- All services use the **same `.env`** at `src/.env` (copied from your `src/envs/.env.<prefix>`).
 
-1) **Raw JSON mode (easy):** leave as-is; Spark treats Kafka value as string and stores raw docs.
-2) **Typed mode:** update `src/spark/streaming_job.py` to parse with your own schema:
-   ```python
-   from pyspark.sql.functions import from_json, col
-   from pyspark.sql.types import StructType, StructField, StringType, ...
+---
 
-   schema = StructType([...])
-   df_parsed = df.select(from_json(col("value").cast("string"), schema).alias("j")).select("j.*")
+## 11) Quick Start — checklist for a new teammate
+
+1) **Get Docker** (Ubuntu users can run `src/tools/install_docker_ubuntu.sh`).  
+2) Clone repo, then:
+   ```bash
+   cd src
+   cp envs/.env.avd envs/.env.<prefix>      # edit with your Spotify creds + topics
+   make <prefix>-env                         # copies to .env
+   make show-env
    ```
-   Tune with `.env` (`SPARK_MODE`, `SPARK_FEATURE`, etc.) if you use built-in aggregations.
+3) Add your producer:
+   ```bash
+   cp producers/example_producer.py producers/<prefix>_producer.py
+   # implement your logic
+   ```
+4) Register your tab (optional but recommended):
+   ```bash
+   cp app/tabs/alex.py app/tabs/<prefix>.py
+   # edit; then add entry to app/team_config.yaml
+   ```
+5) Build & run:
+   ```bash
+   make up
+   make kafka-init-from-env
+   make producer-build && make producer-run
+   make spark-build && make spark-up
+   make app-build && make app-up
+   # Open UI: http://localhost:8501
+   # Mongo Express (if enabled in compose): http://localhost:8081
+   ```
 
 ---
 
-## 8) Makefile targets for your prefix
+## 12) Troubleshooting
 
-Open `src/makefile` and add (copy/adapt one of the existing ones):
-
-```make
-alex-env:
-	@cp envs/.env.alex .env
-	@echo "[ENV] Loaded .env.alex for Alex"
-
-alex-demo: alex-env
-	docker compose up -d zookeeper kafka mongo
-	make kafka-init-from-env
-	docker compose run --rm -e PRODUCER_ENTRY=alex_producer -e PYTHONPATH=/app/src producer
-	docker compose up -d spark-app app
-	@echo "[INFO] Demo up and running for Alex!"
-```
-
-Now run `make alex-demo` to go end-to-end.
+- **Port already in use** (e.g., 9092/2181/27017/8081/8501):
+  - Stop old containers: `docker ps -a`, then `docker stop <id>` and `docker rm <id>`.
+  - Find blocker: `sudo ss -ltnp '( sport = :PORT )'` then kill PID or change host port in `docker-compose.yml`.
+  - Recreate service: `docker compose up -d --force-recreate <service>`.
+- **Kafka not ready**: run `make kafka-wait` (built into `kafka-init-from-env`).
+- **Auth to Spotify**: first run opens a local auth server; ensure redirect URI matches.
+- **Windows/WSL**: run commands inside the repo folder in WSL; Docker Desktop must be running.
+- **Docker Desktop**: if builds fail, restart Docker Desktop and retry `make ...-build`.
 
 ---
 
-## 9) Run it (manual steps if you prefer)
+## 13) What to commit (and what NOT)
 
-From `src/`:
-
-```bash
-# 1) choose your env
-make <prefix>-env           # e.g. make alex-env
-
-# 2) bring up infra
-docker compose up -d zookeeper kafka mongo
-
-# 3) create topics
-make kafka-init-from-env
-
-# 4) run your producer (sends data)
-docker compose run --rm -e PRODUCER_ENTRY=<prefix>_producer -e PYTHONPATH=/app/src producer
-
-# 5) optional: start consumer
-docker compose up -d consumer
-
-# 6) start Spark + Streamlit app
-docker compose up -d spark-app app
-```
-
-Open:
-- **Streamlit:** http://localhost:8501
-- **Mongo Express:** http://localhost:8081 (user `admin`, pass `secret`)
-
-> If a port is taken, edit host mappings in `src/docker-compose.yml`.
+- **Commit:** your code in `src/producers/<prefix>_producer.py`, `src/app/tabs/<prefix>.py`, any Spark logic updates, **example env** `src/envs/.env.<prefix>.example` (no secrets).
+- **Do NOT commit:** real `.env` or any file with secrets (`.env`, token caches, client secrets). The repo `.gitignore` is set properly.
 
 ---
 
-## 10) Common problems / fixes
+## 14) Note
 
-- **“Cannot connect to the Docker daemon”**
-  ```bash
-  sudo systemctl start docker
-  sudo usermod -aG docker $USER
-  newgrp docker
-  ```
-
-- **Port already in use (2181 / 9092 / 27017 / 8081 / 8501)**
-  ```bash
-  sudo ss -ltnp '( sport = :8081 )'
-  sudo kill -9 <pid>
-  ```
-  Or change host port mapping in `src/docker-compose.yml`.
-
-- **Kafka topics not created**  
-  Run `make kafka-init-from-env` after Kafka is healthy.
-
-- **Different JSON fields**  
-  Totally fine. Consumer is schema-agnostic. Your Streamlit tab should read your fields from your collections.
-
----
-
-## 11) Security & repo hygiene
-
-- Do **not** commit `.env` files or credentials (already in `.gitignore`).
-- Keep each teammate’s secrets in `src/envs/.env.<prefix>`.
-
----
-
-## 12) Docker installer script (Ubuntu users)
-
-Run once:
-```bash
-src/tools/install-docker-ubuntu.sh
-```
-It installs Docker CE + Compose and adds your user to the `docker` group.
-
----
-
-### FAQ: “My JSON fields are different — will it break?”
-
-No. The consumer and Streamlit pattern are **schema-agnostic**.  
-Send **valid JSON**, use your prefix for topics/collections, and read those docs in your tab. Spark can stay in raw mode until you decide on a typed schema.
+- There is a ready‑to‑use Ubuntu installer: `src/tools/install_docker_ubuntu.sh`.
+- The Makefile is Docker-only and safe to use on any teammate machine.
+- If you’re stuck, ask in the group; please **test this weekend** so we can ship on time.
