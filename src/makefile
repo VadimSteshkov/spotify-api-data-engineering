@@ -29,6 +29,7 @@ export SPARK_PACKAGES ?= org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.1,org.ap
   consumer-build consumer-run \
   app-build app-up app-logs app-stop \
   spark-build spark-up spark-logs spark-down \
+  jupyter-up jupyter-stop jupyter-logs \
   demo
 
 # ======================================================
@@ -249,6 +250,22 @@ oauth-init-write:
 	docker compose run --rm -e PYTHONUNBUFFERED=1 producer \
 	  bash -lc "python -u tools/init_refresh_token.py --env-file envs/.env.$(USR) --write"
 
+# ======================================================
+# Jupyter Lab (container)
+# ======================================================
+
+# Start the Jupyter Lab container (assumes image is available)
+jupyter-up:
+	docker compose up -d jupyter
+	@echo "[JUPYTER] Jupyter Lab running on http://localhost:8889"
+
+# Stop the Jupyter Lab container
+jupyter-stop:
+	docker compose stop jupyter
+
+# Follow logs for the Jupyter Lab container
+jupyter-logs:
+	docker compose logs -f jupyter
 
 # ======================================================
 # One-shot demo (after env-user)
