@@ -19,6 +19,22 @@ services:
       start_period: 10s
     restart: unless-stopped
 
+  jupyter:
+    image: jupyter/scipy-notebook:latest
+    container_name: jupyter_notebook
+    ports:
+      - "8889:8888"
+    volumes:
+      - ../notebooks:/home/jovyan/work
+
+    environment:
+      JUPYTER_ENABLE_LAB: "yes"
+      #JUPYTER_TOKEN: ""
+    command: start-notebook.sh --NotebookApp.token='' --NotebookApp.password='' --no-browser --ip=0.0.0.0
+    depends_on:
+      - kafka
+      - mongo
+
   kafka:
     image: confluentinc/cp-kafka:7.5.0
     container_name: kafka
@@ -107,7 +123,7 @@ services:
       - .env
     environment:
       BROWSER: "0"
-      S#POTIPY_CACHE: "/app/src/.cache-${USERNAME}"   # persisted in bind mount
+      #S#POTIPY_CACHE: "/app/src/.cache-${USERNAME}"   # persisted in bind mount
     depends_on:
       kafka:
         condition: service_healthy
