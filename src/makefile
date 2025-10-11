@@ -155,6 +155,27 @@ spark-logs:
 spark-down:
 	docker compose rm -sf spark-app
 
+# ======================================================
+# Build helpers (all images)
+# ======================================================
+
+# Build all first-party images (doesnt build basis iamges)
+build: producer-build consumer-build app-build spark-build
+	@echo "[BUILD] All service images built."
+
+# Rebuild complet
+rebuild:
+	docker compose build --no-cache --pull
+	@echo "[BUILD] Rebuilt all images with --no-cache --pull."
+
+# only images
+images:
+	docker compose build
+
+#stop and clean containers, volumes and orphans
+clean:
+	docker compose down -v --remove-orphans
+	@echo "[CLEAN] Containers & volumes removed."
 
 # ======================================================
 # USER ENTRY POINTS (each teammate has their own .env.<USR>)
