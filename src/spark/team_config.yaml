@@ -1,0 +1,18 @@
+teams:
+  avd:
+    mode: top_tracks
+    topn: 10
+  alex:
+    mode: feature_avg
+    feature: energy
+    group: market_used
+  gilian:
+    mode: top_tracks
+    topn: 10
+    feature: dancebility
+  alex:
+    mode: my_custom_mode
+    feature: energy
+    group: market_used
+    topn: 10
+

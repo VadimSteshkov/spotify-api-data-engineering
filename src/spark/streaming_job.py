@@ -2,23 +2,19 @@
 # -*- coding: utf-8 -*-
 
 """
-Generic Spark Structured Streaming job.
+Generic Spark Structured Streaming job (modular ops version).
 
 - Reads JSON events from Kafka (topics provided via env: SPARK_KAFKA_TOPICS or KAFKA_TOPICS).
-- Supports multiple aggregation "modes" (env SPARK_MODE):
-	* top_artists  -> Top-N by artist_names
-	* top_tracks   -> Top-N by track_name
-	* feature_avg  -> Average of a numeric field (SPARK_FEATURE), grouped by SPARK_GROUP
-- Writes results to MongoDB collection: <APP_PREFIX>_spark_<mode>
-- Prints aggregates to console for live demo.
-
-Design goals:
-- Portable (no Mongo Spark connector; uses foreachBatch + PyMongo).
-- Robust to mixed schemas sent by teammates (fields can be null/string/JSON-array).
-- No hardcoded topics/fields in code; everything configurable from .env.
+- Picks operator by SPARK_MODE via spark.ops.registry (top_artists | top_tracks | feature_avg).
+- Optionally overrides SPARK_MODE, topn, feature, group based on TEAM_CONFIG_SPARK and APP_PREFIX.
+- Writes results to MongoDB collection: <APP_PREFIX>_spark_<mode>.
+- Also prints aggregates to console for live demo.
+- Resilient to mixed schemas sent by teammates (fields can be null/string/JSON-array).
 """
 
+# tabs are used in this file
 import os
+import yaml
 from typing import List
 
 from dotenv import load_dotenv
@@ -35,24 +31,22 @@ load_dotenv()
 
 APP_PREFIX = os.getenv("APP_PREFIX", "demo").strip()
 
-# Topic selection priority: SPARK_KAFKA_TOPICS (if set) else KAFKA_TOPICS
+# Kafka topic selection
 SPARK_KAFKA_TOPICS = os.getenv("SPARK_KAFKA_TOPICS", "").strip()
 KAFKA_TOPICS = SPARK_KAFKA_TOPICS or os.getenv("KAFKA_TOPICS", "events").strip()
 
-# Kafka & mode configuration
-KAFKA_BOOTSTRAP = os.getenv("KAFKA_BOOTSTRAP", "localhost:9092").strip()
+# Base Spark mode configuration
 SPARK_MODE = os.getenv("SPARK_MODE", "top_artists").strip()  # top_artists | top_tracks | feature_avg
-
-# Feature mode only
+SPARK_TOPN = int(os.getenv("SPARK_TOPN", "10").strip() or "10")
 SPARK_FEATURE = os.getenv("SPARK_FEATURE", "track_duration_ms").strip()
 SPARK_GROUP = os.getenv("SPARK_GROUP", "market_used").strip()  # comma-separated grouping cols
 
-# Mongo config
+# Kafka & Mongo configuration
+KAFKA_BOOTSTRAP = os.getenv("KAFKA_BOOTSTRAP", "localhost:9092").strip()
 MONGO_URL = os.getenv("MONGO_URL", "mongodb://root:example@localhost:27017/?authSource=admin").strip()
 MONGO_DB = os.getenv("MONGO_DB", "spotify_db").strip()
 OUT_COLL = f"{APP_PREFIX}_spark_{SPARK_MODE}"
 
-# Packages (Kafka source). Can be overridden from env.
 SPARK_PACKAGES = os.getenv(
 	"SPARK_PACKAGES",
 	"org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.1,org.apache.kafka:kafka-clients:3.5.2",
@@ -60,9 +54,53 @@ SPARK_PACKAGES = os.getenv(
 
 print(f"[Spark] bootstrap: {KAFKA_BOOTSTRAP}")
 print(f"[Spark] topics: {KAFKA_TOPICS.split(',')}")
-print(f"[Spark] mode: {SPARK_MODE}")
-if SPARK_MODE == "feature_avg":
-	print(f"[Spark] feature: {SPARK_FEATURE} | group: {SPARK_GROUP}")
+print(f"[Spark] mode (initial): {SPARK_MODE}")
+
+# ---------------------------
+# Load team config (per APP_PREFIX)
+# ---------------------------
+def load_spark_team_config() -> dict:
+	"""
+	Load Spark team config with robust path resolution:
+	- prefer TEAM_CONFIG_SPARK env
+	- then try 'spark/team_config.yaml' (when /app == src/)
+	- then try 'src/spark/team_config.yaml' (when /app == repo root)
+	"""
+	candidates = []
+	cfg_env = os.getenv("TEAM_CONFIG_SPARK", "").strip()
+	if cfg_env:
+		candidates.append(cfg_env)
+
+	candidates += [
+		"spark/team_config.yaml",
+		"src/spark/team_config.yaml",
+	]
+
+	for p in candidates:
+		if os.path.exists(p):
+			try:
+				with open(p, "r", encoding="utf-8") as f:
+					return yaml.safe_load(f) or {}
+			except Exception as e:
+				print(f"[Spark] WARN: failed to parse Spark team config '{p}': {e}")
+				return {}
+
+	print(f"[Spark] WARN: TEAM_CONFIG_SPARK not found in any of: {candidates}")
+	return {}
+
+SPARK_TEAM_CFG = load_spark_team_config()
+
+# Override SPARK_MODE / params based on team config for this APP_PREFIX
+if SPARK_TEAM_CFG and "teams" in SPARK_TEAM_CFG:
+	team_cfg = SPARK_TEAM_CFG["teams"].get(APP_PREFIX, {})
+	if team_cfg:
+		SPARK_MODE = team_cfg.get("mode", SPARK_MODE)
+		SPARK_TOPN = int(team_cfg.get("topn", SPARK_TOPN))
+		SPARK_FEATURE = team_cfg.get("feature", SPARK_FEATURE)
+		SPARK_GROUP = team_cfg.get("group", SPARK_GROUP)
+		print(f"[Spark] using team config for prefix '{APP_PREFIX}': {team_cfg}")
+
+OUT_COLL = f"{APP_PREFIX}_spark_{SPARK_MODE}"
 
 # ---------------------------
 # Spark session
@@ -95,15 +133,13 @@ df_json_str = df_raw.select(
 
 # ---------------------------
 # Base schema (keep fields generic & safe)
-# - artist_* as StringType since producers may send string OR JSON-array.
-# - We normalize after parsing (see normalizers below).
 # ---------------------------
 event_schema = StructType([
 	StructField("user_id", StringType(), True),
 	StructField("track_id", StringType(), True),
 	StructField("track_name", StringType(), True),
-	StructField("artist_ids", StringType(), True),		# may be '["a","b"]' or "a"
-	StructField("artist_names", StringType(), True),	# may be '["A","B"]' or "A"
+	StructField("artist_ids", StringType(), True),
+	StructField("artist_names", StringType(), True),
 	StructField("album_name", StringType(), True),
 	StructField("market_used", StringType(), True),
 	StructField("played_at", StringType(), True),
@@ -121,18 +157,11 @@ df_parsed = df_json_str.select(
 ).select("kafka_ts", "d.*")
 
 # ---------------------------
-# Helpers: robust normalizers
+# Registry (ops)
 # ---------------------------
-def normalize_array_like(col: F.Column) -> F.Column:
-	"""
-	Normalize a column that can be:
-	- null
-	- plain string "A"
-	- comma-separated "A,B"
-	- JSON array '["A","B"]'
-	Returns array<string>.
-	"""
-	# If it's a JSON array string, parse it as array<string>
+from spark.ops.registry import OPS
+
+def _normalize_array_like(col: F.Column) -> F.Column:
 	json_arr = F.from_json(col, ArrayType(StringType()))
 	return (
 		F.when(col.isNull(), F.array().cast("array<string>"))
@@ -141,89 +170,24 @@ def normalize_array_like(col: F.Column) -> F.Column:
 		 .otherwise(F.array(col.cast("string")))
 	)
 
-def ensure_columns(df: DataFrame, names: List[str]) -> DataFrame:
-	"""
-	Make sure all column names exist in df.
-	If missing, add them as NULL columns so downstream groupBy/select won't crash.
-	"""
-	for n in names:
-		if n and n not in df.columns:
-			df = df.withColumn(n, F.lit(None).cast(StringType()))
-	return df
-
-# Normalize the artist fields we actually aggregate on for top_artists
 df_norm = (
 	df_parsed
-		.withColumn("artist_names_norm", normalize_array_like(F.col("artist_names")))
-		.withColumn("artist_ids_norm", normalize_array_like(F.col("artist_ids")))
+		.withColumn("artist_names", F.col("artist_names").cast(StringType()))
+		.withColumn("artist_ids", F.col("artist_ids").cast(StringType()))
 )
 
-# ---------------------------
-# Aggregation builders (modes)
-# ---------------------------
-def build_top_artists(df: DataFrame) -> DataFrame:
-	"""
-	Explode artist_names and compute Top 10 by play count.
-	"""
-	df_exploded = df.select(F.explode("artist_names_norm").alias("artist_name"))
-	return (
-		df_exploded
-			.groupBy("artist_name")
-			.agg(F.count(F.lit(1)).alias("plays"))
-			.orderBy(F.col("plays").desc())
-			.limit(10)
-			.withColumn("batch_ts", F.current_timestamp())
-			.select("batch_ts", "artist_name", "plays")
-	)
+# Operator config
+op_cfg = {
+	"feature": SPARK_FEATURE,
+	"group": SPARK_GROUP,
+	"topn": SPARK_TOPN,
+}
 
-def build_top_tracks(df: DataFrame) -> DataFrame:
-	"""
-	Compute Top 10 tracks by play count.
-	"""
-	df_src = ensure_columns(df, ["track_id", "track_name"])
-	return (
-		df_src.groupBy("track_id", "track_name")
-			.agg(F.count(F.lit(1)).alias("plays"))
-			.orderBy(F.col("plays").desc())
-			.limit(10)
-			.withColumn("batch_ts", F.current_timestamp())
-			.select("batch_ts", "track_id", "track_name", "plays")
-	)
+if SPARK_MODE not in OPS:
+	raise RuntimeError(f"Unknown SPARK_MODE '{SPARK_MODE}'. Available: {list(OPS.keys())}")
 
-def build_feature_avg(df: DataFrame, feat: str, group_expr: str) -> DataFrame:
-	"""
-	Average any numeric feature by chosen grouping columns.
-	- feat: column name inside df (string). It will be cast to DOUBLE.
-	- group_expr: comma-separated list of columns to group by. Missing cols are added as NULL.
-	"""
-	cols = [c.strip() for c in group_expr.split(",") if c.strip()]
-	df_src = ensure_columns(df, cols + [feat])
-
-	# Cast feature to double; filter out rows where cast fails (NULL)
-	df_feat = df_src.withColumn(feat, F.col(feat).cast(DoubleType())).where(F.col(feat).isNotNull())
-
-	if cols:
-		out = (
-			df_feat.groupBy(*[F.col(c) for c in cols])
-				.agg(F.avg(F.col(feat)).alias("avg_value"), F.count(F.lit(1)).alias("rows"))
-				.orderBy(F.col("avg_value").desc())
-				.withColumn("batch_ts", F.current_timestamp())
-		)
-		return out.select(*cols, "avg_value", "rows", "batch_ts")
-	else:
-		out = (
-			df_feat.agg(F.avg(F.col(feat)).alias("avg_value"), F.count(F.lit(1)).alias("rows"))
-				.withColumn("batch_ts", F.current_timestamp())
-		)
-		return out.select("avg_value", "rows", "batch_ts")
-
-# Choose mode
-if SPARK_MODE == "top_tracks":
-	df_out = build_top_tracks(df_norm)
-elif SPARK_MODE == "feature_avg":
-	df_out = build_feature_avg(df_norm, SPARK_FEATURE, SPARK_GROUP)
-else:
-	df_out = build_top_artists(df_norm)  # default
+op_fn = OPS[SPARK_MODE]
+df_out = op_fn(df_norm, op_cfg)
 
 # ---------------------------
 # Mongo sink via foreachBatch
