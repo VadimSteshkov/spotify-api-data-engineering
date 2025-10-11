@@ -230,6 +230,26 @@ vadim-demo: vadim-env
 	docker compose up -d spark-app app
 	@echo "[INFO] Demo up and running for Vadim!"
 
+# =========================================
+# OAuth helpers (refresh token) — Docker
+# =========================================
+.PHONY: oauth-init oauth-init-write
+
+# Print refresh token for a given user (without writing).
+# Usage: make oauth-init USR=avd
+oauth-init:
+	@if [ -z "$(USR)" ]; then echo "Usage: make oauth-init USR=<name>"; exit 1; fi
+	docker compose run --rm -e PYTHONUNBUFFERED=1 producer \
+	  bash -lc "python -u tools/init_refresh_token.py --env-file envs/.env.$(USR)"
+
+# Print and WRITE refresh token into envs/.env.<USR>
+# Usage: make oauth-init-write USR=avd
+oauth-init-write:
+	@if [ -z "$(USR)" ]; then echo "Usage: make oauth-init-write USR=<name>"; exit 1; fi
+	docker compose run --rm -e PYTHONUNBUFFERED=1 producer \
+	  bash -lc "python -u tools/init_refresh_token.py --env-file envs/.env.$(USR) --write"
+
+
 # ======================================================
 # One-shot demo (after env-user)
 # ======================================================
