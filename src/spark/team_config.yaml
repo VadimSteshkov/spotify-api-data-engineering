@@ -1,6 +1,6 @@
 teams:
   avd:
-    mode: top_artists
+    mode: top_tracks
     topn: 10
   alex:
     mode: feature_avg
