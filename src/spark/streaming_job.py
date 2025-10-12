@@ -1,110 +1,88 @@
+# tabs
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 """
-Generic Spark Structured Streaming job (modular ops version).
+Modular Spark Structured Streaming job.
 
-- Reads JSON events from Kafka (topics provided via env: SPARK_KAFKA_TOPICS or KAFKA_TOPICS).
-- Picks operator by SPARK_MODE via spark.ops.registry (top_artists | top_tracks | feature_avg).
-- Optionally overrides SPARK_MODE, topn, feature, group based on TEAM_CONFIG_SPARK and APP_PREFIX.
-- Writes results to MongoDB collection: <APP_PREFIX>_spark_<mode>.
-- Also prints aggregates to console for live demo.
-- Resilient to mixed schemas sent by teammates (fields can be null/string/JSON-array).
+Pipeline:
+Kafka -> parse JSON -> normalize arrays -> parse played_at
+-> watermark + dropDuplicates (user_id, track_id, played_at_ts)
+-> operator from spark.ops.registry (windowed) -> console + Mongo (append)
+
+Teammates can plug operators via spark/ops/registry.py and configure defaults
+per APP_PREFIX via spark/team_config.yaml. Environment variables override YAML.
 """
 
-# tabs are used in this file
 import os
-import yaml
-from typing import List
-
 from dotenv import load_dotenv
 from pyspark.sql import SparkSession, DataFrame
 from pyspark.sql import functions as F
-from pyspark.sql.types import (
-	StructType, StructField, StringType, LongType, ArrayType, DoubleType
-)
+from pyspark.sql.types import StructType, StructField, StringType, LongType, ArrayType
 
-# ---------------------------
-# Load environment variables
-# ---------------------------
+# ---------- env (base) ----------
 load_dotenv()
+APP_PREFIX = os.getenv("APP_PREFIX", "avd").strip()
 
-APP_PREFIX = os.getenv("APP_PREFIX", "demo").strip()
+# Operator & params (ENV has priority; may be overridden by YAML only if ENV is unset)
+SPARK_MODE	= os.getenv("SPARK_MODE", "top_artists").strip()		# top_artists | top_tracks | feature_avg | ...
+SPARK_TOPN	= int(os.getenv("SPARK_TOPN", "10"))
+SPARK_FEATURE = os.getenv("SPARK_FEATURE", "energy").strip()
+SPARK_GROUP	= os.getenv("SPARK_GROUP", "market_used").strip()
 
-# Kafka topic selection
+# Kafka
 SPARK_KAFKA_TOPICS = os.getenv("SPARK_KAFKA_TOPICS", "").strip()
-KAFKA_TOPICS = SPARK_KAFKA_TOPICS or os.getenv("KAFKA_TOPICS", "events").strip()
+KAFKA_TOPICS = SPARK_KAFKA_TOPICS or os.getenv("KAFKA_TOPICS", f"{APP_PREFIX}_recent_events").strip()
+KAFKA_BOOTSTRAP = os.getenv("KAFKA_BOOTSTRAP", "kafka:19092").strip()
 
-# Base Spark mode configuration
-SPARK_MODE = os.getenv("SPARK_MODE", "top_artists").strip()  # top_artists | top_tracks | feature_avg
-SPARK_TOPN = int(os.getenv("SPARK_TOPN", "10").strip() or "10")
-SPARK_FEATURE = os.getenv("SPARK_FEATURE", "track_duration_ms").strip()
-SPARK_GROUP = os.getenv("SPARK_GROUP", "market_used").strip()  # comma-separated grouping cols
-
-# Kafka & Mongo configuration
-KAFKA_BOOTSTRAP = os.getenv("KAFKA_BOOTSTRAP", "localhost:9092").strip()
-MONGO_URL = os.getenv("MONGO_URL", "mongodb://root:example@localhost:27017/?authSource=admin").strip()
+# Mongo
+MONGO_URL = os.getenv("MONGO_URL", "mongodb://root:example@mongo:27017/?authSource=admin").strip()
 MONGO_DB = os.getenv("MONGO_DB", "spotify_db").strip()
-OUT_COLL = f"{APP_PREFIX}_spark_{SPARK_MODE}"
 
+# Windowing
+WINDOW_SIZE = os.getenv("SPARK_WINDOW_SIZE", "2 hours")
+WINDOW_SLIDE = os.getenv("SPARK_WINDOW_SLIDE", "15 minute")
+WATERMARK = os.getenv("SPARK_WATERMARK", "2 hours")
+
+# Packages
 SPARK_PACKAGES = os.getenv(
 	"SPARK_PACKAGES",
 	"org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.1,org.apache.kafka:kafka-clients:3.5.2",
 )
 
-print(f"[Spark] bootstrap: {KAFKA_BOOTSTRAP}")
-print(f"[Spark] topics: {KAFKA_TOPICS.split(',')}")
-print(f"[Spark] mode (initial): {SPARK_MODE}")
+# ---------- optional team config (per APP_PREFIX) ----------
+# YAML can provide defaults per teammate prefix; ENV still wins when set.
+import yaml
 
-# ---------------------------
-# Load team config (per APP_PREFIX)
-# ---------------------------
-def load_spark_team_config() -> dict:
-	"""
-	Load Spark team config with robust path resolution:
-	- prefer TEAM_CONFIG_SPARK env
-	- then try 'spark/team_config.yaml' (when /app == src/)
-	- then try 'src/spark/team_config.yaml' (when /app == repo root)
-	"""
-	candidates = []
-	cfg_env = os.getenv("TEAM_CONFIG_SPARK", "").strip()
-	if cfg_env:
-		candidates.append(cfg_env)
+TEAM_CONFIG_PATH = os.getenv("TEAM_CONFIG_SPARK", "spark/team_config.yaml").strip()
 
-	candidates += [
-		"spark/team_config.yaml",
-		"src/spark/team_config.yaml",
-	]
-
-	for p in candidates:
-		if os.path.exists(p):
-			try:
-				with open(p, "r", encoding="utf-8") as f:
-					return yaml.safe_load(f) or {}
-			except Exception as e:
-				print(f"[Spark] WARN: failed to parse Spark team config '{p}': {e}")
-				return {}
-
-	print(f"[Spark] WARN: TEAM_CONFIG_SPARK not found in any of: {candidates}")
+def _load_team_cfg(path: str) -> dict:
+	"""Read YAML (teams -> <prefix> -> {mode, topn, feature, group}). Missing file is OK."""
+	try:
+		if os.path.exists(path):
+			with open(path, "r", encoding="utf-8") as f:
+				return yaml.safe_load(f) or {}
+	except Exception as e:
+		print(f"[Spark] WARN: failed to read team config '{path}': {e}")
 	return {}
 
-SPARK_TEAM_CFG = load_spark_team_config()
+_team_cfg = _load_team_cfg(TEAM_CONFIG_PATH)
+if _team_cfg and "teams" in _team_cfg:
+	_self = (_team_cfg["teams"].get(APP_PREFIX) or {})
+	if _self:
+		# Only use YAML if corresponding ENV is empty/unset
+		if not os.getenv("SPARK_MODE"):		SPARK_MODE = (_self.get("mode") or SPARK_MODE).strip()
+		if not os.getenv("SPARK_TOPN"):		SPARK_TOPN = int(_self.get("topn", SPARK_TOPN))
+		if not os.getenv("SPARK_FEATURE"):	SPARK_FEATURE = (_self.get("feature") or SPARK_FEATURE).strip()
+		if not os.getenv("SPARK_GROUP"):	SPARK_GROUP = (_self.get("group") or SPARK_GROUP).strip()
 
-# Override SPARK_MODE / params based on team config for this APP_PREFIX
-if SPARK_TEAM_CFG and "teams" in SPARK_TEAM_CFG:
-	team_cfg = SPARK_TEAM_CFG["teams"].get(APP_PREFIX, {})
-	if team_cfg:
-		SPARK_MODE = team_cfg.get("mode", SPARK_MODE)
-		SPARK_TOPN = int(team_cfg.get("topn", SPARK_TOPN))
-		SPARK_FEATURE = team_cfg.get("feature", SPARK_FEATURE)
-		SPARK_GROUP = team_cfg.get("group", SPARK_GROUP)
-		print(f"[Spark] using team config for prefix '{APP_PREFIX}': {team_cfg}")
-
+# Now we can compute OUT_COLL and print effective config
 OUT_COLL = f"{APP_PREFIX}_spark_{SPARK_MODE}"
+print(f"[Spark] topics={KAFKA_TOPICS} bootstrap={KAFKA_BOOTSTRAP}")
+print(f"[Spark] mode={SPARK_MODE}, topN={SPARK_TOPN}, feature={SPARK_FEATURE}, group={SPARK_GROUP}")
+print(f"[Spark] window size={WINDOW_SIZE}, slide={WINDOW_SLIDE}, watermark={WATERMARK}")
 
-# ---------------------------
-# Spark session
-# ---------------------------
+# ---------- spark ----------
 spark = (
 	SparkSession.builder
 		.appName(f"{APP_PREFIX}_kafka_to_mongo_{SPARK_MODE}")
@@ -114,54 +92,49 @@ spark = (
 )
 spark.sparkContext.setLogLevel("WARN")
 
-# ---------------------------
-# Kafka source
-# ---------------------------
+# ---------- source (Kafka) ----------
 df_raw = (
 	spark.readStream
 		.format("kafka")
 		.option("kafka.bootstrap.servers", KAFKA_BOOTSTRAP)
-		.option("subscribe", KAFKA_TOPICS)  # comma-separated list supported
+		.option("subscribe", KAFKA_TOPICS)
 		.option("startingOffsets", "latest")
 		.load()
 )
 
-df_json_str = df_raw.select(
+df_json = df_raw.select(
 	F.col("timestamp").alias("kafka_ts"),
 	F.col("value").cast("string").alias("raw_json")
 )
 
-# ---------------------------
-# Base schema (keep fields generic & safe)
-# ---------------------------
+# ---------- schema ----------
 event_schema = StructType([
 	StructField("user_id", StringType(), True),
+	StructField("played_at", StringType(), True),			# ISO8601 from producer
 	StructField("track_id", StringType(), True),
 	StructField("track_name", StringType(), True),
-	StructField("artist_ids", StringType(), True),
-	StructField("artist_names", StringType(), True),
+	StructField("artist_ids", StringType(), True),			# may be "A,B" or JSON array
+	StructField("artist_names", StringType(), True),		# may be "A,B" or JSON array
+	StructField("album_id", StringType(), True),
 	StructField("album_name", StringType(), True),
+	StructField("country", StringType(), True),
 	StructField("market_used", StringType(), True),
-	StructField("played_at", StringType(), True),
 	StructField("track_duration_ms", LongType(), True),
 
-	# Optional feature-style fields colleagues might send (keep them as strings; we cast later)
+	# optional metrics (strings; cast later in ops)
 	StructField("danceability", StringType(), True),
 	StructField("energy", StringType(), True),
 	StructField("valence", StringType(), True),
 ])
 
-df_parsed = df_json_str.select(
+df_parsed = df_json.select(
 	F.from_json(F.col("raw_json"), event_schema, {"mode": "PERMISSIVE"}).alias("d"),
 	"kafka_ts"
 ).select("kafka_ts", "d.*")
 
-# ---------------------------
-# Registry (ops)
-# ---------------------------
-from spark.ops.registry import OPS
-
-def _normalize_array_like(col: F.Column) -> F.Column:
+# ---------- normalizers ----------
+def normalize_str_array(col: F.Column) -> F.Column:
+	"""Turn null / 'A' / 'A,B' / '["A","B"]' into array<string>."""
 	json_arr = F.from_json(col, ArrayType(StringType()))
 	return (
 		F.when(col.isNull(), F.array().cast("array<string>"))
@@ -172,72 +145,113 @@ def _normalize_array_like(col: F.Column) -> F.Column:
 
 df_norm = (
 	df_parsed
-		.withColumn("artist_names", F.col("artist_names").cast(StringType()))
-		.withColumn("artist_ids", F.col("artist_ids").cast(StringType()))
+		.withColumn("artist_names_arr", normalize_str_array(F.col("artist_names")))
+		.withColumn("artist_ids_arr", normalize_str_array(F.col("artist_ids")))
+		.withColumn("played_at_ts", F.to_timestamp("played_at"))
 )
 
-# Operator config
-op_cfg = {
-	"feature": SPARK_FEATURE,
-	"group": SPARK_GROUP,
-	"topn": SPARK_TOPN,
-}
+# ---------- dedup + watermark ----------
+df_clean = (
+	df_norm
+		.withWatermark("played_at_ts", WATERMARK)
+		.dropDuplicates(["user_id", "track_id", "played_at_ts"])
+)
+
+# ---------- operator selection ----------
+from spark.ops.registry import OPS
 
 if SPARK_MODE not in OPS:
 	raise RuntimeError(f"Unknown SPARK_MODE '{SPARK_MODE}'. Available: {list(OPS.keys())}")
 
-op_fn = OPS[SPARK_MODE]
-df_out = op_fn(df_norm, op_cfg)
+cfg = {
+	"topn": SPARK_TOPN,
+	"feature": SPARK_FEATURE,
+	"group": SPARK_GROUP,
+}
+win = {
+	"size": WINDOW_SIZE,
+	"slide": WINDOW_SLIDE,
+}
 
-# ---------------------------
-# Mongo sink via foreachBatch
-# ---------------------------
+op_fn = OPS[SPARK_MODE]
+# Operator returns a time-windowed DataFrame with a 'batch_ts' column
+df_out = op_fn(df_clean, cfg, win)
+
+# ---------- sinks ----------
 def write_batch_to_mongo(batch_df: DataFrame, batch_id: int) -> None:
 	"""
-	For each micro-batch, insert result rows into MongoDB as documents.
-	Extra fields are added for traceability.
+	Run Top-N ranking on the static micro-batch (allowed in foreachBatch),
+	then insert documents into MongoDB.
 	"""
-	import pymongo
+	from pyspark.sql import functions as F
+	from pyspark.sql.window import Window
 	from pymongo import MongoClient
 
-	rows = [r.asDict(recursive=True) for r in batch_df.collect()]
-	if not rows:
+	# quick empty-batch guard
+	if batch_df.count() == 0:
+		return
+
+	topn = int(cfg.get("topn", 10))
+	part_col = "batch_ts"
+
+	# Choose ordering by mode
+	if SPARK_MODE == "top_artists":
+		order_cols = [F.col("plays").desc(), F.col("artist_name").asc()]
+	elif SPARK_MODE == "top_tracks":
+		order_cols = [F.col("plays").desc(), F.col("track_name").asc()]
+	elif SPARK_MODE == "feature_avg":
+		# keep highest averages (or drop ranking entirely by keeping all)
+		order_cols = [F.col("avg_value").desc()]
+	else:
+		order_cols = [F.lit(1)]  # no-op fallback
+
+	w = Window.partitionBy(part_col).orderBy(*order_cols)
+
+	ranked = (
+		batch_df.withColumn("rn", F.row_number().over(w))
+			.where((F.col("rn") <= topn) | F.lit(SPARK_MODE == "feature_avg"))
+			.drop("rn")
+	)
+
+	docs = [r.asDict(recursive=True) for r in ranked.collect()]
+	if not docs:
 		return
 
 	client = MongoClient(MONGO_URL)
 	try:
 		coll = client[MONGO_DB][OUT_COLL]
-		for r in rows:
-			r["batch_id"] = batch_id
-			r["prefix"] = APP_PREFIX
-			r["mode"] = SPARK_MODE
-			if SPARK_MODE == "feature_avg":
-				r["feature"] = SPARK_FEATURE
-				r["group"] = SPARK_GROUP
-		coll.insert_many(rows, ordered=False)
+		for d in docs:
+			d["batch_id"] = batch_id
+			d["prefix"] = APP_PREFIX
+			d["mode"] = SPARK_MODE
+			d["feature"] = cfg.get("feature")
+			d["group"] = cfg.get("group")
+		coll.insert_many(docs, ordered=False)
 	finally:
 		client.close()
 
-# ---------------------------
-# Dual sink: console + Mongo
-# ---------------------------
+# Console stream (for demo)
 query_console = (
 	df_out.writeStream
-		.outputMode("complete")
+		.outputMode("append")			# with watermark + windowing -> append is correct
 		.format("console")
 		.option("truncate", "false")
 		.option("numRows", "50")
 		.start()
 )
 
+# Mongo sink via foreachBatch
 query_mongo = (
 	df_out.writeStream
-		.outputMode("complete")
+		.outputMode("append")
 		.foreachBatch(write_batch_to_mongo)
 		.option("checkpointLocation", f"/tmp/{APP_PREFIX}_spark_{SPARK_MODE}_ck")
 		.start()
 )
 
-query_console.awaitTermination()
-query_mongo.awaitTermination()
+print("[Spark] console id:", query_console.id)
+print("[Spark] mongo   id:", query_mongo.id)
+
+# Wait robustly for any stream to end
+spark.streams.awaitAnyTermination()
 

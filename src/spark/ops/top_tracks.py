@@ -1,30 +1,32 @@
+# tabs
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-"""
-Top tracks aggregation by play count.
-"""
+from pyspark.sql import DataFrame
+from pyspark.sql import functions as F
 
-from pyspark.sql import DataFrame, functions as F
+def build_top_tracks(df: DataFrame, cfg: dict, win: dict) -> DataFrame:
+	"""
+	Time-windowed play counts per track (no ranking here).
+	Ranking is done inside foreachBatch.
+	Assumes df has: track_id, track_name, played_at_ts
+	"""
+	size = win["size"]
+	slide = win["slide"]
 
-
-def _ensure_columns(df: DataFrame, cols: list[str]) -> DataFrame:
-	for c in cols:
-		if c not in df.columns:
-			df = df.withColumn(c, F.lit(None).cast("string"))
-	return df
-
-
-def build_top_tracks(df: DataFrame, cfg: dict | None = None) -> DataFrame:
-	"""Aggregate top tracks by play count."""
-	df = _ensure_columns(df, ["track_id", "track_name"])
 	out = (
-		df.groupBy("track_id", "track_name")
-			.agg(F.count(F.lit(1)).alias("plays"))
-			.orderBy(F.col("plays").desc())
-			.limit(10)
-			.withColumn("batch_ts", F.current_timestamp())
-			.select("batch_ts", "track_id", "track_name", "plays")
+		df.groupBy(
+			F.window("played_at_ts", size, slide).alias("w"),
+			F.col("track_id"),
+			F.col("track_name"),
+		)
+		.agg(F.count(F.lit(1)).alias("plays"))
+		.select(
+			F.col("w.start").alias("batch_ts"),
+			F.col("track_id"),
+			F.col("track_name"),
+			F.col("plays"),
+		)
 	)
 	return out
 
