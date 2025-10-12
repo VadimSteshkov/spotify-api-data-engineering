@@ -1,6 +1,11 @@
-version: "3.9"
+# Rootless, modern Compose file for the DE project stack.
+# Notes:
+# - Remove "version:" (it's deprecated in Compose v2+).
+# - Relative paths are from this file's location (src/).
+# - Keep services loosely coupled; healthchecks only where they add value.
 
 services:
+  # ----- Infra: Zookeeper -----
   zookeeper:
     image: confluentinc/cp-zookeeper:7.5.0
     container_name: zookeeper
@@ -19,22 +24,7 @@ services:
       start_period: 10s
     restart: unless-stopped
 
-  jupyter:
-    image: jupyter/scipy-notebook:latest
-    container_name: jupyter_notebook
-    ports:
-      - "8889:8888"
-    volumes:
-      - ../notebooks:/home/jovyan/work
-
-    environment:
-      JUPYTER_ENABLE_LAB: "yes"
-      #JUPYTER_TOKEN: ""
-    command: start-notebook.sh --NotebookApp.token='' --NotebookApp.password='' --no-browser --ip=0.0.0.0
-    depends_on:
-      - kafka
-      - mongo
-
+  # ----- Infra: Kafka -----
   kafka:
     image: confluentinc/cp-kafka:7.5.0
     container_name: kafka
@@ -62,6 +52,7 @@ services:
       start_period: 10s
     restart: unless-stopped
 
+  # ----- Infra: MongoDB + UI -----
   mongo:
     image: mongo:6.0
     container_name: mongo
@@ -88,6 +79,23 @@ services:
       - "8081:8081"
     restart: unless-stopped
 
+  # ----- Dev: Jupyter (binds ../notebooks) -----
+  jupyter:
+    image: jupyter/scipy-notebook:latest
+    container_name: jupyter_notebook
+    ports:
+      - "8889:8888"
+    volumes:
+      - ../notebooks:/home/jovyan/work
+    environment:
+      JUPYTER_ENABLE_LAB: "yes"
+    command: start-notebook.sh --NotebookApp.token='' --NotebookApp.password='' --no-browser --ip=0.0.0.0
+    depends_on:
+      - kafka
+      - mongo
+    restart: unless-stopped
+
+  # ----- Spark job (batch/streaming) -----
   spark-app:
     build:
       context: .
@@ -115,6 +123,7 @@ services:
       "
     restart: unless-stopped
 
+  # ----- Producer (Spotify → Kafka) -----
   producer:
     build:
       context: .
@@ -124,7 +133,6 @@ services:
       - .env
     environment:
       BROWSER: "0"
-      #S#POTIPY_CACHE: "/app/src/.cache-${USERNAME}"   # persisted in bind mount
     depends_on:
       kafka:
         condition: service_healthy
@@ -134,10 +142,11 @@ services:
       - ./:/app
     working_dir: /app
     ports:
-      - "8888:8888"  # needed only when doing interactive auth outside Docker; safe to keep
+      - "8888:8888"  # Only needed for interactive auth; harmless otherwise
     command: ["python", "-u", "-m", "producers.${PRODUCER_ENTRY:-avd_producer}"]
     restart: unless-stopped
 
+  # ----- Consumer (Kafka → Mongo) -----
   consumer:
     build:
       context: .
@@ -156,10 +165,11 @@ services:
     command: ["python", "-u", "-m", "consumers.kafka_consumer"]
     restart: unless-stopped
 
+  # ----- Streamlit App (UI) -----
   app:
     build:
       context: .
-      dockerfile: docker/app.Dockerfile
+      dockerfile: docker/app.Dockerfile   # ensure we DO NOT use legacy app.Dockerfile
     container_name: streamlit-app
     env_file:
       - .env
@@ -167,12 +177,16 @@ services:
       mongo:
         condition: service_started
     volumes:
-      - ./:/app
+      - ./app:/app         # streamlit_app.py will be at /app/streamlit_app.py
     ports:
       - "8501:8501"
     working_dir: /app
+    # Force correct target (no "app/" prefix):
+    command: >
+      bash -lc "python -m streamlit run streamlit_app.py --server.address=0.0.0.0 --server.port=${PORT:-8501}"
     restart: unless-stopped
 
+# ----- Named volumes -----
 volumes:
   mongo_data:
 

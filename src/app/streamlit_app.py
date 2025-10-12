@@ -42,7 +42,7 @@ for member in team:
 	display = member.get("display_name", prefix).strip() or prefix
 
 	# Import module app.tabs.<prefix> but show display_name as label
-	module_name = f"app.tabs.{prefix}"
+	module_name = f"tabs.{prefix}"
 	try:
 		mod = importlib.import_module(module_name)
 		tab_labels.append(display)
