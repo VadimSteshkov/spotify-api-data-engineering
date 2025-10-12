@@ -1,6 +1,6 @@
 teams:
   avd:
-    mode: top_tracks_grouped
+    mode: top_artists_grouped
     topn: 10
     group: market_used
   alex:
