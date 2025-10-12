@@ -1,0 +1,11 @@
+# enforce LF
+*                 text=auto eol=lf
+*.sh              text eol=lf
+*.py              text eol=lf
+*.env             text eol=lf
+*.env.*           text eol=lf
+*.yml             text eol=lf
+*.yaml            text eol=lf
+Dockerfile        text eol=lf
+Makefile          text eol=lf
+
