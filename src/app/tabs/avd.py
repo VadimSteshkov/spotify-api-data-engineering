@@ -12,13 +12,13 @@ import streamlit as st
 
 # Import your current dashboard as "classic"
 try:
-	from app.tabs import avd_classic as classic_tab
+	from tabs import avd_classic as classic_tab
 except Exception as e:
 	classic_tab = None
 
 # Generic Spark renderer (shows all <prefix>_spark_* collections)
 try:
-	from app.tabs import spark_generic as spark_tab
+	from tabs import spark_generic as spark_tab
 except Exception as e:
 	spark_tab = None
 
