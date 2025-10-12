@@ -200,7 +200,7 @@ def render(db, cfg, prefix: str) -> None:
 		start_dt = datetime.combine(start_date, time.min, tzinfo=timezone.utc) if start_date else None
 		end_dt = datetime.combine(end_date, time.max, tzinfo=timezone.utc) if end_date else None
 
-		top_k = st.slider("Top N (for cumulative)", min_value=5, max_value=50, value=10, step=5, key=f"{coll}_topn")
+		top_k = st.slider("Top N (for cumulative)", min_value=5, max_value=100, value=10, step=5, key=f"{coll}_topn")
 
 		# Determine mode (fallback if missing)
 		mode = "unknown"
