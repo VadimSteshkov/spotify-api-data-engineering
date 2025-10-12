@@ -99,6 +99,7 @@ services:
       KAFKA_BOOTSTRAP: "kafka:19092"
       MONGO_URL: "mongodb://root:example@mongo:27017/?authSource=admin"
       SPARK_PACKAGES: "${SPARK_PACKAGES}"
+      TEAM_CONFIG_SPARK: "spark/team_config.yaml"
     depends_on:
       kafka:
         condition: service_healthy
