@@ -1,7 +1,8 @@
 teams:
   avd:
-    mode: top_artists
+    mode: top_tracks_grouped
     topn: 10
+    group: market_used
   alex:
     mode: feature_avg
     feature: energy

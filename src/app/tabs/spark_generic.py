@@ -6,9 +6,10 @@ Generic Spark results tab for a teammate's prefix.
 Discovers Mongo collections named: <prefix>_spark_*
 Renders:
 - top_artists / top_tracks as charts + tables
+- top_tracks_grouped with group selection and cumulative aggregation
 - feature_avg as weighted-avg grouped tables
 
-Now robust to batch_ts stored as BSON datetime OR string.
+Supports BSON datetime or string for batch_ts.
 Adds date-range filter, cumulative toggle, and Top-N for cumulative.
 """
 
@@ -61,13 +62,14 @@ def _time_bounds(db, coll: str) -> tuple[datetime | None, datetime | None]:
 def _range_query(start_dt: datetime | None, end_dt: datetime | None) -> dict:
 	"""
 	Build Mongo range query for batch_ts using Python datetimes in UTC.
-	No string conversion needed; works whether stored as BSON datetime or string (Mongo coerces ISO strings too).
+	Works whether stored as BSON datetime or ISO string.
 	"""
 	if not start_dt or not end_dt:
 		return {}
 	return {"batch_ts": {"$gte": start_dt, "$lte": end_dt}}
 
 def _load_per_batch(db, coll: str, start_dt: datetime | None, end_dt: datetime | None, limit: int = 2000) -> pd.DataFrame:
+	"""Load documents for a given date range, sorted descending by batch_ts."""
 	q = _range_query(start_dt, end_dt)
 	try:
 		cur = db[coll].find(q, {"_id": 0}).sort("batch_ts", -1).limit(limit)
@@ -108,6 +110,37 @@ def _agg_tracks_over_range(db, coll: str, start_dt: datetime, end_dt: datetime, 
 		for r in rows:
 			k = r.get("_id") or {}
 			out.append({"track_id": k.get("track_id"), "track_name": k.get("track_name"), "plays": r["plays"]})
+		return pd.DataFrame(out)
+	except PyMongoError as e:
+		st.error(f"Mongo error while aggregating {coll}: {e}")
+		return pd.DataFrame()
+
+def _agg_tracks_by_group_over_range(db, coll: str, start_dt: datetime, end_dt: datetime, topn: int, group_value: str) -> pd.DataFrame:
+	"""
+	Aggregate top tracks for a specific group (e.g., country) over the selected date range.
+	"""
+	pipeline = [
+		{"$match": {
+			**_range_query(start_dt, end_dt),
+			"group": group_value
+		}},
+		{"$group": {
+			"_id": {"track_id": "$track_id", "track_name": "$track_name"},
+			"plays": {"$sum": "$plays"}
+		}},
+		{"$sort": {"plays": -1}},
+		{"$limit": int(topn)},
+	]
+	try:
+		rows = list(db[coll].aggregate(pipeline))
+		out = []
+		for r in rows:
+			k = r.get("_id") or {}
+			out.append({
+				"track_id": k.get("track_id"),
+				"track_name": k.get("track_name"),
+				"plays": r["plays"]
+			})
 		return pd.DataFrame(out)
 	except PyMongoError as e:
 		st.error(f"Mongo error while aggregating {coll}: {e}")
@@ -211,21 +244,38 @@ def render(db, cfg, prefix: str) -> None:
 		except Exception:
 			pass
 
+		# Optional group selection (for grouped mode)
+		selected_group = None
+		if mode == "top_tracks_grouped":
+			try:
+				all_groups = sorted(db[coll].distinct("group", _range_query(start_dt, end_dt)))
+			except Exception:
+				all_groups = sorted(db[coll].distinct("group"))
+			if all_groups:
+				selected_group = st.selectbox("Group", all_groups, key=f"{coll}_group")
+			else:
+				st.info("No groups available in selected range.")
+
+		# Render by mode
 		if cumulative and start_dt and end_dt:
 			if mode == "top_artists":
 				_render_top_artists(_agg_artists_over_range(db, coll, start_dt, end_dt, top_k))
 			elif mode == "top_tracks":
 				_render_top_tracks(_agg_tracks_over_range(db, coll, start_dt, end_dt, top_k))
+			elif mode == "top_tracks_grouped" and selected_group:
+				_render_top_tracks(_agg_tracks_by_group_over_range(db, coll, start_dt, end_dt, top_k, selected_group))
 			elif mode == "feature_avg":
 				_render_feature_avg(_agg_feature_avg_over_range(db, coll, start_dt, end_dt, top_k))
 			else:
 				st.dataframe(_load_per_batch(db, coll, start_dt, end_dt, 2000), use_container_width=True)
 		else:
-			# Per-batch (original behavior), still filtered by date range
 			df = _load_per_batch(db, coll, start_dt, end_dt, 2000)
 			if mode == "top_artists":
 				_render_top_artists(df)
 			elif mode == "top_tracks":
+				_render_top_tracks(df)
+			elif mode == "top_tracks_grouped" and selected_group and "group" in df.columns:
+				df = df[df["group"] == selected_group]
 				_render_top_tracks(df)
 			elif mode == "feature_avg":
 				_render_feature_avg(df)
