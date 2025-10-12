@@ -1,6 +1,6 @@
 teams:
   avd:
-    mode: top_tracks
+    mode: top_artists
     topn: 10
   alex:
     mode: feature_avg
@@ -9,7 +9,7 @@ teams:
   gilian:
     mode: top_tracks
     topn: 10
-    feature: dancebility
+    feature: danceability
   alex:
     mode: my_custom_mode
     feature: energy
