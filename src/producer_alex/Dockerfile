@@ -11,5 +11,5 @@ COPY . /app
 ENV PYTHONUNBUFFERED=1 PYTHONPATH=/app
 
 # PRODUCER_ENTRY decides module (e.g., producer_avd.avd_producer)
-CMD ["bash", "-lc", "python -m producers.${PRODUCER_ENTRY:-avd_producer}"]
+CMD ["python", "-u", "-m", "producer_alex.producer"]
 

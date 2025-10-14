@@ -115,11 +115,32 @@ services:
       "
     restart: unless-stopped
 
-  producer:
+  producer-alex:
     build:
       context: .
-      dockerfile: docker/producer.Dockerfile
-    container_name: producer
+      dockerfile: producer_alex/Dockerfile
+    container_name: producer_alex
+    env_file:
+      - .env
+    environment:
+      BROWSER: "0"
+      #S#POTIPY_CACHE: "/app/src/.cache-${USERNAME}"   # persisted in bind mount
+    depends_on:
+      kafka:
+        condition: service_healthy
+      mongo:
+        condition: service_started
+    volumes:
+      - ./:/app
+    working_dir: /app
+    command: ["python", "-u", "-m", "producer_alex.producer"]
+    restart: unless-stopped
+
+  producer-avd:
+    build:
+      context: .
+      dockerfile: producer_avd/Dockerfile
+    container_name: producer_avd
     env_file:
       - .env
     environment:
@@ -135,7 +156,7 @@ services:
     working_dir: /app
     ports:
       - "8888:8888"  # needed only when doing interactive auth outside Docker; safe to keep
-    command: ["python", "-u", "-m", "producers.${PRODUCER_ENTRY:-avd_producer}"]
+    command: [ "python", "-u", "-m", "producer_avd.producer" ]
     restart: unless-stopped
 
   consumer:

@@ -85,9 +85,8 @@ DEBUG = str(os.getenv("DEBUG", "false")).lower() == "true"
 KAFKA_BOOTSTRAP = os.getenv("KAFKA_BOOTSTRAP", "localhost:9092")
 
 # Topics (derived from APP_PREFIX if available)
-APP_PREFIX = os.getenv("APP_PREFIX", "avd").strip()
-TOPIC_RECENT_EVENTS = f"{APP_PREFIX}_recent_events"
-TOPIC_ARTIST_MARKET_TOP = f"{APP_PREFIX}_artist_market_top_tracks"
+TOPIC_RECENT_EVENTS = "avd_recent_events"
+TOPIC_ARTIST_MARKET_TOP = "avd_artist_market_top_tracks"
 
 # Scopes required
 SCOPE = "user-read-private user-read-email user-read-recently-played user-read-currently-playing user-top-read"
@@ -343,7 +342,7 @@ def main() -> None:
 
 		doc = {
 			"event_version": "1.0",
-			"event_type": f"{APP_PREFIX}_artist_market_top_tracks",
+			"event_type": "avd_artist_market_top_tracks",
 			"generated_at": datetime.now(timezone.utc).isoformat(),
 			"user_id": user_id,
 			"country": country,
@@ -363,5 +362,13 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-	main()
+    while True:
+        try:
+            main()
+        except Exception as e:
+            import traceback
+
+            traceback.print_exc()
+            print(f"[ERROR] Producer crashed: {e}. Retrying in 5min...", flush=True)
+        time.sleep(300)  # run every 5 minutes
 
