@@ -97,6 +97,9 @@ TOPIC_ARTIST_MARKET_TOP = "avd_artist_market_top_tracks"
 # Polling interval (seconds) — default 60
 SLEEP_SECS = int(os.getenv("PRODUCER_POLL_SEC", "60"))
 
+# Polling interval (seconds) — default 60
+SLEEP_SECS = int(os.getenv("PRODUCER_POLL_SEC", "60"))
+
 # Scopes required
 SCOPE = "user-read-private user-read-email user-read-recently-played user-read-currently-playing user-top-read"
 # ==================================================

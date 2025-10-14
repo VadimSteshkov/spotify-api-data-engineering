@@ -3,7 +3,7 @@
 Thin wrapper that reuses the generic Spark tab but locks it to the owner's base prefix.
 """
 
-from app.tabs import spark_generic as generic
+from tabs import spark_generic as generic
 
 def render(db, cfg, prefix: str) -> None:
 	# Here, `prefix` is 'avd_spark' (the tab name), but we want to show collections for owner 'avd'.

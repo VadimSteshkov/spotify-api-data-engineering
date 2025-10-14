@@ -6,7 +6,7 @@
 
 # Team envs: ignore real env files, keep only examples
 src/envs/.env.*
-!src/envs/.env.*.example
+!src/envs/.env.example
 
 # Spotify cache (Spotipy token cache files)
 .cache-*

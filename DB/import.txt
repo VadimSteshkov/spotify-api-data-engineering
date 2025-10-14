@@ -1,0 +1,58 @@
+# Pornește stack-ul: Mongo în picioare
+make -C src up
+
+# Copiază dump-ul în container
+docker cp "/media/dorin/Disk/FH-MAI/SEM1/DE/Git/DB/spotify_db_dump_full" mongo:/restore/spotify_db
+
+# Restaurează TOT (atenție: --drop va înlocui colecțiile existente)
+docker exec -it mongo bash -lc '\
+  mongorestore --uri="mongodb://root:example@localhost:27017/?authSource=admin" \
+               --drop /restore/spotify_db'
+
+
+
+
+Import DOAR anumite colecții din dump-ul întregii DB
+Dacă vrei să restaurezi doar colecțiile tale (de ex. avd_recent_events, avd_artist_market_top_tracks, plus colecțiile generice avd__topic__*), poți limita cu --nsInclude:
+
+docker exec -it mongo bash -lc '\
+  mongorestore --uri="mongodb://root:example@localhost:27017/?authSource=admin" \
+    --drop \
+    --nsInclude "spotify_db.avd_recent_events" \
+    --nsInclude "spotify_db.avd_artist_market_top_tracks" \
+    --nsInclude "spotify_db.avd__topic__*" \
+    /restore/spotify_db'
+
+
+2) Export/Import pe prefix (ideal pentru schimb între colegi)
+Dump DOAR colecțiile tale (ex: avd_* + avd__topic__*)
+
+docker exec -it mongo bash -lc '\
+  rm -rf /dump && mkdir -p /dump && \
+  mongodump --uri="mongodb://root:example@localhost:27017/?authSource=admin" \
+            --out /dump \
+            --nsInclude "spotify_db.avd_*" \
+            --nsInclude "spotify_db.avd__topic__*"'
+
+docker cp mongo:/dump "/media/dorin/Disk/FH-MAI/SEM1/DE/Git/DB/dump_avd_only"
+
+Restore DOAR aceste colecții pe alt PC
+
+# Copiază în container
+docker cp "/media/dorin/Disk/FH-MAI/SEM1/DE/Git/DB/dump_avd_only/spotify_db" mongo:/restore/spotify_db
+
+# Restaurează DOAR ce e în acel dump (colecțiile incluse mai sus)
+docker exec -it mongo bash -lc '\
+  mongorestore --uri="mongodb://root:example@localhost:27017/?authSource=admin" \
+               --drop \
+               /restore/spotify_db'
+
+
+Colegii pot face exact la fel, înlocuind avd cu alex, vadim, etc. Tu poți importa dump-ul lor fără să-ți strici colecțiile proprii dacă nu folosești --drop pe aceleași colecții sau dacă folosești --nsInclude strict pe ce vrei.
+
+Verificare rapidă după import
+docker exec -it mongo mongosh "mongodb://root:example@localhost:27017/?authSource=admin" \
+  --eval 'use spotify_db; db.getCollectionNames(); db.avd_recent_events.countDocuments(); db.avd_artist_market_top_tracks.countDocuments();'
+
+
+

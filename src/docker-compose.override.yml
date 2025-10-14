@@ -22,7 +22,7 @@ services:
       dockerfile: docker/producer.Dockerfile
     container_name: producer_avd
     env_file:
-      - envs/.env
+      - envs/.env                    
     depends_on:
       kafka:
         condition: service_healthy

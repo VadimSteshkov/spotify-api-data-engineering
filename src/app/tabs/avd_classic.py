@@ -236,7 +236,7 @@ def render(db, cfg, prefix: str) -> None:
 	with col_f2:
 		date_to = st.date_input("To (UTC date)", utc_now.date(), key=f"{prefix}_to")
 	with col_f3:
-		top_k = st.slider("Top N items (Artists or Tracks)", min_value=5, max_value=50, value=10, step=5, key=f"{prefix}_topk")
+		top_k = st.slider("Top N items (Artists or Tracks)", min_value=5, max_value=100, value=10, step=5, key=f"{prefix}_topk")
 
 	show_limit = st.selectbox(
 		"Recent plays limit",
