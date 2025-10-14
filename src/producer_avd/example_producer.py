@@ -3,7 +3,7 @@
 
 """
 Example Kafka producer template.
-- Each teammate should copy this file and rename it, e.g., alex_producer.py
+- Each teammate should copy this file and rename it, e.g., producer_alex.py
 - Use your own topic prefix (e.g., alex_recent_events).
 - Adjust payload structure as needed.
 

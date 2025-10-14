@@ -201,7 +201,11 @@ Open:
 
 1) Copy the example and adapt it:
 ```bash
+<<<<<<< HEAD
 cp src/producers/example_producer.py src/producers/<prefix>_producer.py
+=======
+cp src/producer_avd/example_producer.py src/producer_avd/<prefix>_producer.py
+>>>>>>> a716db97c21512d34f2c7416acf7107c63a6354c
 ```
 
 2) In your producer file, **emit one JSON per event** to your topic(s) from `.env`. Use the helpers in `src/lib/` if useful.

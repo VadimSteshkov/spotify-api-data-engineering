@@ -1,0 +1,111 @@
+# docker-compose.override.yml
+#
+# Purpose:
+# Spin up one Producer + one Spark job PER teammate (prefix).
+# Each service reads its OWN .env file from ./envs, so everyone can run in parallel.
+# Streamlit remains a single UI and will pick up all <prefix>_spark_* Mongo collections.
+#
+# IMPORTANT:
+# - Inside Docker network, Kafka = kafka:19092  (NOT 9092)
+# - Inside Docker network, Mongo = mongodb://root:example@mongo:27017/?authSource=admin
+# - Create these env files in src/envs/: .env.avd, .env.alex, .env.vadim, .env.gilian
+# - In each env file set at least: APP_PREFIX, KAFKA_BOOTSTRAP, MONGO_URL
+# - PRODUCER_ENTRY is not required here because we fix the module in each service command.
+
+services:
+  ############################################################
+  # AVD
+  ############################################################
+  producer_avd:
+    build:
+      context: .
+      dockerfile: docker/producer.Dockerfile
+    container_name: producer_avd
+    env_file:
+      - envs/.env
+    depends_on:
+      kafka:
+        condition: service_healthy
+      mongo:
+        condition: service_started
+    volumes:
+      - ./:/app
+    working_dir: /app
+    # Fixed Python module for this producer (no file extension)
+    command: ["python", "-u", "-m", "producers.avd_producer"]
+    restart: unless-stopped
+
+  spark_avd:
+    build:
+      context: .
+      dockerfile: spark/Dockerfile
+    container_name: spark_avd
+    env_file:
+      - envs/.env
+    environment:
+      # Always use service names inside Docker
+      KAFKA_BOOTSTRAP: "kafka:19092"
+      MONGO_URL: "mongodb://root:example@mongo:27017/?authSource=admin"
+      SPARK_PACKAGES: "${SPARK_PACKAGES}"
+      TEAM_CONFIG_SPARK: "spark/team_config.yaml"
+    depends_on:
+      kafka:
+        condition: service_healthy
+      mongo:
+        condition: service_started
+    volumes:
+      - ./:/app
+    working_dir: /app
+    command: >
+      bash -lc "
+      python3 -m pip install -r spark/requirements.txt &&
+      PYSPARK_SUBMIT_ARGS='--packages ${SPARK_PACKAGES} pyspark-shell' python3 -m spark.streaming_job
+      "
+    restart: unless-stopped
+
+  ############################################################
+  # ALEX
+  ############################################################
+  producer_alex:
+    build:
+      context: .
+      dockerfile: docker/producer.Dockerfile
+    container_name: producer_alex
+    env_file:
+      - envs/.env
+    depends_on:
+      kafka:
+        condition: service_healthy
+      mongo:
+        condition: service_started
+    volumes:
+      - ./:/app
+    working_dir: /app
+    command: ["python", "-u", "-m", "producers.alex_producer"]
+    restart: unless-stopped
+
+  ############################################################
+  # VADIM
+  ############################################################
+  producer_vadim:
+    build:
+      context: .
+      dockerfile: docker/producer.Dockerfile
+    container_name: producer_vadim
+    env_file:
+      - envs/.env
+    depends_on:
+      kafka:
+        condition: service_healthy
+      mongo:
+        condition: service_started
+    volumes:
+      - ./:/app
+    working_dir: /app
+    command: ["python", "-u", "-m", "producers.vadim_producer"]
+    restart: unless-stopped
+
+
+
+
+
