@@ -9,17 +9,17 @@
 *.crt
 
 # Ignore any ad-hoc env file anywhere
-**/.env
+src/envs/.env
 **/.env.local
 **/.envrc
 
 # ─── Team environment files ────────────────────────────────────────────────────
 # Ignore all real user env files but keep examples
 src/envs/.env.*
-!src/envs/.env.*.example
+!src/envs/.env.example
 
 # Also ignore a direct env at src root if ever created
-src/.env
+src/envs/.env
 
 # ─── Spotify / generic cache files ─────────────────────────────────────────────
 .cache-*

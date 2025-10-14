@@ -24,8 +24,8 @@ from pyspark.sql.types import StructType, StructField, StringType, LongType, Arr
 load_dotenv()
 APP_PREFIX = os.getenv("APP_PREFIX", "avd").strip()
 
-# Operator & params (ENV has priority; may be overridden by YAML only if ENV is unset)
-SPARK_MODE	= os.getenv("SPARK_MODE", "top_artists").strip()		# top_artists | top_tracks | feature_avg | ...
+# Operator & params (ENV has priority; YAML fills only missing ones)
+SPARK_MODE	= os.getenv("SPARK_MODE", "top_artists").strip()		# top_artists | top_tracks | top_tracks_grouped | feature_avg | ...
 SPARK_TOPN	= int(os.getenv("SPARK_TOPN", "10"))
 SPARK_FEATURE = os.getenv("SPARK_FEATURE", "energy").strip()
 SPARK_GROUP	= os.getenv("SPARK_GROUP", "market_used").strip()
@@ -41,7 +41,7 @@ MONGO_DB = os.getenv("MONGO_DB", "spotify_db").strip()
 
 # Windowing
 WINDOW_SIZE = os.getenv("SPARK_WINDOW_SIZE", "2 hours")
-WINDOW_SLIDE = os.getenv("SPARK_WINDOW_SLIDE", "15 minute")
+WINDOW_SLIDE = os.getenv("SPARK_WINDOW_SLIDE", "15 minutes")		# fixed typo
 WATERMARK = os.getenv("SPARK_WATERMARK", "2 hours")
 
 # Packages
@@ -76,7 +76,7 @@ if _team_cfg and "teams" in _team_cfg:
 		if not os.getenv("SPARK_FEATURE"):	SPARK_FEATURE = (_self.get("feature") or SPARK_FEATURE).strip()
 		if not os.getenv("SPARK_GROUP"):	SPARK_GROUP = (_self.get("group") or SPARK_GROUP).strip()
 
-# Now we can compute OUT_COLL and print effective config
+# Effective collection name
 OUT_COLL = f"{APP_PREFIX}_spark_{SPARK_MODE}"
 print(f"[Spark] topics={KAFKA_TOPICS} bootstrap={KAFKA_BOOTSTRAP}")
 print(f"[Spark] mode={SPARK_MODE}, topN={SPARK_TOPN}, feature={SPARK_FEATURE}, group={SPARK_GROUP}")
@@ -166,7 +166,7 @@ if SPARK_MODE not in OPS:
 cfg = {
 	"topn": SPARK_TOPN,
 	"feature": SPARK_FEATURE,
-	"group": SPARK_GROUP,
+	"group": SPARK_GROUP,		# grouping column name (e.g., 'market_used')
 }
 win = {
 	"size": WINDOW_SIZE,
@@ -182,12 +182,18 @@ def write_batch_to_mongo(batch_df: DataFrame, batch_id: int) -> None:
 	"""
 	Run Top-N ranking on the static micro-batch (allowed in foreachBatch),
 	then insert documents into MongoDB.
+
+	Notes:
+	- Do NOT overwrite 'group' (it contains the actual value like 'RO').
+	  Store the grouping column name as metadata 'group_by'.
+	- For 'top_tracks_grouped' and 'feature_avg' we keep ALL rows
+	  (no Top-N trimming here).
 	"""
 	from pyspark.sql import functions as F
 	from pyspark.sql.window import Window
 	from pymongo import MongoClient
 
-	# quick empty-batch guard
+	# quick empty-batch guard (cheap enough here)
 	if batch_df.count() == 0:
 		return
 
@@ -197,19 +203,21 @@ def write_batch_to_mongo(batch_df: DataFrame, batch_id: int) -> None:
 	# Choose ordering by mode
 	if SPARK_MODE == "top_artists":
 		order_cols = [F.col("plays").desc(), F.col("artist_name").asc()]
-	elif SPARK_MODE == "top_tracks":
+	elif SPARK_MODE in ("top_tracks", "top_tracks_grouped"):
 		order_cols = [F.col("plays").desc(), F.col("track_name").asc()]
 	elif SPARK_MODE == "feature_avg":
-		# keep highest averages (or drop ranking entirely by keeping all)
 		order_cols = [F.col("avg_value").desc()]
 	else:
 		order_cols = [F.lit(1)]  # no-op fallback
 
 	w = Window.partitionBy(part_col).orderBy(*order_cols)
 
+	# For grouped/feature_avg keep all rows; otherwise apply Top-N per batch_ts
+	keep_all = SPARK_MODE in ("feature_avg", "top_tracks_grouped")
+
 	ranked = (
 		batch_df.withColumn("rn", F.row_number().over(w))
-			.where((F.col("rn") <= topn) | F.lit(SPARK_MODE == "feature_avg"))
+			.where((F.col("rn") <= topn) | F.lit(keep_all))
 			.drop("rn")
 	)
 
@@ -221,11 +229,21 @@ def write_batch_to_mongo(batch_df: DataFrame, batch_id: int) -> None:
 	try:
 		coll = client[MONGO_DB][OUT_COLL]
 		for d in docs:
+			# trace/meta
 			d["batch_id"] = batch_id
 			d["prefix"] = APP_PREFIX
 			d["mode"] = SPARK_MODE
-			d["feature"] = cfg.get("feature")
-			d["group"] = cfg.get("group")
+
+			# add feature meta only for feature_avg
+			if SPARK_MODE == "feature_avg":
+				d["feature"] = cfg.get("feature")
+
+			# IMPORTANT: do not overwrite the actual group value
+			# store grouping COLUMN NAME as metadata
+			group_field = cfg.get("group")
+			if group_field:
+				d["group_by"] = group_field
+
 		coll.insert_many(docs, ordered=False)
 	finally:
 		client.close()

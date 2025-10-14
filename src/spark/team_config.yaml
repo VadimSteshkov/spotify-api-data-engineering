@@ -1,7 +1,8 @@
 teams:
   avd:
-    mode: top_artists
+    mode: top_artists_grouped
     topn: 10
+    group: market_used
   alex:
     mode: feature_avg
     feature: energy
@@ -10,7 +11,7 @@ teams:
     mode: top_tracks
     topn: 10
     feature: danceability
-  vadim:
+  alex:
     mode: my_custom_mode
     feature: energy
     group: market_used

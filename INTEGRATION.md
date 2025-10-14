@@ -201,7 +201,7 @@ Open:
 
 1) Copy the example and adapt it:
 ```bash
-cp src/producer_avd/example_producer.py src/producer_avd/<prefix>_producer.py
+cp src/producers/example_producer.py src/producers/<prefix>_producer.py
 ```
 
 2) In your producer file, **emit one JSON per event** to your topic(s) from `.env`. Use the helpers in `src/lib/` if useful.

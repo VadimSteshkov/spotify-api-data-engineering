@@ -1,22 +1,27 @@
+# tabs
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 """
-Docker-friendly Spotify Producer (headless OAuth).
+Docker-friendly Spotify Producer (headless OAuth) — POLLED EVERY 60s.
 
-What it does:
-- Auth via:
-	1) SPOTIPY_REFRESH_TOKEN_SAVED or SPOTIPY_REFRESH_TOKEN (non-interactive)
-	2) Cache file (SPOTIPY_CACHE or .cache-<USERNAME>)
-	3) Interactive (fallback, will fail inside Docker)
-- Fetch last 50 "recently played", build per-play events and send to Kafka
-- Detect dominant artist and send "Top 10 tracks in market" doc to Kafka
+What it does each cycle:
+- Auth (user + app)
+- Fetch last 50 "recently played"
+- Build per-play events and send to Kafka
+- Detect dominant artist and send "Top 10 tracks in market"
+Then sleeps SLEEP_SECS (default 60) and repeats.
+
+Notes:
+- Exit cleanly on SIGINT/SIGTERM (Ctrl+C / docker stop)
+- Keep KAFKA_BOOTSTRAP as service name inside Docker (kafka:19092)
 """
 
 import os
 import time
 import json
 import base64
+import signal
 from datetime import datetime, timezone
 from dataclasses import asdict
 from typing import List, Dict, Tuple, Optional
@@ -85,8 +90,12 @@ DEBUG = str(os.getenv("DEBUG", "false")).lower() == "true"
 KAFKA_BOOTSTRAP = os.getenv("KAFKA_BOOTSTRAP", "localhost:9092")
 
 # Topics (derived from APP_PREFIX if available)
-TOPIC_RECENT_EVENTS = "avd_recent_events"
-TOPIC_ARTIST_MARKET_TOP = "avd_artist_market_top_tracks"
+APP_PREFIX = os.getenv("APP_PREFIX", "avd").strip()
+TOPIC_RECENT_EVENTS = f"{APP_PREFIX}_recent_events"
+TOPIC_ARTIST_MARKET_TOP = f"{APP_PREFIX}_artist_market_top_tracks"
+
+# Polling interval (seconds) — default 60
+SLEEP_SECS = int(os.getenv("PRODUCER_POLL_SEC", "60"))
 
 # Scopes required
 SCOPE = "user-read-private user-read-email user-read-recently-played user-read-currently-playing user-top-read"
@@ -109,7 +118,7 @@ def _ms_to_mmss(ms: int) -> str:
 
 # ---------------- Auth helpers ----------------
 def get_app_token() -> str:
-	"""Client Credentials flow — for public catalog endpoints."""
+	"""Client Credentials flow — for public catalog endpoints (short-lived, safe to refresh per cycle)."""
 	auth_b64 = base64.b64encode(f"{CLIENT_ID}:{CLIENT_SECRET}".encode()).decode()
 	r = post(
 		"https://accounts.spotify.com/api/token",
@@ -282,8 +291,9 @@ def print_track_leaderboard(recent_json: Dict, limit: int = 10) -> None:
 		print(f"{i:02d}. {s['track_name']} — {s['artists']}\t| plays={s['count']}\t| latest={s['latest_played_at']}")
 
 
-# ---------------- Main ----------------
-def main() -> None:
+# ---------------- One cycle (fetch + produce) ----------------
+def run_once() -> None:
+	"""Run one full cycle: auth, fetch, build events, produce."""
 	app_token = get_app_token()
 	user_token = get_user_token()
 	profile, market = get_profile_and_market(user_token)
@@ -342,7 +352,7 @@ def main() -> None:
 
 		doc = {
 			"event_version": "1.0",
-			"event_type": "avd_artist_market_top_tracks",
+			"event_type": f"{APP_PREFIX}_artist_market_top_tracks",
 			"generated_at": datetime.now(timezone.utc).isoformat(),
 			"user_id": user_id,
 			"country": country,
@@ -361,14 +371,41 @@ def main() -> None:
 	print(f"[MONGO] Inserted payloads at {datetime.now(timezone.utc).isoformat()}")
 
 
-if __name__ == "__main__":
-    while True:
-        try:
-            main()
-        except Exception as e:
-            import traceback
+# ---------------- Main loop ----------------
+_STOP = False
 
-            traceback.print_exc()
-            print(f"[ERROR] Producer crashed: {e}. Retrying in 5min...", flush=True)
-        time.sleep(300)  # run every 5 minutes
+def _graceful_exit(signum, frame):
+	"""Flip stop flag for a clean shutdown inside Docker."""
+	global _STOP
+	_STOP = True
+	print(f"\n[INFO] Caught signal {signum}. Shutting down gracefully...")
+
+def main() -> None:
+	# Register signal handlers for clean exit
+	try:
+		signal.signal(signal.SIGINT, _graceful_exit)
+		signal.signal(signal.SIGTERM, _graceful_exit)
+	except Exception:
+		# Some environments may not allow installing signal handlers
+		pass
+
+	print(f"[BOOT] {APP_PREFIX} producer polling every {SLEEP_SECS}s")
+	while not _STOP:
+		start = time.time()
+		try:
+			run_once()
+		except Exception as e:
+			# Never crash the container: log and continue
+			print(f"[ERROR] Producer cycle failed: {e}")
+		# Sleep the remaining of the interval (min 1s)
+		elapsed = max(0.0, time.time() - start)
+		nap = max(1.0, SLEEP_SECS - elapsed)
+		for _ in range(int(nap)):
+			if _STOP:
+				break
+			time.sleep(1)
+
+
+if __name__ == "__main__":
+	main()
 

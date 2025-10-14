@@ -2,5 +2,4 @@ requests
 python-dotenv
 spotipy
 confluent-kafka
-pandas
 
