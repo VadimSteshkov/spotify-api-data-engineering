@@ -10,7 +10,7 @@ teams:
     mode: top_tracks
     topn: 10
     feature: danceability
-  alex:
+  vadim:
     mode: my_custom_mode
     feature: energy
     group: market_used
