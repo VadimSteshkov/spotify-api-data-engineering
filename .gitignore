@@ -15,7 +15,7 @@
 
 # ─── Team environment files ────────────────────────────────────────────────────
 # Ignore all real user env files but keep examples
-!src/envs/.env.*
+src/envs/.env.*
 !src/envs/.env.example
 
 # Also ignore a direct env at src root if ever created
