@@ -78,7 +78,7 @@ kafka-wait:
 
 # Create topics from KAFKA_TOPICS in .env (idempotent)
 kafka-init-from-env: kafka-wait
-	@bash -lc 'set -a; [ -f .env ] && . .env; \
+	@bash -lc 'set -a; [ -f envs/.env ] && . envs/.env; \
 	if [ -z "$$KAFKA_TOPICS" ]; then echo "No KAFKA_TOPICS found. Skipping."; exit 0; fi; \
 	for t in $${KAFKA_TOPICS//,/ }; do \
 	  echo "Creating topic: $$t"; \

@@ -102,7 +102,7 @@ services:
       dockerfile: spark/Dockerfile
     container_name: spark-app
     env_file:
-      - .env
+      - envs/.env
     environment:
       KAFKA_BOOTSTRAP: "kafka:19092"
       MONGO_URL: "mongodb://root:example@mongo:27017/?authSource=admin"
@@ -123,29 +123,6 @@ services:
       "
     restart: unless-stopped
 
-  # ----- Producer (Spotify → Kafka) -----
-  producer:
-    build:
-      context: .
-      dockerfile: docker/producer.Dockerfile
-    container_name: producer
-    env_file:
-      - .env
-    environment:
-      BROWSER: "0"
-    depends_on:
-      kafka:
-        condition: service_healthy
-      mongo:
-        condition: service_started
-    volumes:
-      - ./:/app
-    working_dir: /app
-    ports:
-      - "8888:8888"  # Only needed for interactive auth; harmless otherwise
-    command: ["python", "-u", "-m", "producers.${PRODUCER_ENTRY:-avd_producer}"]
-    restart: unless-stopped
-
   # ----- Consumer (Kafka → Mongo) -----
   consumer:
     build:
@@ -153,7 +130,7 @@ services:
       dockerfile: docker/consumer.Dockerfile
     container_name: consumer
     env_file:
-      - .env
+      - envs/.env
     depends_on:
       kafka:
         condition: service_healthy
@@ -172,7 +149,7 @@ services:
       dockerfile: docker/app.Dockerfile   # ensure we DO NOT use legacy app.Dockerfile
     container_name: streamlit-app
     env_file:
-      - .env
+      - envs/.env
     depends_on:
       mongo:
         condition: service_started

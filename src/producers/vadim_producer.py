@@ -22,6 +22,7 @@ import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 from pymongo import MongoClient
 from pymongo.errors import BulkWriteError
+from lib.app_util import get_user_token
 
 from lib.kafka_producer import KafkaJsonProducer
 
@@ -53,7 +54,7 @@ USERNAME = _env_any("USERNAME", "SPOTIFY_USERNAME", required=True)
 REDIRECT_URI = _env_any("REDIRECT_URI", "SPOTIFY_REDIRECT_URI", required=True)
 
 # MongoDB config
-MONGO_URI = os.getenv("MONGO_URI", "mongodb://root:example@localhost:27017/?authSource=admin")
+MONGO_URI = os.getenv("MONGO_URL", "mongodb://root:example@mongo:27017/?authSource=admin")
 MONGO_DB = "spotify_db"  # Принудительно используем spotify_db
 
 # Kafka config
@@ -77,20 +78,20 @@ class VadimNewProducer:
         self.client_secret = CLIENT_SECRET
         self.redirect_uri = REDIRECT_URI
         self.username = USERNAME
-        
+
         # MongoDB
         self.mongo = MongoClient(MONGO_URI)
         self.db = self.mongo[MONGO_DB]
-        
+
         # Collections
         self.coll_tracks = self.db["vadim_tracks"]
         self.coll_weekly_stats = self.db["vadim_weekly_stats"]
         self.coll_monthly_stats = self.db["vadim_monthly_stats"]
-        
+
         # Kafka
         self.kafka_producer = KafkaJsonProducer()
         self.kafka_enabled = KAFKA_ENABLED
-        
+
         # Spotify client
         self.sp: Optional[spotipy.Spotify] = None
         self.user_id: Optional[str] = None
@@ -98,7 +99,9 @@ class VadimNewProducer:
     def init_spotify(self) -> bool:
         """Initialize Spotify client and authenticate."""
         try:
+            token = get_user_token()
             self.sp = spotipy.Spotify(
+				auth=token,
                 auth_manager=SpotifyOAuth(
                     client_id=self.client_id,
                     client_secret=self.client_secret,
@@ -122,16 +125,16 @@ class VadimNewProducer:
         self.coll_tracks.create_index("played_at_dt", name="tracks_played_at_dt")
         self.coll_tracks.create_index("album_id", name="tracks_album_id")
         self.coll_tracks.create_index("track_id", name="tracks_track_id")
-        
+
         # No separate playlists collection - playlists info is in tracks
-        
+
         # Weekly stats indexes
         self.coll_weekly_stats.create_index(
             [("user_id", 1), ("iso_year", 1), ("iso_week", 1)],
             unique=True,
             name="user_week_unique"
         )
-        
+
         # Monthly stats indexes
         self.coll_monthly_stats.create_index(
             [("user_id", 1), ("year", 1), ("month", 1)],
@@ -149,7 +152,7 @@ class VadimNewProducer:
                 track = item.get("track")
                 if not track or not track.get("id"):
                     continue
-                
+
                 played_at = item.get("played_at")
                 played_at_dt = None
                 if played_at:
@@ -157,7 +160,7 @@ class VadimNewProducer:
                         played_at_dt = datetime.fromisoformat(played_at.replace('Z', '+00:00'))
                     except:
                         played_at_dt = None
-                
+
                 # Get album info
                 album = track.get("album", {})
                 album_data = {
@@ -170,7 +173,7 @@ class VadimNewProducer:
                     "album_popularity": album.get("popularity"),
                     "album_genres": album.get("genres", []),
                 }
-                
+
                 track_data = {
                     "track_id": track["id"],
                     "track_name": track.get("name"),
@@ -185,11 +188,11 @@ class VadimNewProducer:
                     "created_at": datetime.now(timezone.utc).isoformat(),
                 }
                 tracks.append(track_data)
-            
+
             print(f"[OK] Recent tracks: {len(tracks)}")
         except Exception as e:
             print(f"[ERR] recent_tracks: {e}")
-        
+
         return tracks
 
     def collect_playlist_tracks(self, limit: int = 5) -> List[Dict]:
@@ -201,13 +204,13 @@ class VadimNewProducer:
             for playlist in playlists.get("items", []):
                 playlist_id = playlist["id"]
                 playlist_name = playlist["name"]
-                
+
                 res = self.sp.playlist_tracks(playlist_id, limit=100)
                 for item in res.get("items", []):
                     track = item.get("track")
                     if not track or not track.get("id"):
                         continue
-                    
+
                     added_at = item.get("added_at")
                     added_at_dt = None
                     if added_at:
@@ -215,11 +218,11 @@ class VadimNewProducer:
                             added_at_dt = datetime.fromisoformat(added_at.replace('Z', '+00:00'))
                         except:
                             added_at_dt = None
-                    
+
                     # Get album info
                     album = track.get("album", {})
                     print(f"[DEBUG] Track: {track.get('name')}, Album from API: {album}")
-                    
+
                     # Get artist info for genres
                     artist_ids = [a.get("id") for a in track.get("artists", [])]
                     artist_genres = []
@@ -235,7 +238,7 @@ class VadimNewProducer:
                                 time.sleep(0.1)  # Rate limiting
                         except Exception as e:
                             print(f"[WARN] Could not get artist genres: {e}")
-                    
+
                     album_data = {
                         "album_id": album.get("id"),
                         "album_name": album.get("name"),
@@ -247,7 +250,7 @@ class VadimNewProducer:
                         "album_genres": album.get("genres", []),
                         "artist_genres": list(set(artist_genres)),  # Add artist genres
                     }
-                    
+
                     track_data = {
                         "track_id": track["id"],
                         "track_name": track.get("name"),
@@ -264,22 +267,22 @@ class VadimNewProducer:
                         "created_at": datetime.now(timezone.utc).isoformat(),
                     }
                     all_tracks.append(track_data)
-            
+
             print(f"[OK] Playlist tracks: {len(all_tracks)}")
         except Exception as e:
             print(f"[ERR] playlist_tracks: {e}")
-        
+
         return all_tracks
 
     def collect_playlists(self) -> List[Dict]:
         """Collect user playlists."""
         print("=== Collecting playlists ===")
         playlists = []
-        
+
         try:
             # Get user playlists
             results = self.sp.current_user_playlists(limit=50)
-            
+
             while results:
                 for playlist in results.get("items", []):
                     playlist_data = {
@@ -294,48 +297,48 @@ class VadimNewProducer:
                         "created_at": datetime.now(timezone.utc).isoformat(),
                     }
                     playlists.append(playlist_data)
-                
+
                 if results.get("next"):
                     results = self.sp.next(results)
                 else:
                     break
-                    
+
         except Exception as e:
             print(f"[ERR] playlists: {e}")
-        
+
         print(f"[OK] Playlists: {len(playlists)}")
         return playlists
 
     def calculate_weekly_stats(self, tracks: List[Dict]) -> Dict:
         """Calculate weekly statistics."""
         print("=== Calculating weekly stats ===")
-        
+
         # Get current week
         today = datetime.now(timezone.utc).date()
         iso_year, iso_week, _ = today.isocalendar()
-        
+
         # Filter tracks for current week
         week_start = datetime.combine(today, datetime.min.time(), tzinfo=timezone.utc)
         week_start = week_start - timedelta(days=week_start.weekday())
         week_end = week_start + timedelta(days=6, hours=23, minutes=59, seconds=59)
-        
+
         weekly_tracks = []
         for track in tracks:
             played_at_dt = track.get("played_at_dt")
             if played_at_dt and week_start <= played_at_dt <= week_end:
                 weekly_tracks.append(track)
-        
+
         # Calculate stats
         artist_counts = Counter()
         track_counts = Counter()
         album_counts = Counter()
-        
+
         for track in weekly_tracks:
             for artist in track.get("artists", []):
                 artist_counts[artist] += 1
             track_counts[track.get("track_name")] += 1
             album_counts[track.get("album_name")] += 1
-        
+
         weekly_stats = {
             "user_id": self.user_id,
             "iso_year": iso_year,
@@ -350,43 +353,43 @@ class VadimNewProducer:
             "top_albums": [{"album": name, "count": count} for name, count in album_counts.most_common(10)],
             "created_at": datetime.now(timezone.utc).isoformat(),
         }
-        
+
         print(f"[OK] Weekly stats calculated for {len(weekly_tracks)} tracks")
         return weekly_stats
 
     def calculate_monthly_stats(self, tracks: List[Dict]) -> Dict:
         """Calculate monthly statistics."""
         print("=== Calculating monthly stats ===")
-        
+
         # Get current month
         today = datetime.now(timezone.utc).date()
         year = today.year
         month = today.month
-        
+
         # Filter tracks for current month
         month_start = datetime(year, month, 1, tzinfo=timezone.utc)
         if month == 12:
             month_end = datetime(year + 1, 1, 1, tzinfo=timezone.utc) - timedelta(seconds=1)
         else:
             month_end = datetime(year, month + 1, 1, tzinfo=timezone.utc) - timedelta(seconds=1)
-        
+
         monthly_tracks = []
         for track in tracks:
             played_at_dt = track.get("played_at_dt")
             if played_at_dt and month_start <= played_at_dt <= month_end:
                 monthly_tracks.append(track)
-        
+
         # Calculate stats
         artist_counts = Counter()
         track_counts = Counter()
         album_counts = Counter()
-        
+
         for track in monthly_tracks:
             for artist in track.get("artists", []):
                 artist_counts[artist] += 1
             track_counts[track.get("track_name")] += 1
             album_counts[track.get("album_name")] += 1
-        
+
         monthly_stats = {
             "user_id": self.user_id,
             "year": year,
@@ -401,14 +404,14 @@ class VadimNewProducer:
             "top_albums": [{"album": name, "count": count} for name, count in album_counts.most_common(20)],
             "created_at": datetime.now(timezone.utc).isoformat(),
         }
-        
+
         print(f"[OK] Monthly stats calculated for {len(monthly_tracks)} tracks")
         return monthly_stats
 
     def save_to_mongodb(self, tracks: List[Dict], weekly_stats: Dict, monthly_stats: Dict):
         """Save all data to MongoDB."""
         print("=== Saving to MongoDB ===")
-        
+
         try:
             # Save tracks
             if tracks:
@@ -420,9 +423,9 @@ class VadimNewProducer:
                     total = len(tracks)
                     dup = total - inserted
                     print(f"[MONGO] Tracks inserted with duplicates ignored. total={total}, dup={dup}")
-            
+
             # No separate playlists collection - playlists info is in tracks
-            
+
             # Save weekly stats
             if weekly_stats:
                 self.coll_weekly_stats.update_one(
@@ -431,7 +434,7 @@ class VadimNewProducer:
                     upsert=True
                 )
                 print("[MONGO] Weekly stats upserted")
-            
+
             # Save monthly stats
             if monthly_stats:
                 self.coll_monthly_stats.update_one(
@@ -440,7 +443,7 @@ class VadimNewProducer:
                     upsert=True
                 )
                 print("[MONGO] Monthly stats upserted")
-                
+
         except Exception as e:
             print(f"[MONGO ERR] save: {e}")
 
@@ -448,27 +451,27 @@ class VadimNewProducer:
         """Send data to Kafka topics."""
         if not self.kafka_enabled:
             return
-        
+
         print("=== Sending to Kafka ===")
-        
+
         try:
             # Send tracks
             for track in tracks:
                 self.kafka_producer.send_json(TOPIC_TRACKS, track)
             print(f"[KAFKA] Sent {len(tracks)} tracks to {TOPIC_TRACKS}")
-            
+
             # No separate playlists collection - playlists info is in tracks
-            
+
             # Send weekly stats
             if weekly_stats:
                 self.kafka_producer.send_json(TOPIC_WEEKLY_STATS, weekly_stats)
                 print(f"[KAFKA] Sent weekly stats to {TOPIC_WEEKLY_STATS}")
-            
+
             # Send monthly stats
             if monthly_stats:
                 self.kafka_producer.send_json(TOPIC_MONTHLY_STATS, monthly_stats)
                 print(f"[KAFKA] Sent monthly stats to {TOPIC_MONTHLY_STATS}")
-                
+
         except Exception as e:
             print(f"[KAFKA ERR] {e}")
 
@@ -477,28 +480,28 @@ class VadimNewProducer:
         if not self.init_spotify():
             print("Spotify auth failed")
             return
-        
+
         self.ensure_indexes()
-        
+
         # Collect data
         recent_tracks = self.collect_recent_tracks(limit=50)
         playlist_tracks = self.collect_playlist_tracks(limit=5)
-        
+
         # Combine all tracks
         all_tracks = recent_tracks + playlist_tracks
-        
+
         # No separate playlists collection - playlists info is in tracks
-        
+
         # Calculate statistics
         weekly_stats = self.calculate_weekly_stats(all_tracks)
         monthly_stats = self.calculate_monthly_stats(all_tracks)
-        
+
         # Save to MongoDB
         self.save_to_mongodb(all_tracks, weekly_stats, monthly_stats)
-        
+
         # Send to Kafka
         self.send_to_kafka(all_tracks, weekly_stats, monthly_stats)
-        
+
         print("Data collection completed successfully!")
 
 

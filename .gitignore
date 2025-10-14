@@ -1,89 +1,36 @@
-# ─── Secrets ───────────────────────────────────────────────────────────────────
+# Secrets
 .env
 .envrc
 *.key
 *.pem
-*.cer
-*.p12
-*.pfx
-*.crt
 
-# Ignore any ad-hoc env file anywhere
-**/.env
-**/.env.local
-**/.envrc
-
-# ─── Team environment files ────────────────────────────────────────────────────
-# Ignore all real user env files but keep examples
+# Team envs: ignore real env files, keep only examples
 src/envs/.env.*
 !src/envs/.env.example
 
-# Also ignore a direct env at src root if ever created
-src/.env
-
-# ─── Spotify / generic cache files ─────────────────────────────────────────────
+# Spotify cache (Spotipy token cache files)
 .cache-*
 .cache/
-src/.cache*
-**/.cache
-token.json
-credentials.json
 
-# ─── Python ────────────────────────────────────────────────────────────────────
+# Python
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
-.python-version
+.ipynb_checkpoints
 
-# ─── Jupyter notebooks ─────────────────────────────────────────────────────────
-.ipynb_checkpoints/
-
-# ─── Virtual environments ──────────────────────────────────────────────────────
+# Virtual env
 .venv/
 venv/
 
-# ─── Test / Tool caches ────────────────────────────────────────────────────────
-.pytest_cache/
-.mypy_cache/
-.ruff_cache/
-.tox/
-.coverage
-htmlcov/
-
-# ─── Build artefacts ───────────────────────────────────────────────────────────
-build/
-dist/
-
-# ─── Logs / temp / data (dev-only) ─────────────────────────────────────────────
-logs/
-src/logs/
-*.log
-tmp/
-temp/
-data/
-src/data/
-
-# ─── Spark local artefacts ─────────────────────────────────────────────────────
-spark-warehouse/
-src/spark-warehouse/
-metastore_db/
-
-# ─── OS / Editor files ─────────────────────────────────────────────────────────
+# OS / Editor
 .DS_Store
 Thumbs.db
 .idea/
 .vscode/
-*.swp
 
-# ─── Mongo data directory (only if using local bind mounts) ────────────────────
-src/mongo_data/
+#Mongo
+src/mongo_data
+*.idea
 
-# ─── Docker local-only files ───────────────────────────────────────────────────
-# keep compose file; ignore user overrides/backups
-docker-compose.override.yml
-**/docker-compose.override.yml
-docker-compose.*.yml
-*.bak
-*.orig
-
+.cache
