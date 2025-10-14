@@ -54,7 +54,7 @@ USERNAME = _env_any("USERNAME", "SPOTIFY_USERNAME", required=True)
 REDIRECT_URI = _env_any("REDIRECT_URI", "SPOTIFY_REDIRECT_URI", required=True)
 
 # MongoDB config
-MONGO_URI = os.getenv("MONGO_URI", "mongodb://root:example@localhost:27017/?authSource=admin")
+MONGO_URI = os.getenv("MONGO_URL", "mongodb://root:example@mongo:27017/?authSource=admin")
 MONGO_DB = "spotify_db"  # Принудительно используем spotify_db
 
 # Kafka config

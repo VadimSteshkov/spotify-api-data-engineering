@@ -1,4 +1,11 @@
+# Rootless, modern Compose file for the DE project stack.
+# Notes:
+# - Remove "version:" (it's deprecated in Compose v2+).
+# - Relative paths are from this file's location (src/).
+# - Keep services loosely coupled; healthchecks only where they add value.
+
 services:
+  # ----- Infra: Zookeeper -----
   zookeeper:
     image: confluentinc/cp-zookeeper:7.5.0
     container_name: zookeeper
@@ -17,41 +24,13 @@ services:
       start_period: 10s
     restart: unless-stopped
 
-  spark-app:
-    build:
-      context: .
-      dockerfile: spark/Dockerfile
-    container_name: spark-app
-    environment:
-      # OVERRIDE endpoints for inside-container networking
-      KAFKA_BOOTSTRAP: "kafka:19092"
-      MONGO_URL: "mongodb://root:example@mongo:27017/?authSource=admin"
-
-      # restul pot rămâne ca la tine:
-      KAFKA_TOPICS: "${KAFKA_TOPICS}"
-      MONGO_DB: "${MONGO_DB}"
-      APP_PREFIX: "${APP_PREFIX}"
-      SPARK_PACKAGES: "${SPARK_PACKAGES}"
-    depends_on:
-      - kafka
-      - mongo
-    volumes:
-      - ./:/app
-    command: >
-      bash -lc "
-      python3 -m pip install -r spark/requirements.txt &&
-      PYSPARK_SUBMIT_ARGS='--packages ${SPARK_PACKAGES} pyspark-shell' python3 -m spark.streaming_job
-      "
-
-
+  # ----- Infra: Kafka -----
   kafka:
     image: confluentinc/cp-kafka:7.5.0
     container_name: kafka
     depends_on:
       zookeeper:
         condition: service_healthy
-    ports:
-      - "9092:9092"
     environment:
       KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
       KAFKA_BROKER_ID: "1"
@@ -63,12 +42,20 @@ services:
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: "1"
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: "1"
       CONFLUENT_SUPPORT_CUSTOMER_ID: "anonymous"
+    ports:
+      - "9092:9092"
+    healthcheck:
+      test: ["CMD-SHELL", "kafka-topics --bootstrap-server kafka:19092 --list >/dev/null 2>&1 || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 10s
     restart: unless-stopped
 
+  # ----- Infra: MongoDB + UI -----
   mongo:
     image: mongo:6.0
     container_name: mongo
-    restart: always
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: example
@@ -76,21 +63,107 @@ services:
       - "27017:27017"
     volumes:
       - mongo_data:/data/db
+    restart: unless-stopped
 
   mongo-express:
     image: mongo-express:latest
     container_name: mongo-express
-    restart: always
     depends_on:
-      - mongo
+      mongo:
+        condition: service_started
     environment:
       ME_CONFIG_MONGODB_URL: "mongodb://root:example@mongo:27017/?authSource=admin"
       ME_CONFIG_BASICAUTH_USERNAME: admin
       ME_CONFIG_BASICAUTH_PASSWORD: secret
     ports:
       - "8081:8081"
+    restart: unless-stopped
 
+  # ----- Dev: Jupyter (binds ../notebooks) -----
+  jupyter:
+    image: jupyter/scipy-notebook:latest
+    container_name: jupyter_notebook
+    ports:
+      - "8889:8888"
+    volumes:
+      - ../notebooks:/home/jovyan/work
+    environment:
+      JUPYTER_ENABLE_LAB: "yes"
+    command: start-notebook.sh --NotebookApp.token='' --NotebookApp.password='' --no-browser --ip=0.0.0.0
+    depends_on:
+      - kafka
+      - mongo
+    restart: unless-stopped
+
+  # ----- Spark job (batch/streaming) -----
+  spark-app:
+    build:
+      context: .
+      dockerfile: spark/Dockerfile
+    container_name: spark-app
+    env_file:
+      - envs/.env
+    environment:
+      KAFKA_BOOTSTRAP: "kafka:19092"
+      MONGO_URL: "mongodb://root:example@mongo:27017/?authSource=admin"
+      SPARK_PACKAGES: "${SPARK_PACKAGES}"
+      TEAM_CONFIG_SPARK: "spark/team_config.yaml"
+    depends_on:
+      kafka:
+        condition: service_healthy
+      mongo:
+        condition: service_started
+    volumes:
+      - ./:/app
+    working_dir: /app
+    command: >
+      bash -lc "
+      python3 -m pip install -r spark/requirements.txt &&
+      PYSPARK_SUBMIT_ARGS='--packages ${SPARK_PACKAGES} pyspark-shell' python3 -m spark.streaming_job
+      "
+    restart: unless-stopped
+
+  # ----- Consumer (Kafka → Mongo) -----
+  consumer:
+    build:
+      context: .
+      dockerfile: docker/consumer.Dockerfile
+    container_name: consumer
+    env_file:
+      - envs/.env
+    depends_on:
+      kafka:
+        condition: service_healthy
+      mongo:
+        condition: service_started
+    volumes:
+      - ./:/app
+    working_dir: /app
+    command: ["python", "-u", "-m", "consumers.kafka_consumer"]
+    restart: unless-stopped
+
+  # ----- Streamlit App (UI) -----
+  app:
+    build:
+      context: .
+      dockerfile: docker/app.Dockerfile   # ensure we DO NOT use legacy app.Dockerfile
+    container_name: streamlit-app
+    env_file:
+      - envs/.env
+    depends_on:
+      mongo:
+        condition: service_started
+    volumes:
+      - ./app:/app         # streamlit_app.py will be at /app/streamlit_app.py
+    ports:
+      - "8501:8501"
+    working_dir: /app
+    # Force correct target (no "app/" prefix):
+    command: >
+      bash -lc "python -m streamlit run streamlit_app.py --server.address=0.0.0.0 --server.port=${PORT:-8501}"
+    restart: unless-stopped
+
+# ----- Named volumes -----
 volumes:
   mongo_data:
-
 
