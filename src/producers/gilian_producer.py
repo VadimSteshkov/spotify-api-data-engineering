@@ -52,7 +52,7 @@ GENRE_LIST = [
 ANALYSIS_INTERVAL = int(os.getenv("ANALYSIS_INTERVAL", "3600"))
 
 DEFAULT_BRIDGE_SOURCE = os.getenv("BRIDGE_SOURCE", "techno")
-DEFAULT_BRIDGE_TARGET = os.getenv("BRIDGE_TARGET", "classical")
+DEFAULT_BRIDGE_TARGET = "house"
 CANDIDATES_PER_SIDE = 30
 BRIDGE_TRACKS = 5
 
@@ -444,10 +444,6 @@ def find_bridge_tracks(
 
 	print(f"  → Found {len(source_tracks)} source tracks, {len(target_tracks)} target tracks")
 
-	if len(source_tracks) < 5 or len(target_tracks) < 5:
-		print(f"  ✗ Not enough tracks to build bridge (need at least 5 each)")
-		return []
-
 	for track in source_tracks + target_tracks:
 		tid = track["track_id"]
 		rapid_data = rapid_get_track_analysis(tid)
@@ -540,7 +536,7 @@ def run_analysis() -> None:
 
 	for genre in GENRE_LIST:
 		try:
-			result = analyze_genre_danceability(genre, tracks_per_genre=20)
+			result = analyze_genre_danceability(genre, tracks_per_genre=25)
 			genre_results.append(result)
 			time.sleep(0.5)
 		except Exception as e:
