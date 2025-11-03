@@ -144,6 +144,7 @@ def create_camelot_wheel_chart(bridge_tracks: List[Dict]) -> go.Figure:
 			hoverinfo='text',
 			hoverlabel=dict(
 				bgcolor='white',
+				font_color='black',
 				font_size=12,
 				font_family='Arial'
 			)
