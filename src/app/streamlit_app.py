@@ -1,5 +1,5 @@
 # tabs
-#!/usr/bin/env python3
+# !/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 """
@@ -15,10 +15,11 @@ Notes:
 - Indentation uses TAB characters (as requested).
 """
 
-import os
 import importlib
-import yaml
+import os
+
 import streamlit as st
+import yaml
 from pymongo import MongoClient
 
 # ---------- Config loading ----------
@@ -31,8 +32,8 @@ except Exception as e:
 	st.error(f"Failed to load team_config.yaml: {e}")
 	cfg = {}
 
-team = cfg.get("team", [])						# list of teammates with {prefix, display_name, ...}
-mongo_dbname = cfg.get("mongo_db", "spotify_db")	# database name shared by tabs
+team = cfg.get("team", [])  # list of teammates with {prefix, display_name, ...}
+mongo_dbname = cfg.get("mongo_db", "spotify_db")  # database name shared by tabs
 
 # ---------- Mongo client ----------
 # Prefer env MONGO_URL; fall back to common Docker URL, then localhost.
@@ -70,7 +71,7 @@ tab_modules: list[tuple[object | None, str]] = []  # (module, prefix)
 for member in team:
 	prefix = (member.get("prefix") or "").strip()
 	display = (member.get("display_name") or prefix).strip() or prefix
-	module_name = f"tabs.{prefix}"
+	module_name = f"tabs.{(member.get('module_name') or '').strip()}"
 
 	try:
 		mod = importlib.import_module(module_name)
@@ -113,7 +114,7 @@ for i, ((mod, prefix), label) in enumerate(zip(tab_modules, tab_labels), start=1
 				st.error(f"Tab '{label}' crashed: {e}")
 		else:
 			if mod is None:
-				st.warning(f"Module 'tabs.{prefix}' not found. Create tabs/{prefix}.py with a render(db, cfg, prefix) function.")
+				st.warning(
+					f"Module '{member.get('module_name')}' not found. Create tabs/{member.get('module_name')}.py with a render(db, cfg, prefix) function.")
 			else:
-				st.warning(f"Module 'tabs.{prefix}' has no render(db, cfg, prefix) function.")
-
+				st.warning(f"Module 'tabs.{member.get('module_name')}' has no render(db, cfg, prefix) function.")
