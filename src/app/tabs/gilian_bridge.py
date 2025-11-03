@@ -202,34 +202,13 @@ def render(db, cfg, prefix: str):
 			source = latest_bridge_doc.get("source_genre", "Unknown")
 			target = latest_bridge_doc.get("target_genre", "Unknown")
 			generated_at = latest_bridge_doc.get("generated_at", "N/A")
-			rapid_enabled = latest_bridge_doc.get("rapid_api_enabled", False)
 			tracks = latest_bridge_doc["tracks"]
 
-			st.info(
-				f"Generated: {generated_at} | Camelot keys: {'✓ Available' if rapid_enabled else '✗ Not available (set RAPID_API_KEY)'}")
+			st.info(f"Generated: {generated_at}")
 			st.success(f"Bridge: **{source.title()}** → **{target.title()}**")
 
 			df_bridge = pd.DataFrame(tracks)
-
-			if rapid_enabled and any(t.get("camelot") for t in tracks):
-				st.subheader("Camelot Wheel - Harmonic Mixing Path")
-				st.markdown(
-					"*Tracks plotted on the Camelot wheel. Gold line shows the progression. Hover for details!*")
-
-				fig_wheel = create_camelot_wheel_chart(tracks)
-				st.plotly_chart(fig_wheel, use_container_width=True)
-
-				st.info("""
-                **Camelot Mixing Rules**:
-                - **Same key** = Perfect match (e.g., 8A → 8A)
-                - **Adjacent numbers** = Energy boost/drop (e.g., 8A → 9A or 7A)
-                - **Same number, different letter** = Mood change (e.g., 8A → 8B)
-                - **Diagonal** = Smooth transition (e.g., 8A → 11B)
-
-                *Numbers on the wheel show BPM. Track position numbers are inside the circles.*
-                """)
-
-			st.subheader("🎼 Transition Playlist")
+			st.subheader("Transition Playlist")
 
 			for _, track in df_bridge.iterrows():
 				camelot = track.get('camelot') or 'N/A'
@@ -249,6 +228,10 @@ def render(db, cfg, prefix: str):
 							st.markdown(f"[Open in Spotify]({track['spotify_url']})")
 
 			st.subheader("Bridge Analysis")
+
+			if any(t.get("camelot") for t in tracks):
+				fig_wheel = create_camelot_wheel_chart(tracks)
+				st.plotly_chart(fig_wheel, use_container_width=True)
 
 			col1, col2 = st.columns(2)
 
@@ -319,12 +302,9 @@ def render(db, cfg, prefix: str):
 			)
 			st.plotly_chart(fig_scatter, use_container_width=True)
 
-			st.subheader("Mixing Tips")
-
 			tempo_range = df_bridge["tempo"].max() - df_bridge["tempo"].min()
 
 			st.success(f"""
-            **Bridge Analysis**:
             - **Tempo range**: {tempo_range:.1f} BPM
             - **Keys**: {', '.join(t.get('camelot', '?') for t in tracks)}
             - **Path**: {' → '.join([f"{t.get('camelot', '?')}" for t in tracks])}
