@@ -27,7 +27,7 @@ team:
 
   - prefix: alex
     module_name: alex
-    display_name: Alex
+    display_name: Playlist Analysis
     tabs:
       - alex       # each teammate will create src/app/tabs/alex.py
 
