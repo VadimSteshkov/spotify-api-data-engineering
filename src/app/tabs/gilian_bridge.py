@@ -337,7 +337,7 @@ def render(db, cfg, prefix: str):
             Configure genres in `.env.gilian`:
             ```
             BRIDGE_SOURCE=techno
-            BRIDGE_TARGET=house
+            BRIDGE_TARGET=dubstep
             ```
             """)
 
