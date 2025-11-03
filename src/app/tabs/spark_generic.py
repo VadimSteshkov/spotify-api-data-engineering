@@ -11,6 +11,10 @@ Renders:
 
 Supports BSON datetime or string for batch_ts.
 Adds date-range filter, cumulative toggle, and Top-N for cumulative.
+
+This version adds:
+- show_collection_headers (bool): hide/show raw collection-name headers
+- pretty_titles (dict): optional mapping {collection_name -> pretty label}
 """
 
 import re
@@ -18,6 +22,7 @@ from datetime import datetime, time, timezone
 import pandas as pd
 import streamlit as st
 from pymongo.errors import PyMongoError
+
 
 # ---------- helpers ----------
 
@@ -38,6 +43,7 @@ def _to_utc_dt(v) -> datetime | None:
 			return None
 	return None
 
+
 def _list_collections(db, prefix: str):
 	pat = re.compile(rf"^{re.escape(prefix)}_spark_")
 	try:
@@ -45,6 +51,7 @@ def _list_collections(db, prefix: str):
 	except PyMongoError as e:
 		st.error(f"Mongo error while listing collections: {e}")
 		return []
+
 
 def _time_bounds(db, coll: str) -> tuple[datetime | None, datetime | None]:
 	"""Find min/max batch_ts as UTC datetimes (works for datetime or string)."""
@@ -59,6 +66,7 @@ def _time_bounds(db, coll: str) -> tuple[datetime | None, datetime | None]:
 	except Exception:
 		return None, None
 
+
 def _range_query(start_dt: datetime | None, end_dt: datetime | None) -> dict:
 	"""
 	Build Mongo range query for batch_ts using Python datetimes in UTC.
@@ -67,6 +75,7 @@ def _range_query(start_dt: datetime | None, end_dt: datetime | None) -> dict:
 	if not start_dt or not end_dt:
 		return {}
 	return {"batch_ts": {"$gte": start_dt, "$lte": end_dt}}
+
 
 def _load_per_batch(
 	db, coll: str, start_dt: datetime | None, end_dt: datetime | None,
@@ -83,6 +92,7 @@ def _load_per_batch(
 		st.error(f"Mongo error while loading {coll}: {e}")
 		return pd.DataFrame()
 
+
 # ---------- cumulative aggregations ----------
 
 def _agg_artists_over_range(db, coll: str, start_dt: datetime, end_dt: datetime, topn: int) -> pd.DataFrame:
@@ -98,6 +108,7 @@ def _agg_artists_over_range(db, coll: str, start_dt: datetime, end_dt: datetime,
 	except PyMongoError as e:
 		st.error(f"Mongo error while aggregating {coll}: {e}")
 		return pd.DataFrame()
+
 
 def _agg_artists_by_group_over_range(
 	db, coll: str, start_dt: datetime, end_dt: datetime, topn: int, group_value: str
@@ -117,6 +128,7 @@ def _agg_artists_by_group_over_range(
 	except PyMongoError as e:
 		st.error(f"Mongo error while aggregating {coll}: {e}")
 		return pd.DataFrame()
+
 
 def _agg_tracks_over_range(db, coll: str, start_dt: datetime, end_dt: datetime, topn: int) -> pd.DataFrame:
 	pipeline = [
@@ -138,6 +150,7 @@ def _agg_tracks_over_range(db, coll: str, start_dt: datetime, end_dt: datetime, 
 	except PyMongoError as e:
 		st.error(f"Mongo error while aggregating {coll}: {e}")
 		return pd.DataFrame()
+
 
 def _agg_tracks_by_group_over_range(
 	db, coll: str, start_dt: datetime, end_dt: datetime, topn: int, group_value: str
@@ -169,6 +182,7 @@ def _agg_tracks_by_group_over_range(
 		st.error(f"Mongo error while aggregating {coll}: {e}")
 		return pd.DataFrame()
 
+
 def _agg_feature_avg_over_range(db, coll: str, start_dt: datetime, end_dt: datetime, topn: int) -> pd.DataFrame:
 	"""
 	Weighted average over batches:
@@ -196,6 +210,7 @@ def _agg_feature_avg_over_range(db, coll: str, start_dt: datetime, end_dt: datet
 		st.error(f"Mongo error while aggregating {coll}: {e}")
 		return pd.DataFrame()
 
+
 # ---------- renderers ----------
 
 def _render_top_artists(df: pd.DataFrame):
@@ -206,6 +221,7 @@ def _render_top_artists(df: pd.DataFrame):
 		st.bar_chart(df.set_index("artist_name")["plays"])
 	st.dataframe(df, use_container_width=True)
 
+
 def _render_top_tracks(df: pd.DataFrame):
 	if df.empty:
 		st.info("No data.")
@@ -214,6 +230,7 @@ def _render_top_tracks(df: pd.DataFrame):
 	if "track_name" in cols and "plays" in cols:
 		st.bar_chart(df.set_index("track_name")["plays"])
 	st.dataframe(df[cols] if cols else df, use_container_width=True)
+
 
 def _render_feature_avg(df: pd.DataFrame):
 	if df.empty:
@@ -225,10 +242,23 @@ def _render_feature_avg(df: pd.DataFrame):
 	if "avg_value" in df.columns and len(group_cols) == 1:
 		st.bar_chart(df.set_index(group_cols[0])["avg_value"])
 
+
 # ---------- main entry ----------
 
-def render(db, cfg, prefix: str) -> None:
-	st.caption(f"Spark collections for **{prefix}**")
+def render(
+	db,
+	cfg,
+	prefix: str,
+	show_collection_headers: bool = True,
+	pretty_titles: dict | None = None
+) -> None:
+	"""
+	Render Spark dashboards for collections like '<prefix>_spark_*'.
+
+	Args:
+	- show_collection_headers: hide/show raw collection-name headers
+	- pretty_titles: optional mapping {collection_name -> pretty label}
+	"""
 	try:
 		colls = [c for c in db.list_collection_names() if re.match(rf"^{re.escape(prefix)}_spark_", c)]
 	except PyMongoError as e:
@@ -239,8 +269,43 @@ def render(db, cfg, prefix: str) -> None:
 		st.info(f"No collections found like '{prefix}_spark_*'.")
 		return
 
+	# Human-friendly labels when needed (without breaking legacy)
+	mode_labels = {
+		"top_artists": "Top Artists",
+		"top_tracks": "Top Tracks",
+		"top_artists_grouped": "Top Artists by Group",
+		"top_tracks_grouped": "Top Tracks by Group",
+		"feature_avg": "Feature Averages",
+		"unknown": "Spark Results",
+	}
+
 	for coll in sorted(colls):
-		st.subheader(coll)
+		# Determine mode (used for fallback label)
+		mode = "unknown"
+		try:
+			sdoc = db[coll].find_one({}, {"_id": 0, "mode": 1})
+			if sdoc and sdoc.get("mode"):
+				mode = sdoc["mode"]
+		except Exception:
+			pass
+
+		# Resolve label: pretty_titles > mode label > raw name
+		friendly = (
+			pretty_titles.get(coll)
+			if (pretty_titles and coll in pretty_titles)
+			else mode_labels.get(mode, coll)
+		)
+
+		# Legacy-preserving header behavior
+		if show_collection_headers:
+			# If caller did NOT pass pretty_titles → show RAW collection name (legacy UI)
+			if not pretty_titles:
+				st.subheader(coll)
+			else:
+				st.subheader(friendly)
+		else:
+			# Headers hidden → still provide a friendly inline title
+			st.markdown(f"### {friendly}")
 
 		# Controls
 		min_dt, max_dt = _time_bounds(db, coll)
@@ -258,26 +323,28 @@ def render(db, cfg, prefix: str) -> None:
 
 		top_k = st.slider("Top N (for cumulative)", min_value=5, max_value=100, value=10, step=5, key=f"{coll}_topn")
 
-		# Determine mode (fallback if missing)
-		mode = "unknown"
-		try:
-			sdoc = db[coll].find_one({}, {"_id": 0, "mode": 1})
-			if sdoc and sdoc.get("mode"):
-				mode = sdoc["mode"]
-		except Exception:
-			pass
-
-		# Group dropdown for grouped modes (tracks + artists)
+		# Group dropdown for grouped modes (with fallback to all groups if range has none)
 		selected_group = None
 		if mode in ("top_tracks_grouped", "top_artists_grouped"):
 			try:
-				all_groups = sorted(db[coll].distinct("group", _range_query(start_dt, end_dt)))
+				groups_in_range = sorted(db[coll].distinct("group", _range_query(start_dt, end_dt)))
 			except Exception:
-				all_groups = sorted(db[coll].distinct("group"))
-			if all_groups:
-				selected_group = st.selectbox("Group", all_groups, key=f"{coll}_group")
+				groups_in_range = []
+			if not groups_in_range:
+				try:
+					groups_in_range = sorted(db[coll].distinct("group"))
+				except Exception:
+					groups_in_range = []
+			if groups_in_range:
+				selected_group = st.selectbox("Group", groups_in_range, key=f"{coll}_group")
 			else:
-				st.info("No groups available in selected range.")
+				st.info("No groups available.")
+
+		# Context subtitle
+		range_txt = f"{start_date or '—'} → {end_date or '—'}"
+		group_txt = f" • Group: {selected_group}" if selected_group else ""
+		cum_txt = f" • Cumulative (Top {top_k})" if cumulative else " • Per-batch view"
+		st.caption(f"{range_txt}{group_txt}{cum_txt}")
 
 		# Render by mode
 		if cumulative and start_dt and end_dt:

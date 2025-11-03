@@ -19,10 +19,10 @@ overview_collections:
 # ==========================================
 team:
   - prefix: avd
-    module_name: avd
-    display_name: Dorin
+    module_name: musikfan
+    display_name: Musikfan
     tabs:
-      - dorin        # main dashboard
+      - musikfan        # main dashboard
       # (avd_spark removed — no longer visible)
 
   - prefix: alex
