@@ -246,7 +246,7 @@ def render(db, cfg, prefix: str):
                         """)
 
 						if track.get("spotify_url"):
-							st.markdown(f"[🎵 Open in Spotify]({track['spotify_url']})")
+							st.markdown(f"[Open in Spotify]({track['spotify_url']})")
 
 			st.subheader("Bridge Analysis")
 
