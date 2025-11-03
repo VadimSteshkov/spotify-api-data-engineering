@@ -307,7 +307,6 @@ def render(db, cfg, prefix: str):
 
 			st.success(f"""
             - **Tempo range**: {tempo_range:.1f} BPM
-            - **Keys**: {', '.join(t.get('camelot', '?') for t in tracks)}
             - **Path**: {' → '.join([f"{t.get('camelot', '?')}" for t in tracks])}
             """)
 
