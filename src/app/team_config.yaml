@@ -25,7 +25,7 @@ team:
       # (avd_spark removed — no longer visible)
 
   - prefix: alex
-    display_name: Alex
+    display_name: Playlist Analysis
     tabs:
       - alex       # each teammate will create src/app/tabs/alex.py
 

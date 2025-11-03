@@ -112,7 +112,7 @@ class SpotifyPlaylistAnalysisEvent:
     album_name: str
 
     available_markets: List[str]
-    preview_url: Optional[str]
+    popularity: Optional[str]
 
     analysis: Dict[str, Any]  # analysis payload from Recko / Spotify
 
@@ -136,7 +136,7 @@ class SpotifyPlaylistAnalysisEvent:
             album_id=item.get("album_id"),
             album_name=item.get("album_name"),
             available_markets=track.get("available_markets", []),
-            preview_url=track.get("preview_url"),
+            popularity=track.get("popularity"),
             analysis=item.get("analysis") or {}
         )
 
