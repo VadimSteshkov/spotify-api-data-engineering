@@ -19,22 +19,32 @@ overview_collections:
 # ==========================================
 team:
   - prefix: avd
+    module_name: avd
     display_name: Dorin
     tabs:
       - dorin        # main dashboard
       # (avd_spark removed — no longer visible)
 
   - prefix: alex
+    module_name: alex
     display_name: Playlist Analysis
     tabs:
       - alex       # each teammate will create src/app/tabs/alex.py
 
   - prefix: gilian
-    display_name: Gilian
+    module_name: gilian_danceability
+    display_name: Danceability
     tabs:
-      - gilian
+      - gilian_danceability
+
+  - prefix: gilian
+    module_name: gilian_bridge
+    display_name: Bridge
+    tabs:
+      - gilian_bridge
 
   - prefix: vadim
+    module_name: vadim
     display_name: Vadim
     tabs:
       - vadim
