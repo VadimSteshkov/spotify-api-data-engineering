@@ -234,7 +234,7 @@ def render(db, cfg, prefix: str):
 			)
 			st.plotly_chart(fig_scatter, use_container_width=True)
 
-			st.subheader("DJ Mixing Tips")
+			st.subheader("Mixing Tips")
 
 			tempo_range = df_bridge["tempo"].max() - df_bridge["tempo"].min()
 
@@ -242,13 +242,6 @@ def render(db, cfg, prefix: str):
             **Bridge Analysis**:
             - Tempo range: {tempo_range:.1f} BPM (Use pitch control for smooth transitions)
             - Keys: {', '.join(t.get('camelot', '?') for t in tracks)}
-            - Start with track 1, gradually mix through, end with track {len(tracks)}
-
-            **Pro Tips**:
-            - Use EQ to blend matching frequencies
-            - Follow the Camelot wheel for harmonic mixing
-            - Watch energy levels - avoid big drops
-            - Practice each transition!
             """)
 
 		else:
