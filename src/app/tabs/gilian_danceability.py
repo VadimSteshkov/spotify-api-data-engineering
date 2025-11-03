@@ -4,8 +4,6 @@ import streamlit as st
 
 
 def render(db, cfg, prefix: str):
-	st.title(f"DJ Danceability Dashboard")
-
 	coll_danceability = f"{prefix}_genre_danceability"
 
 	st.markdown("""

@@ -1,4 +1,5 @@
 import math
+import traceback
 from typing import List, Dict
 
 import pandas as pd
@@ -33,7 +34,16 @@ def create_camelot_wheel_chart(bridge_tracks: List[Dict]) -> go.Figure:
 		r=r,
 		theta=[t * 180 / math.pi for t in theta],
 		mode='lines',
-		line=dict(color='lightgray', width=1),
+		line=dict(color='lightgray', width=2),
+		showlegend=False,
+		hoverinfo='skip'
+	))
+
+	fig.add_trace(go.Scatterpolar(
+		r=[0.65] * 13,
+		theta=[t * 180 / math.pi for t in theta],
+		mode='lines',
+		line=dict(color='lightgray', width=2),
 		showlegend=False,
 		hoverinfo='skip'
 	))
@@ -52,7 +62,7 @@ def create_camelot_wheel_chart(bridge_tracks: List[Dict]) -> go.Figure:
 		))
 
 		fig.add_trace(go.Scatterpolar(
-			r=[0.7],
+			r=[0.5],
 			theta=[angle * 180 / math.pi],
 			mode='text',
 			text=[f"{i}A"],
@@ -61,7 +71,8 @@ def create_camelot_wheel_chart(bridge_tracks: List[Dict]) -> go.Figure:
 			hoverinfo='skip'
 		))
 
-	for track in bridge_tracks:
+	valid_tracks = []
+	for track in sorted(bridge_tracks, key=lambda t: t.get("position", 999)):
 		camelot = track.get("camelot")
 		if not camelot or len(camelot) < 2:
 			continue
@@ -69,45 +80,116 @@ def create_camelot_wheel_chart(bridge_tracks: List[Dict]) -> go.Figure:
 		try:
 			num = int(camelot[:-1])
 			is_major = camelot[-1].upper() == "B"
-
 			angle = (num - 1) * (2 * math.pi / 12)
 			radius = 1.0 if is_major else 0.65
 
-			fig.add_trace(go.Scatterpolar(
-				r=[radius],
-				theta=[angle * 180 / math.pi],
-				mode='markers+text',
-				marker=dict(
-					size=20,
-					color=camelot_to_color(camelot),
-					symbol='circle',
-					line=dict(color='white', width=2)
-				),
-				text=[str(track["position"])],
-				textfont=dict(color='white', size=12, family='Arial Black'),
-				name=f"{track['position']}. {track['track_name'][:30]}",
-				hovertext=f"{track['track_name']}<br>Key: {camelot}<br>Position: {track['position']}",
-				hoverinfo='text'
-			))
+			valid_tracks.append({
+				"track": track,
+				"angle": angle * 180 / math.pi,
+				"radius": radius,
+				"camelot": camelot
+			})
 		except:
 			pass
 
+	if len(valid_tracks) > 1:
+		line_angles = [t["angle"] for t in valid_tracks]
+		line_radii = [t["radius"] for t in valid_tracks]
+
+		fig.add_trace(go.Scatterpolar(
+			r=line_radii,
+			theta=line_angles,
+			mode='lines',
+			line=dict(color='rgba(255, 215, 0, 0.6)', width=3, dash='solid'),
+			name='Bridge Path',
+			showlegend=True,
+			hoverinfo='skip'
+		))
+
+	for track_data in valid_tracks:
+		track = track_data["track"]
+		angle = track_data["angle"]
+		radius = track_data["radius"]
+		camelot = track_data["camelot"]
+
+		danceability = track.get("danceability") or 0
+		energy = track.get("energy") or 0
+		tempo = track.get("tempo") or 0
+
+		hover_text = (
+			f"<b>{track['position']}. {track['track_name']}</b><br>"
+			f"Artists: {', '.join(track.get('artists', []))}<br>"
+			f"Genre: {track.get('genre_seed', 'N/A').title()}<br>"
+			f"<br>"
+			f"<b>Key:</b> {camelot}<br>"
+			f"<b>Danceability:</b> {danceability:.2f}<br>"
+			f"<b>Energy:</b> {energy:.2f}<br>"
+			f"<b>Tempo:</b> {tempo:.0f} BPM"
+		)
+
+		fig.add_trace(go.Scatterpolar(
+			r=[radius],
+			theta=[angle],
+			mode='markers+text',
+			marker=dict(
+				size=30,
+				color=camelot_to_color(camelot),
+				symbol='circle',
+				line=dict(color='white', width=3)
+			),
+			text=[str(track["position"])],
+			textfont=dict(color='white', size=14, family='Arial Black'),
+			name=f"{track['position']}. {track['track_name'][:25]}...",
+			hovertext=hover_text,
+			hoverinfo='text',
+			hoverlabel=dict(
+				bgcolor='white',
+				font_size=12,
+				font_family='Arial'
+			)
+		))
+
+		offset_angle = angle + 15
+		annotation_radius = radius + 0.15 if radius > 0.8 else radius - 0.15
+
+		fig.add_annotation(
+			x=annotation_radius * math.cos(offset_angle * math.pi / 180),
+			y=annotation_radius * math.sin(offset_angle * math.pi / 180),
+			text=f"{tempo:.0f}",
+			showarrow=False,
+			font=dict(size=9, color='white'),
+			xref="x",
+			yref="y"
+		)
+
 	fig.update_layout(
 		polar=dict(
-			radialaxis=dict(visible=False, range=[0, 1.3]),
+			radialaxis=dict(visible=False, range=[0, 1.4]),
 			angularaxis=dict(visible=False)
 		),
 		showlegend=True,
-		title="Camelot Wheel - Bridge Track Keys",
-		height=500
+		legend=dict(
+			orientation="v",
+			yanchor="top",
+			y=0.99,
+			xanchor="left",
+			x=1.05,
+			font=dict(size=10)
+		),
+		title={
+			'text': "Camelot Wheel Bridge Progression",
+			'x': 0.5,
+			'xanchor': 'center',
+			'font': {'size': 18, 'family': 'Arial Black'}
+		},
+		height=600,
+		margin=dict(l=50, r=150, t=80, b=50)
 	)
 
 	return fig
 
 
 def render(db, cfg, prefix: str):
-	st.title(f"DJ Bridge Dashboard")
-
 	coll_bridges = f"{prefix}_genre_bridges"
 	st.markdown("""
     **User Story**: *As a DJ, I want to build bridges between subgenres*
@@ -130,21 +212,24 @@ def render(db, cfg, prefix: str):
 			df_bridge = pd.DataFrame(tracks)
 
 			if rapid_enabled and any(t.get("camelot") for t in tracks):
-				st.subheader("Camelot Wheel (Harmonic Mixing)")
-				st.markdown("*Tracks plotted on the Camelot wheel. Adjacent keys mix smoothly!*")
+				st.subheader("Camelot Wheel - Harmonic Mixing Path")
+				st.markdown(
+					"*Tracks plotted on the Camelot wheel. Gold line shows the progression. Hover for details!*")
 
 				fig_wheel = create_camelot_wheel_chart(tracks)
 				st.plotly_chart(fig_wheel, use_container_width=True)
 
 				st.info("""
                 **Camelot Mixing Rules**:
-                - Same key = Perfect match (e.g., 8A → 8A)
-                - Adjacent numbers = Energy boost/drop (e.g., 8A → 9A or 7A)
-                - Same number, different letter = Mood change (e.g., 8A → 8B)
-                - Diagonal = Smooth transition (e.g., 8A → 11B)
+                - **Same key** = Perfect match (e.g., 8A → 8A)
+                - **Adjacent numbers** = Energy boost/drop (e.g., 8A → 9A or 7A)
+                - **Same number, different letter** = Mood change (e.g., 8A → 8B)
+                - **Diagonal** = Smooth transition (e.g., 8A → 11B)
+
+                *Numbers on the wheel show BPM. Track position numbers are inside the circles.*
                 """)
 
-			st.subheader("Transition Playlist")
+			st.subheader("🎼 Transition Playlist")
 
 			for _, track in df_bridge.iterrows():
 				camelot = track.get('camelot') or 'N/A'
@@ -155,9 +240,9 @@ def render(db, cfg, prefix: str):
 						st.markdown(f"""
                         **Genre**: {track['genre_seed'].title()}
                         **Camelot Key**: {camelot}
-                        **Danceability**: {track['danceability']:.3f}
-                        **Energy**: {track['energy']:.3f}
-                        **Tempo**: {track['tempo']:.0f} BPM
+                        **Danceability**: {track.get('danceability', 0):.3f}
+                        **Energy**: {track.get('energy', 0):.3f}
+                        **Tempo**: {track.get('tempo', 0):.0f} BPM
                         """)
 
 						if track.get("spotify_url"):
@@ -234,21 +319,15 @@ def render(db, cfg, prefix: str):
 			)
 			st.plotly_chart(fig_scatter, use_container_width=True)
 
-			st.subheader("DJ Mixing Tips")
+			st.subheader("Mixing Tips")
 
 			tempo_range = df_bridge["tempo"].max() - df_bridge["tempo"].min()
 
 			st.success(f"""
             **Bridge Analysis**:
-            - Tempo range: {tempo_range:.1f} BPM (Use pitch control for smooth transitions)
-            - Keys: {', '.join(t.get('camelot', '?') for t in tracks)}
-            - Start with track 1, gradually mix through, end with track {len(tracks)}
-
-            **Pro Tips**:
-            - Use EQ to blend matching frequencies
-            - Follow the Camelot wheel for harmonic mixing
-            - Watch energy levels - avoid big drops
-            - Practice each transition!
+            - **Tempo range**: {tempo_range:.1f} BPM
+            - **Keys**: {', '.join(t.get('camelot', '?') for t in tracks)}
+            - **Path**: {' → '.join([f"{t.get('camelot', '?')}" for t in tracks])}
             """)
 
 		else:
@@ -265,3 +344,4 @@ def render(db, cfg, prefix: str):
 
 	except Exception as e:
 		st.error(f"Error: {e}")
+		st.code(traceback.format_exc())

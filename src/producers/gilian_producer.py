@@ -47,7 +47,6 @@ GENRE_LIST = [
 	"rap",
 	"classical",
 	"latin",
-	"salsa",
 ]
 
 ANALYSIS_INTERVAL = int(os.getenv("ANALYSIS_INTERVAL", "3600"))
