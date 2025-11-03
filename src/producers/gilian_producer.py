@@ -52,7 +52,7 @@ GENRE_LIST = [
 ANALYSIS_INTERVAL = int(os.getenv("ANALYSIS_INTERVAL", "3600"))
 
 DEFAULT_BRIDGE_SOURCE = os.getenv("BRIDGE_SOURCE", "techno")
-DEFAULT_BRIDGE_TARGET = os.getenv("BRIDGE_TARGET", "classical")
+DEFAULT_BRIDGE_TARGET = "house"
 CANDIDATES_PER_SIDE = 30
 BRIDGE_TRACKS = 5
 
@@ -68,19 +68,12 @@ _SPOTIFY_TOKEN_EXP = 0
 
 def get_spotify_token() -> str:
 	global _SPOTIFY_TOKEN, _SPOTIFY_TOKEN_EXP
-
 	now = time.time()
 	if _SPOTIFY_TOKEN and now < _SPOTIFY_TOKEN_EXP - 60:
 		return _SPOTIFY_TOKEN
-
 	url = "https://accounts.spotify.com/api/token"
 	data = {"grant_type": "client_credentials"}
-	r = requests.post(
-		url,
-		data=data,
-		auth=(CLIENT_ID, CLIENT_SECRET),
-		timeout=30
-	)
+	r = requests.post(url, data=data, auth=(CLIENT_ID, CLIENT_SECRET), timeout=30)
 	r.raise_for_status()
 	result = r.json()
 	_SPOTIFY_TOKEN = result["access_token"]
@@ -101,20 +94,15 @@ _RAPIDAPI_LAST_CALL = 0
 
 def rapid_get_track_analysis(track_id: str, max_retries: int = None) -> Optional[Dict]:
 	global _RAPIDAPI_LAST_CALL
-
 	if max_retries is None:
 		max_retries = RAPIDAPI_RETRY_ATTEMPTS
-
 	min_interval = 1.0 / RAPIDAPI_REQUESTS_PER_SECOND
-
 	for attempt in range(max_retries):
 		try:
-
 			now = time.time()
 			elapsed = now - _RAPIDAPI_LAST_CALL
 			if elapsed < min_interval:
 				time.sleep(min_interval - elapsed)
-
 			url = f"https://{RAPID_HOST}/pktx/spotify/{track_id}"
 			headers = {
 				"X-RapidAPI-Key": RAPID_API_KEY,
@@ -122,25 +110,19 @@ def rapid_get_track_analysis(track_id: str, max_retries: int = None) -> Optional
 				"X-RapidAPI-Region": "EU",
 				"Accept": "application/json",
 			}
-
 			r = requests.get(url, headers=headers, timeout=15)
 			_RAPIDAPI_LAST_CALL = time.time()
-
 			if r.status_code == 429:
-
 				retry_after = 5 * (2 ** attempt) + 1
 				if DEBUG:
 					print(
 						f"  [429] Rate limit hit for {track_id}, waiting {retry_after}s (attempt {attempt + 1}/{max_retries})")
 				time.sleep(retry_after)
 				continue
-
 			if r.status_code != 200:
 				debug(f"RapidAPI returned {r.status_code} for {track_id} | {url}")
 				return None
-
 			data = r.json()
-
 			result = {
 				"camelot": data.get("camelot") or data.get("harmonic_key") or data.get("key_camelot"),
 				"key": data.get("key") or data.get("musical_key"),
@@ -155,20 +137,16 @@ def rapid_get_track_analysis(track_id: str, max_retries: int = None) -> Optional
 				"instrumentalness": _normalize_0_1(data.get("instrumentalness")),
 				"liveness": _normalize_0_1(data.get("liveness"))
 			}
-
 			return result
-
 		except requests.exceptions.Timeout:
 			debug(f"RapidAPI timeout for {track_id} (attempt {attempt + 1}/{max_retries})")
 			if attempt < max_retries - 1:
 				time.sleep(2)
 				continue
 			return None
-
 		except Exception as e:
 			debug(f"RapidAPI error for {track_id}: {e}")
 			return None
-
 	if DEBUG:
 		print(f"  [FAIL] RapidAPI failed after {max_retries} attempts for {track_id}")
 	return None
@@ -196,7 +174,6 @@ def sanitize_for_kafka(data: Any) -> Any:
 			return None
 		return round(data, 6)
 	elif isinstance(data, str):
-
 		cleaned = data.replace('\x00', '').replace('\r', '').strip()
 		return cleaned[:500] if len(cleaned) > 500 else cleaned
 	else:
@@ -206,21 +183,15 @@ def sanitize_for_kafka(data: Any) -> Any:
 def safe_kafka_send(producer, topic: str, data: Dict) -> bool:
 	if not producer.enabled:
 		return False
-
 	try:
-
 		clean_data = sanitize_for_kafka(data)
-
 		json_str = json.dumps(clean_data, ensure_ascii=False)
-
 		if len(json_str) > 900000:
 			print(f"[WARN] Message too large ({len(json_str)} bytes), skipping")
 			return False
-
 		producer.send_str(topic, json_str)
 		producer.flush(timeout=5.0)
 		return True
-
 	except Exception as e:
 		print(f"[ERROR] Kafka send failed: {e}")
 		if DEBUG:
@@ -238,11 +209,16 @@ def camelot_neighbors(tag: str) -> set:
 	except Exception:
 		return set()
 
-	nums = [(num - 2) % 12 + 1, num, (num) % 12 + 1]
+	prev_num = ((num - 2 + 12) % 12) + 1
+	next_num = (num % 12) + 1
 
-	lets = {let, "A" if let == "B" else "B"}
+	opposite_letter = "A" if let == "B" else "B"
 
-	return {f"{n}{l}" for n in nums for l in lets}
+	return {
+		f"{num}{opposite_letter}",
+		f"{prev_num}{let}",
+		f"{next_num}{let}"
+	}
 
 
 def camelot_compatibility_score(c1: str, c2: str) -> float:
@@ -252,31 +228,21 @@ def camelot_compatibility_score(c1: str, c2: str) -> float:
 		return 1.0
 	if c2 in camelot_neighbors(c1):
 		return 0.7
-
 	neighbors_2 = set()
 	for n in camelot_neighbors(c1):
 		neighbors_2.update(camelot_neighbors(n))
-
 	if c2 in neighbors_2:
 		return 0.4
-
 	return 0.1
 
 
 def search_genre_playlist(genre: str, limit: int = 1) -> Optional[Dict]:
 	try:
-		data = sp_get(
-			"https://api.spotify.com/v1/search",
-			params={"q": genre, "type": "playlist", "limit": limit}
-		)
+		data = sp_get("https://api.spotify.com/v1/search", params={"q": genre, "type": "playlist", "limit": limit})
 		playlists = data.get("playlists", {}).get("items", [])
 		if playlists:
 			pl = playlists[0]
-			return {
-				"id": pl["id"],
-				"name": pl["name"],
-				"tracks_total": pl["tracks"]["total"]
-			}
+			return {"id": pl["id"], "name": pl["name"], "tracks_total": pl["tracks"]["total"]}
 	except Exception as e:
 		debug(f"Error searching playlist for {genre}: {e}")
 	return None
@@ -284,19 +250,14 @@ def search_genre_playlist(genre: str, limit: int = 1) -> Optional[Dict]:
 
 def get_playlist_tracks(playlist_id: str, limit: int = 50) -> List[Dict]:
 	try:
-		data = sp_get(
-			f"https://api.spotify.com/v1/playlists/{playlist_id}/tracks",
-			params={"limit": min(limit, 100), "fields": "items(track(id,name,artists))"}
-		)
+		data = sp_get(f"https://api.spotify.com/v1/playlists/{playlist_id}/tracks",
+		              params={"limit": min(limit, 100), "fields": "items(track(id,name,artists))"})
 		tracks = []
 		for item in data.get("items", []):
 			track = item.get("track")
 			if track and track.get("id"):
-				tracks.append({
-					"track_id": track["id"],
-					"track_name": track["name"],
-					"artists": [a["name"] for a in track.get("artists", [])]
-				})
+				tracks.append({"track_id": track["id"], "track_name": track["name"],
+				               "artists": [a["name"] for a in track.get("artists", [])]})
 		return tracks
 	except Exception as e:
 		debug(f"Error getting playlist tracks: {e}")
@@ -305,31 +266,20 @@ def get_playlist_tracks(playlist_id: str, limit: int = 50) -> List[Dict]:
 
 def analyze_genre_danceability(genre: str, tracks_per_genre: int = 100) -> Dict:
 	print(f"[ANALYSIS] Analyzing genre: {genre}")
-
 	playlist = search_genre_playlist(genre)
 	if not playlist:
-		return {
-			"genre": genre,
-			"avg_danceability": None,
-			"error": "No playlist found"
-		}
-
+		return {"genre": genre, "avg_danceability": None, "error": "No playlist found", "tracks_with_features": []}
 	tracks = get_playlist_tracks(playlist["id"], limit=tracks_per_genre)
 	if not tracks:
-		return {
-			"genre": genre,
-			"avg_danceability": None,
-			"error": "No tracks found"
-		}
-
+		return {"genre": genre, "avg_danceability": None, "error": "No tracks found", "tracks_with_features": []}
 	danceability_vals = []
 	energy_vals = []
 	tempo_vals = []
+	tracks_with_features = []
 
 	print(f"  → Fetching audio features for {len(tracks[:tracks_per_genre])} tracks...")
 	successful = 0
 	failed = 0
-
 	for i, track in enumerate(tracks[:tracks_per_genre], 1):
 		analysis = rapid_get_track_analysis(track["track_id"])
 		if analysis and analysis.get("danceability") is not None:
@@ -337,21 +287,23 @@ def analyze_genre_danceability(genre: str, tracks_per_genre: int = 100) -> Dict:
 			energy_vals.append(analysis.get("energy", 0))
 			tempo_vals.append(analysis.get("tempo", 120))
 			successful += 1
+
+			tracks_with_features.append({
+				"track_id": track["track_id"],
+				"track_name": track["track_name"],
+				"artists": track["artists"],
+				"features": analysis,
+				"genre_seed": genre,
+				"spotify_url": f"https://open.spotify.com/track/{track['track_id']}"
+			})
 		else:
 			failed += 1
-
 		if i % 10 == 0:
 			print(f"     Progress: {i}/{tracks_per_genre} tracks ({successful} successful, {failed} failed)")
-
 	print(f"  → Completed: {successful} successful, {failed} failed")
-
 	if not danceability_vals:
-		return {
-			"genre": genre,
-			"avg_danceability": None,
-			"error": "No audio features from RapidAPI"
-		}
-
+		return {"genre": genre, "avg_danceability": None, "error": "No audio features from RapidAPI",
+		        "tracks_with_features": []}
 	result = {
 		"genre": genre,
 		"avg_danceability": sum(danceability_vals) / len(danceability_vals),
@@ -360,19 +312,18 @@ def analyze_genre_danceability(genre: str, tracks_per_genre: int = 100) -> Dict:
 		"track_count": len(danceability_vals),
 		"playlist_name": playlist["name"],
 		"data_source": "RapidAPI",
-		"analyzed_at": datetime.now(timezone.utc).isoformat()
+		"analyzed_at": datetime.now(timezone.utc).isoformat(),
+		"tracks_with_features": tracks_with_features
 	}
-
 	print(f"  → Danceability: {result['avg_danceability']:.3f}, Energy: {result['avg_energy']:.3f}")
+	print(f"  → Stored {len(tracks_with_features)} tracks with Camelot keys for bridge building")
 	return result
 
 
 def search_artists_by_genre(genre: str, limit: int = 20) -> List[str]:
 	try:
-		data = sp_get(
-			"https://api.spotify.com/v1/search",
-			params={"q": f'genre:"{genre}"', "type": "artist", "limit": min(50, limit)}
-		)
+		data = sp_get("https://api.spotify.com/v1/search",
+		              params={"q": f'genre:"{genre}"', "type": "artist", "limit": min(50, limit)})
 		artists = data.get("artists", {}).get("items", [])
 		return [a["id"] for a in artists if a.get("id")]
 	except Exception as e:
@@ -382,10 +333,7 @@ def search_artists_by_genre(genre: str, limit: int = 20) -> List[str]:
 
 def get_artist_top_tracks(artist_id: str, market: str = "US") -> List[Dict]:
 	try:
-		data = sp_get(
-			f"https://api.spotify.com/v1/artists/{artist_id}/top-tracks",
-			params={"market": market}
-		)
+		data = sp_get(f"https://api.spotify.com/v1/artists/{artist_id}/top-tracks", params={"market": market})
 		tracks = []
 		for t in data.get("tracks", [])[:5]:
 			tracks.append({
@@ -400,108 +348,150 @@ def get_artist_top_tracks(artist_id: str, market: str = "US") -> List[Dict]:
 		return []
 
 
-def calculate_track_distance(f1: Dict, f2: Dict) -> float:
-	diff_dance = (f1.get("danceability", 0.5) - f2.get("danceability", 0.5)) ** 2
-	diff_energy = (f1.get("energy", 0.5) - f2.get("energy", 0.5)) ** 2
-	diff_tempo = ((f1.get("tempo", 120) - f2.get("tempo", 120)) / 200) ** 2
-
-	distance = math.sqrt(diff_dance + diff_energy + diff_tempo)
-
-	if f1.get("camelot") and f2.get("camelot"):
-		camelot_score = camelot_compatibility_score(f1["camelot"], f2["camelot"])
-
-		distance = distance * (1.5 - camelot_score)
-
-	return distance
-
-
 def find_bridge_tracks(
 	source_genre: str,
 	target_genre: str,
 	candidates_per_side: int = 30,
-	bridge_length: int = 5
+	bridge_length: int = 5,
+	prefetched_tracks: Dict[str, List[Dict]] = None
 ) -> List[Dict]:
 	print(f"[BRIDGE] Building bridge from {source_genre} to {target_genre}")
 
-	source_artists = search_artists_by_genre(source_genre, limit=10)
-	target_artists = search_artists_by_genre(target_genre, limit=10)
+	if prefetched_tracks and source_genre in prefetched_tracks and target_genre in prefetched_tracks:
+		print(f"  → Using pre-fetched tracks from danceability analysis")
+		source_tracks = prefetched_tracks[source_genre][:candidates_per_side]
+		target_tracks = prefetched_tracks[target_genre][:candidates_per_side]
+		print(
+			f"  → Loaded {len(source_tracks)} source tracks, {len(target_tracks)} target tracks (with Camelot keys already fetched!)")
 
-	source_tracks = []
-	target_tracks = []
+		source_with_keys = [t for t in source_tracks if t.get("features", {}).get("camelot")]
+		target_with_keys = [t for t in target_tracks if t.get("features", {}).get("camelot")]
 
-	for artist_id in source_artists[:10]:
-		source_tracks.extend(get_artist_top_tracks(artist_id))
-		if len(source_tracks) >= candidates_per_side:
-			break
+		print(f"  → {len(source_with_keys)} source tracks have Camelot keys")
+		print(f"  → {len(target_with_keys)} target tracks have Camelot keys")
+	else:
 
-	for artist_id in target_artists[:10]:
-		target_tracks.extend(get_artist_top_tracks(artist_id))
-		if len(target_tracks) >= candidates_per_side:
-			break
+		print(f"  → No pre-fetched tracks available, fetching from Spotify API...")
+		source_artists = search_artists_by_genre(source_genre, limit=10)
+		target_artists = search_artists_by_genre(target_genre, limit=10)
 
-	source_tracks = source_tracks[:candidates_per_side]
-	target_tracks = target_tracks[:candidates_per_side]
+		source_tracks = []
+		target_tracks = []
 
-	print(f"  → Found {len(source_tracks)} source tracks, {len(target_tracks)} target tracks")
+		for artist_id in source_artists[:10]:
+			source_tracks.extend(get_artist_top_tracks(artist_id))
+			if len(source_tracks) >= candidates_per_side:
+				break
 
-	if len(source_tracks) < 5 or len(target_tracks) < 5:
-		print(f"  ✗ Not enough tracks to build bridge (need at least 5 each)")
+		for artist_id in target_artists[:10]:
+			target_tracks.extend(get_artist_top_tracks(artist_id))
+			if len(target_tracks) >= candidates_per_side:
+				break
+
+		source_tracks = source_tracks[:candidates_per_side]
+		target_tracks = target_tracks[:candidates_per_side]
+
+		print(f"  → Found {len(source_tracks)} source tracks, {len(target_tracks)} target tracks")
+
+		for track in source_tracks + target_tracks:
+			tid = track["track_id"]
+			rapid_data = rapid_get_track_analysis(tid)
+			if rapid_data:
+				track["features"] = rapid_data
+			else:
+				track["features"] = {}
+
+		for t in source_tracks:
+			t["genre_seed"] = source_genre
+		for t in target_tracks:
+			t["genre_seed"] = target_genre
+
+		source_with_keys = [t for t in source_tracks if t.get("features", {}).get("camelot")]
+		target_with_keys = [t for t in target_tracks if t.get("features", {}).get("camelot")]
+
+	if len(source_with_keys) < 2 or len(target_with_keys) < 2:
+		print(
+			f"  ✗ Not enough tracks with Camelot keys (source: {len(source_with_keys)}, target: {len(target_with_keys)})")
 		return []
 
-	for track in source_tracks + target_tracks:
-		tid = track["track_id"]
-		rapid_data = rapid_get_track_analysis(tid)
-		if rapid_data:
-			track["features"] = rapid_data
+	current = max(source_with_keys, key=lambda t: t["features"].get("energy", 0))
+	bridge = [current]
+	used_tracks = {current["track_id"]}
+
+	print(f"  → Starting with: {current['track_name']} ({current['features']['camelot']})")
+
+	for position in range(2, bridge_length + 1):
+		current_key = bridge[-1]["features"]["camelot"]
+		current_features = bridge[-1]["features"]
+
+		if position == bridge_length:
+			pool = target_with_keys
 		else:
-			track["features"] = {}
 
-	for t in source_tracks:
-		t["genre_seed"] = source_genre
-	for t in target_tracks:
-		t["genre_seed"] = target_genre
+			progress = (position - 1) / bridge_length
+			if progress < 0.4:
+				pool = source_with_keys
+			elif progress > 0.6:
+				pool = target_with_keys
+			else:
+				pool = source_with_keys + target_with_keys
 
-	bridge = []
-	remaining_source = [t for t in source_tracks if t.get("features") and t["features"]]
-	remaining_target = [t for t in target_tracks if t.get("features") and t["features"]]
+		available = [t for t in pool if t["track_id"] not in used_tracks]
 
-	if not remaining_source or not remaining_target:
-		return []
+		if not available:
+			print(f"  ✗ No more tracks available at position {position}")
+			if position == bridge_length:
+				print(f"  ✗ FAILED: Cannot reach {target_genre} - no unused target tracks")
+			return []
 
-	current = max(remaining_source, key=lambda t: t["features"].get("energy", 0))
-	bridge.append(current)
-	remaining_source.remove(current)
+		compatible_neighbors = camelot_neighbors(current_key)
+		camelot_compatible = [
+			t for t in available
+			if t["features"]["camelot"] == current_key or
+			   t["features"]["camelot"] in compatible_neighbors
+		]
 
-	for i in range(bridge_length - 2):
-		progress = i / (bridge_length - 2)
-		pool = remaining_source if progress < 0.5 else remaining_target
+		if not camelot_compatible:
+			print(f"  ✗ No Camelot-compatible tracks at position {position}")
+			print(f"     Current key: {current_key}")
+			print(f"     Need: {current_key} or {compatible_neighbors}")
+			print(f"     Available keys in pool: {set(t['features']['camelot'] for t in available)}")
 
-		if not pool:
-			break
+			if position == bridge_length:
+				print(f"  ✗ FAILED: No compatible {target_genre} tracks found!")
+				print(f"  → Try increasing candidates_per_side or analyzing more tracks")
 
-		current_features = current["features"]
-		closest = min(
-			pool,
-			key=lambda t: calculate_track_distance(
-				current_features,
-				t["features"]
-			)
-		)
+			return []
 
-		bridge.append(closest)
-		pool.remove(closest)
-		current = closest
+		if position == bridge_length:
+			target_compatible = [t for t in camelot_compatible if t["genre_seed"] == target_genre]
+			if not target_compatible:
+				print(f"  ✗ FAILED: Found compatible tracks but none from {target_genre}!")
+				return []
+			camelot_compatible = target_compatible
 
-	if remaining_target:
-		current_features = current["features"]
-		final = min(
-			remaining_target,
-			key=lambda t: calculate_track_distance(
-				current_features,
-				t["features"]
-			)
-		)
-		bridge.append(final)
+		def score_track(track):
+			f = track["features"]
+
+			tempo_diff = abs(current_features.get("tempo", 120) - f.get("tempo", 120)) / 50.0
+
+			energy_diff = abs(current_features.get("energy", 0.5) - f.get("energy", 0.5))
+
+			dance_diff = abs(current_features.get("danceability", 0.5) - f.get("danceability", 0.5))
+
+			camelot_bonus = 0.0 if f["camelot"] == current_key else 0.1
+
+			return camelot_bonus + (tempo_diff * 0.5) + (energy_diff * 0.3) + (dance_diff * 0.2)
+
+		next_track = min(camelot_compatible, key=score_track)
+		bridge.append(next_track)
+		used_tracks.add(next_track["track_id"])
+
+		next_key = next_track["features"]["camelot"]
+		next_genre = next_track["genre_seed"]
+		compatibility = "✓ Same key" if next_key == current_key else "✓ Compatible"
+
+		print(f"  → Position {position}: {next_track['track_name']} ({next_key}) {compatibility} [{next_genre}]")
 
 	result = []
 	for i, track in enumerate(bridge, 1):
@@ -517,13 +507,37 @@ def find_bridge_tracks(
 			"camelot": f.get("camelot"),
 			"key": f.get("key"),
 			"mode": f.get("mode"),
-			"spotify_url": track["spotify_url"]
+			"spotify_url": track.get("spotify_url", "")
 		}
 		result.append(item)
 
 	print(f"  → Built bridge with {len(result)} tracks")
-	camelot_count = sum(1 for t in result if t.get("camelot"))
-	print(f"  → {camelot_count}/{len(result)} tracks have Camelot keys")
+	print(f"  → Camelot path: {' → '.join([t['camelot'] for t in result])}")
+	print(f"  → Genre flow: {result[0]['genre_seed']} → ... → {result[-1]['genre_seed']}")
+
+	all_valid = True
+	for i in range(len(result) - 1):
+		key1 = result[i]["camelot"]
+		key2 = result[i + 1]["camelot"]
+		if key2 not in camelot_neighbors(key1) and key2 != key1:
+			print(f"  ✗ ERROR: Invalid transition at {i + 1}→{i + 2}: {key1} → {key2}")
+			all_valid = False
+
+	if all_valid:
+		print(f"  ✓ All Camelot transitions are valid!")
+	else:
+		print(f"  ✗ Bridge contains invalid transitions - returning empty")
+		return []
+
+	if result[0]["genre_seed"] != source_genre:
+		print(f"  ✗ ERROR: First track not from {source_genre}")
+		return []
+
+	if result[-1]["genre_seed"] != target_genre:
+		print(f"  ✗ ERROR: Last track not from {target_genre}")
+		return []
+
+	print(f"  ✓ Genre requirements met: {source_genre} → {target_genre}")
 
 	return result
 
@@ -537,11 +551,17 @@ def run_analysis() -> None:
 
 	print("[1/2] Analyzing genre danceability...")
 	genre_results = []
+	prefetched_tracks = {}
 
 	for genre in GENRE_LIST:
 		try:
-			result = analyze_genre_danceability(genre, tracks_per_genre=20)
+			result = analyze_genre_danceability(genre, tracks_per_genre=25)
 			genre_results.append(result)
+
+			if result.get("tracks_with_features"):
+				prefetched_tracks[genre] = result["tracks_with_features"]
+				print(f"  → Stored {len(result['tracks_with_features'])} {genre} tracks for bridge building")
+
 			time.sleep(0.5)
 		except Exception as e:
 			print(f"[ERROR] Failed to analyze {genre}: {e}")
@@ -550,11 +570,17 @@ def run_analysis() -> None:
 	valid_results.sort(key=lambda x: x["avg_danceability"], reverse=True)
 
 	if producer.enabled and valid_results:
+
+		kafka_results = []
+		for r in valid_results:
+			kafka_result = {k: v for k, v in r.items() if k != "tracks_with_features"}
+			kafka_results.append(kafka_result)
+
 		doc = {
 			"event_type": f"{APP_PREFIX}_genre_danceability",
 			"generated_at": datetime.now(timezone.utc).isoformat(),
 			"analysis_type": "genre_danceability",
-			"genres": valid_results
+			"genres": kafka_results
 		}
 
 		if safe_kafka_send(producer, TOPIC_GENRE_DANCEABILITY, doc):
@@ -567,13 +593,15 @@ def run_analysis() -> None:
 		print(f"{i:2d}. {result['genre']:20s} - Danceability: {result['avg_danceability']:.3f}")
 
 	print(f"\n[2/2] Building genre bridge: {DEFAULT_BRIDGE_SOURCE} → {DEFAULT_BRIDGE_TARGET}...")
+	print(f"  → Using pre-fetched tracks from danceability analysis (saves API calls!)")
 
 	try:
 		bridge_tracks = find_bridge_tracks(
 			DEFAULT_BRIDGE_SOURCE,
 			DEFAULT_BRIDGE_TARGET,
 			candidates_per_side=CANDIDATES_PER_SIDE,
-			bridge_length=BRIDGE_TRACKS
+			bridge_length=BRIDGE_TRACKS,
+			prefetched_tracks=prefetched_tracks
 		)
 
 		if bridge_tracks and producer.enabled:
@@ -583,7 +611,8 @@ def run_analysis() -> None:
 				"analysis_type": "genre_bridge",
 				"source_genre": DEFAULT_BRIDGE_SOURCE,
 				"target_genre": DEFAULT_BRIDGE_TARGET,
-				"tracks": bridge_tracks
+				"tracks": bridge_tracks,
+				"rapid_api_enabled": bool(RAPID_API_KEY)
 			}
 
 			if safe_kafka_send(producer, TOPIC_GENRE_BRIDGES, doc):
@@ -591,7 +620,7 @@ def run_analysis() -> None:
 			else:
 				print(f"[KAFKA] ✗ Failed to send bridge analysis")
 		elif not bridge_tracks:
-			print(f"[WARNING] No bridge tracks found - try different genres or check Spotify search results")
+			print(f"[WARNING] No bridge tracks found - try different genres or increase candidates_per_side")
 
 		if bridge_tracks:
 			print(f"\n=== Bridge: {DEFAULT_BRIDGE_SOURCE} → {DEFAULT_BRIDGE_TARGET} ===")
@@ -628,10 +657,12 @@ def main() -> None:
 	except Exception:
 		pass
 
-	print(f"[BOOT] Gilian's DJ Producer (with safe MongoDB writes)")
+	print(f"[BOOT] Gilian's DJ Producer - Camelot-First Bridge with Track Reuse")
 	print(f"  Analysis interval: {ANALYSIS_INTERVAL}s ({ANALYSIS_INTERVAL / 3600:.1f}h)")
 	print(f"  Bridge: {DEFAULT_BRIDGE_SOURCE} → {DEFAULT_BRIDGE_TARGET}")
 	print(f"  Genres: {len(GENRE_LIST)}")
+	print(f"  Optimization: Reusing tracks from danceability analysis for bridge building")
+	print(f"  RapidAPI Key: {'✓ Configured' if RAPID_API_KEY else '✗ Missing (set RAPID_API_KEY)'}")
 
 	while not _STOP:
 		start = time.time()
