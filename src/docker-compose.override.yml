@@ -22,7 +22,7 @@ services:
       dockerfile: docker/producer.Dockerfile
     container_name: producer_avd
     env_file:
-      - envs/.env                    
+      - envs/.env
     depends_on:
       kafka:
         condition: service_healthy
@@ -105,32 +105,7 @@ services:
     command: ["python", "-u", "-m", "producers.vadim_producer"]
     restart: unless-stopped
 
-  spark_vadim:
-    build:
-      context: .
-      dockerfile: spark/Dockerfile
-    container_name: spark_vadim
-    env_file:
-      - envs/.env
-    environment:
-      KAFKA_BOOTSTRAP: "kafka:19092"
-      MONGO_URL: "mongodb://root:example@mongo:27017/?authSource=admin"
-      SPARK_PACKAGES: "${SPARK_PACKAGES}"
-      TEAM_CONFIG_SPARK: "spark/team_config.yaml"
-    depends_on:
-      kafka:
-        condition: service_healthy
-      mongo:
-        condition: service_started
-    volumes:
-      - ./:/app
-    working_dir: /app
-    command: >
-      bash -lc "
-      python3 -m pip install -r spark/requirements.txt &&
-      PYSPARK_SUBMIT_ARGS='--packages ${SPARK_PACKAGES} pyspark-shell' python3 -m spark.streaming_job
-      "
-    restart: unless-stopped
+
 
   ############################################################
   # GILIAN
@@ -153,31 +128,6 @@ services:
     command: ["python", "-u", "-m", "producers.gilian_producer"]
     restart: unless-stopped
 
-  spark_gilian:
-    build:
-      context: .
-      dockerfile: spark/Dockerfile
-    container_name: spark_gilian
-    env_file:
-      - envs/.env
-    environment:
-      KAFKA_BOOTSTRAP: "kafka:19092"
-      MONGO_URL: "mongodb://root:example@mongo:27017/?authSource=admin"
-      SPARK_PACKAGES: "${SPARK_PACKAGES}"
-      TEAM_CONFIG_SPARK: "spark/team_config.yaml"
-    depends_on:
-      kafka:
-        condition: service_healthy
-      mongo:
-        condition: service_started
-    volumes:
-      - ./:/app
-    working_dir: /app
-    command: >
-      bash -lc "
-      python3 -m pip install -r spark/requirements.txt &&
-      PYSPARK_SUBMIT_ARGS='--packages ${SPARK_PACKAGES} pyspark-shell' python3 -m spark.streaming_job
-      "
-    restart: unless-stopped
+
 
 
