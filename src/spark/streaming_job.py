@@ -22,7 +22,7 @@ from pyspark.sql.types import StructType, StructField, StringType, LongType, Arr
 
 # ---------- env (base) ----------
 load_dotenv()
-APP_PREFIX = os.getenv("APP_PREFIX", "avd").strip()
+APP_PREFIX = "avd"
 
 # Operator & params (ENV has priority; YAML fills only missing ones)
 SPARK_MODE	= os.getenv("SPARK_MODE", "top_artists").strip()		# top_artists | top_tracks | top_tracks_grouped | feature_avg | ...
