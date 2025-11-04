@@ -54,12 +54,12 @@ USERNAME = _env_any("USERNAME", "SPOTIFY_USERNAME", required=True)
 REDIRECT_URI = _env_any("REDIRECT_URI", "SPOTIFY_REDIRECT_URI", required=True)
 
 # MongoDB config
-MONGO_URI = os.getenv("MONGO_URL", "mongodb://root:example@mongo:27017/?authSource=admin")
-MONGO_DB = "spotify_db"  # Принудительно используем spotify_db
+MONGO_URI = os.getenv("MONGO_URL", os.getenv("MONGO_URI", "mongodb://root:example@mongo:27017/?authSource=admin"))
+MONGO_DB = os.getenv("MONGO_DB", "spotify_db")  # Используем из env или по умолчанию spotify_db
 
 # Kafka config
 KAFKA_ENABLED = str(os.getenv("KAFKA_ENABLED", "false")).lower() == "true"
-KAFKA_BOOTSTRAP = os.getenv("KAFKA_BOOTSTRAP", "localhost:9092")
+KAFKA_BOOTSTRAP = os.getenv("KAFKA_BOOTSTRAP", "kafka:19092")
 
 # Topics
 TOPIC_TRACKS = "vadim_tracks"
@@ -79,14 +79,14 @@ class VadimNewProducer:
         self.redirect_uri = REDIRECT_URI
         self.username = USERNAME
 
-        # MongoDB
-        self.mongo = MongoClient(MONGO_URI)
-        self.db = self.mongo[MONGO_DB]
-
-        # Collections
-        self.coll_tracks = self.db["vadim_tracks"]
-        self.coll_weekly_stats = self.db["vadim_weekly_stats"]
-        self.coll_monthly_stats = self.db["vadim_monthly_stats"]
+        # MongoDB connection (only for indexes - consumer handles data insertion)
+        # NOTE: Data is now saved via Kafka → Consumer → MongoDB
+        # MongoDB connection is kept only for backward compatibility (indexes)
+        self.mongo = None  # Will be initialized only if needed
+        self.db = None
+        self.coll_tracks = None
+        self.coll_weekly_stats = None
+        self.coll_monthly_stats = None
 
         # Kafka
         self.kafka_producer = KafkaJsonProducer()
@@ -120,27 +120,11 @@ class VadimNewProducer:
             return False
 
     def ensure_indexes(self):
-        """Create MongoDB indexes for optimal performance."""
-        # Tracks indexes - только для треков с played_at
-        self.coll_tracks.create_index("played_at_dt", name="tracks_played_at_dt")
-        self.coll_tracks.create_index("album_id", name="tracks_album_id")
-        self.coll_tracks.create_index("track_id", name="tracks_track_id")
-
-        # No separate playlists collection - playlists info is in tracks
-
-        # Weekly stats indexes
-        self.coll_weekly_stats.create_index(
-            [("user_id", 1), ("iso_year", 1), ("iso_week", 1)],
-            unique=True,
-            name="user_week_unique"
-        )
-
-        # Monthly stats indexes
-        self.coll_monthly_stats.create_index(
-            [("user_id", 1), ("year", 1), ("month", 1)],
-            unique=True,
-            name="user_month_unique"
-        )
+        """Create MongoDB indexes for optimal performance.
+        NOTE: Indexes are now automatically created by consumer when data arrives from Kafka.
+        This method is kept for backward compatibility but no longer creates indexes directly.
+        """
+        print("[INFO] Indexes will be created automatically by consumer when data arrives from Kafka")
 
     def collect_recent_tracks(self, limit: int = 50) -> List[Dict]:
         """Collect recently played tracks."""
@@ -408,59 +392,29 @@ class VadimNewProducer:
         print(f"[OK] Monthly stats calculated for {len(monthly_tracks)} tracks")
         return monthly_stats
 
-    def save_to_mongodb(self, tracks: List[Dict], weekly_stats: Dict, monthly_stats: Dict):
-        """Save all data to MongoDB."""
-        print("=== Saving to MongoDB ===")
+    # NOTE: save_to_mongodb removed - data is now saved via Kafka → Consumer → MongoDB
+    # This follows the same pattern as avd/alex/gilian producers
 
-        try:
-            # Save tracks
-            if tracks:
-                try:
-                    self.coll_tracks.insert_many(tracks, ordered=False)
-                    print(f"[MONGO] Tracks inserted: {len(tracks)}")
-                except BulkWriteError as bwe:
-                    inserted = len([w for w in bwe.details.get("writeErrors", []) if w.get("code") != 11000])
-                    total = len(tracks)
-                    dup = total - inserted
-                    print(f"[MONGO] Tracks inserted with duplicates ignored. total={total}, dup={dup}")
-
-            # No separate playlists collection - playlists info is in tracks
-
-            # Save weekly stats
-            if weekly_stats:
-                self.coll_weekly_stats.update_one(
-                    {"user_id": weekly_stats["user_id"], "iso_year": weekly_stats["iso_year"], "iso_week": weekly_stats["iso_week"]},
-                    {"$set": weekly_stats},
-                    upsert=True
-                )
-                print("[MONGO] Weekly stats upserted")
-
-            # Save monthly stats
-            if monthly_stats:
-                self.coll_monthly_stats.update_one(
-                    {"user_id": monthly_stats["user_id"], "year": monthly_stats["year"], "month": monthly_stats["month"]},
-                    {"$set": monthly_stats},
-                    upsert=True
-                )
-                print("[MONGO] Monthly stats upserted")
-
-        except Exception as e:
-            print(f"[MONGO ERR] save: {e}")
-
-    def send_to_kafka(self, tracks: List[Dict], weekly_stats: Dict, monthly_stats: Dict):
-        """Send data to Kafka topics."""
+    def send_to_kafka(self, tracks: List[Dict], playlists: List[Dict], weekly_stats: Dict, monthly_stats: Dict):
+        """Send data to Kafka topics. Consumer will save to MongoDB."""
         if not self.kafka_enabled:
+            print("[WARN] Kafka disabled, skipping send")
             return
 
         print("=== Sending to Kafka ===")
 
         try:
             # Send tracks
-            for track in tracks:
-                self.kafka_producer.send_json(TOPIC_TRACKS, track)
-            print(f"[KAFKA] Sent {len(tracks)} tracks to {TOPIC_TRACKS}")
+            if tracks:
+                for track in tracks:
+                    self.kafka_producer.send_json(TOPIC_TRACKS, track)
+                print(f"[KAFKA] Sent {len(tracks)} tracks to {TOPIC_TRACKS}")
 
-            # No separate playlists collection - playlists info is in tracks
+            # Send playlists
+            if playlists:
+                for playlist in playlists:
+                    self.kafka_producer.send_json(TOPIC_PLAYLISTS, playlist)
+                print(f"[KAFKA] Sent {len(playlists)} playlists to {TOPIC_PLAYLISTS}")
 
             # Send weekly stats
             if weekly_stats:
@@ -472,6 +426,9 @@ class VadimNewProducer:
                 self.kafka_producer.send_json(TOPIC_MONTHLY_STATS, monthly_stats)
                 print(f"[KAFKA] Sent monthly stats to {TOPIC_MONTHLY_STATS}")
 
+            self.kafka_producer.flush()
+            print("[KAFKA] All messages flushed")
+
         except Exception as e:
             print(f"[KAFKA ERR] {e}")
 
@@ -481,8 +438,6 @@ class VadimNewProducer:
             print("Spotify auth failed")
             return
 
-        self.ensure_indexes()
-
         # Collect data
         recent_tracks = self.collect_recent_tracks(limit=50)
         playlist_tracks = self.collect_playlist_tracks(limit=5)
@@ -490,24 +445,63 @@ class VadimNewProducer:
         # Combine all tracks
         all_tracks = recent_tracks + playlist_tracks
 
-        # No separate playlists collection - playlists info is in tracks
+        # Collect playlists metadata (separate from tracks)
+        playlists = self.collect_playlists()
 
         # Calculate statistics
         weekly_stats = self.calculate_weekly_stats(all_tracks)
         monthly_stats = self.calculate_monthly_stats(all_tracks)
 
-        # Save to MongoDB
-        self.save_to_mongodb(all_tracks, weekly_stats, monthly_stats)
-
-        # Send to Kafka
-        self.send_to_kafka(all_tracks, weekly_stats, monthly_stats)
+        # Send to Kafka (Consumer will save to MongoDB)
+        # NOTE: Data flow is now: API → Kafka → Consumer → MongoDB (same as avd/alex/gilian)
+        self.send_to_kafka(all_tracks, playlists, weekly_stats, monthly_stats)
 
         print("Data collection completed successfully!")
 
 
 def main():
+    """Main loop - runs producer continuously."""
+    import signal
+    
+    _STOP = False
+    
+    def _graceful_exit(signum, frame):
+        """Handle shutdown signals."""
+        nonlocal _STOP
+        _STOP = True
+        print(f"\n[INFO] Caught signal {signum}. Shutting down gracefully...")
+    
+    # Register signal handlers
+    try:
+        signal.signal(signal.SIGINT, _graceful_exit)
+        signal.signal(signal.SIGTERM, _graceful_exit)
+    except Exception:
+        pass
+    
+    # Polling interval (seconds)
+    SLEEP_SECS = int(os.getenv("PRODUCER_POLL_SEC", "300"))  # Default 5 minutes
+    
+    print(f"[BOOT] vadim producer polling every {SLEEP_SECS}s")
+    
     producer = VadimNewProducer()
-    producer.run()
+    
+    while not _STOP:
+        start = time.time()
+        try:
+            producer.run()
+            print("Data collection completed successfully!")
+        except Exception as e:
+            print(f"[ERROR] Producer cycle failed: {e}")
+            import traceback
+            traceback.print_exc()
+        
+        # Sleep the remaining of the interval
+        elapsed = max(0.0, time.time() - start)
+        nap = max(1.0, SLEEP_SECS - elapsed)
+        for _ in range(int(nap)):
+            if _STOP:
+                break
+            time.sleep(1)
 
 
 if __name__ == "__main__":
