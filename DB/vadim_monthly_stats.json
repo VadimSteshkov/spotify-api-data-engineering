@@ -1,8 +1,5 @@
 [
   {
-    "_id": {
-      "$oid": "68ec115406e87c16ff77dde4"
-    },
     "month": 10,
     "user_id": "317fd22v4rytxoc6x6o4pi3ixpze",
     "year": 2025,
@@ -182,5 +179,19 @@
     "total_tracks": 50,
     "unique_albums": 1,
     "unique_artists": 30
+  },
+  {
+    "month": 11,
+    "user_id": "317fd22v4rytxoc6x6o4pi3ixpze",
+    "year": 2025,
+    "created_at": "2025-11-04T02:17:15.644302+00:00",
+    "month_end": "2025-11-30T23:59:59+00:00",
+    "month_start": "2025-11-01T00:00:00+00:00",
+    "top_albums": [],
+    "top_artists": [],
+    "top_tracks": [],
+    "total_tracks": 0,
+    "unique_albums": 0,
+    "unique_artists": 0
   }
 ]

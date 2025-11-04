@@ -1,8 +1,5 @@
 [
   {
-    "_id": {
-      "$oid": "68ec115406e87c16ff77dde2"
-    },
     "iso_week": 41,
     "iso_year": 2025,
     "user_id": "317fd22v4rytxoc6x6o4pi3ixpze",
@@ -104,9 +101,6 @@
     "week_start": "2025-10-06T00:00:00+00:00"
   },
   {
-    "_id": {
-      "$oid": "68ecc07006e87c16ff7818ee"
-    },
     "iso_week": 42,
     "iso_year": 2025,
     "user_id": "317fd22v4rytxoc6x6o4pi3ixpze",
@@ -206,5 +200,19 @@
     "unique_artists": 15,
     "week_end": "2025-10-19T23:59:59+00:00",
     "week_start": "2025-10-13T00:00:00+00:00"
+  },
+  {
+    "iso_week": 45,
+    "iso_year": 2025,
+    "user_id": "317fd22v4rytxoc6x6o4pi3ixpze",
+    "created_at": "2025-11-04T02:17:15.644129+00:00",
+    "top_albums": [],
+    "top_artists": [],
+    "top_tracks": [],
+    "total_tracks": 0,
+    "unique_albums": 0,
+    "unique_artists": 0,
+    "week_end": "2025-11-09T23:59:59+00:00",
+    "week_start": "2025-11-03T00:00:00+00:00"
   }
 ]
