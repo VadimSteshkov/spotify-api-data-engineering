@@ -1,46 +1,5837 @@
 [
   {
     "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
-    "collaborative": false,
-    "created_at": "2025-10-12T21:07:46.124584+00:00",
-    "description": "",
-    "name": "int main()",
-    "owner": "Garb",
-    "owner_id": "j6zt28o95b03ue2j9i99cv5tu",
-    "public": false,
-    "tracks_count": 155
+    "playlist_name": "int main()",
+    "track_id": "7rvEwAILTqxBpdIyUifkE8",
+    "track_name": "Marmalade",
+    "artists": [
+      "Miyagi & Andy Panda",
+      "Mav-d"
+    ],
+    "artist_ids": [
+      "0hmUwzWBrPHpGWGrYH05c3",
+      "1Kxxz7r0ZIqz9XDQiaeaGa"
+    ],
+    "duration_ms": 220363,
+    "popularity": 59,
+    "explicit": false,
+    "added_at": "2022-10-03T16:38:02Z",
+    "created_at": "2025-10-12T20:35:05.154603+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "01mlfrIBozItOaXOG5Fgls",
+    "track_name": "Солнца не видно",
+    "artists": [
+      "Basta",
+      "Boombox"
+    ],
+    "artist_ids": [
+      "7as5DY4Rz9jac9tgoTrj9H",
+      "2c3PFZtun8HemDbDfRPV6G"
+    ],
+    "duration_ms": 298920,
+    "popularity": 52,
+    "explicit": true,
+    "added_at": "2021-04-08T20:27:56Z",
+    "created_at": "2025-10-12T20:35:05.154633+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "4wT9xC986HKw6LMObnOLfr",
+    "track_name": "Тысячи рук",
+    "artists": [
+      "SODA LUV"
+    ],
+    "artist_ids": [
+      "3TikHXhctY4FUIMlkl0tzR"
+    ],
+    "duration_ms": 186382,
+    "popularity": 41,
+    "explicit": false,
+    "added_at": "2022-02-19T09:38:50Z",
+    "created_at": "2025-10-12T20:35:05.154641+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "1GOiMxQXZUzjzH0Sxpck0B",
+    "track_name": "Дежавю",
+    "artists": [
+      "kizaru"
+    ],
+    "artist_ids": [
+      "5NipqMGsY4AUeb7kGT8aVz"
+    ],
+    "duration_ms": 173725,
+    "popularity": 0,
+    "explicit": true,
+    "added_at": "2022-05-27T13:39:04Z",
+    "created_at": "2025-10-12T20:35:05.154646+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "1Kp2TF4fFYjJPqEMf1U0RK",
+    "track_name": "Вина (feat. 17 SEVENTEEN)",
+    "artists": [
+      "OG Buda",
+      "MAYOT",
+      "17 SEVENTEEN"
+    ],
+    "artist_ids": [
+      "1H1zBr7TXFwTwsHU5kX9gW",
+      "3KtiWEUyKC5lgHedcN6y6C",
+      "496nklFjflGjJOhhfhH2Nc"
+    ],
+    "duration_ms": 166956,
+    "popularity": 0,
+    "explicit": true,
+    "added_at": "2022-06-30T18:39:18Z",
+    "created_at": "2025-10-12T20:35:05.154652+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "5HCyWlXZPP0y6Gqq8TgA20",
+    "track_name": "STAY (with Justin Bieber)",
+    "artists": [
+      "The Kid LAROI",
+      "Justin Bieber"
+    ],
+    "artist_ids": [
+      "2tIP7SsRs7vjIcLrU85W8J",
+      "1uNFoZAHBGtllmzznpCI3s"
+    ],
+    "duration_ms": 141805,
+    "popularity": 80,
+    "explicit": true,
+    "added_at": "2021-09-21T21:49:46Z",
+    "created_at": "2025-10-12T20:35:05.154658+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "466cKvZn1j45IpxDdYZqdA",
+    "track_name": "Toosie Slide",
+    "artists": [
+      "Drake"
+    ],
+    "artist_ids": [
+      "3TVXtAsR1Inumwj472S9r4"
+    ],
+    "duration_ms": 247058,
+    "popularity": 69,
+    "explicit": true,
+    "added_at": "2022-10-14T12:12:10Z",
+    "created_at": "2025-10-12T20:35:05.154665+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "0CCCbyRBnLYFVxEbDrjzDC",
+    "track_name": "В темноте",
+    "artists": [
+      "Max Korzh"
+    ],
+    "artist_ids": [
+      "5meD8C7oGK5yUEY2T7ZZ7W"
+    ],
+    "duration_ms": 183400,
+    "popularity": 49,
+    "explicit": false,
+    "added_at": "2022-11-06T15:15:37Z",
+    "created_at": "2025-10-12T20:35:05.154670+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "1hE8qC9NY9fWILjtLbEAKo",
+    "track_name": "Жить как я живу",
+    "artists": [
+      "Skryptonite"
+    ],
+    "artist_ids": [
+      "3vvLuXEEf7sl3izJcw0GIn"
+    ],
+    "duration_ms": 222253,
+    "popularity": 44,
+    "explicit": true,
+    "added_at": "2022-11-24T17:08:26Z",
+    "created_at": "2025-10-12T20:35:05.154674+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "56oCqAlqxfRNMBDDtq395J",
+    "track_name": "PUFF (feat. MAYOT)",
+    "artists": [
+      "Egor Kreed",
+      "MAYOT"
+    ],
+    "artist_ids": [
+      "2KoLmBXwsgMkfAvoPBlPmb",
+      "3KtiWEUyKC5lgHedcN6y6C"
+    ],
+    "duration_ms": 126444,
+    "popularity": 36,
+    "explicit": true,
+    "added_at": "2022-12-15T22:08:32Z",
+    "created_at": "2025-10-12T20:35:05.154679+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "5iV7aVAPYkjSCG8CXpbmSl",
+    "track_name": "Тем кто с нами",
+    "artists": [
+      "AK-47",
+      "GUF",
+      "Noggano"
+    ],
+    "artist_ids": [
+      "1V662Xly7vfsecWoSbsBtT",
+      "0OCyDRYamSDX0nSnJ59W1u",
+      "04pgbTmxJbzxlVSV0sHLAV"
+    ],
+    "duration_ms": 453565,
+    "popularity": 25,
+    "explicit": true,
+    "added_at": "2022-12-19T15:29:59Z",
+    "created_at": "2025-10-12T20:35:05.154684+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "341PaXp5Pr8dCwP3eyVQC0",
+    "track_name": "Mango",
+    "artists": [
+      "Mr Lambo"
+    ],
+    "artist_ids": [
+      "0UilEr4Ux3uNvBwoogmZzu"
+    ],
+    "duration_ms": 175000,
+    "popularity": 50,
+    "explicit": false,
+    "added_at": "2023-01-15T18:55:54Z",
+    "created_at": "2025-10-12T20:35:05.154688+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "4lkK3TBV3RILjmM4f75kr1",
+    "track_name": "Капканы",
+    "artists": [
+      "Endspiel",
+      "Hloy"
+    ],
+    "artist_ids": [
+      "35m8HjyHmGQxAKfIBVHZpF",
+      "6PlfrUehMgLpBPdqVTuhSL"
+    ],
+    "duration_ms": 246548,
+    "popularity": 35,
+    "explicit": false,
+    "added_at": "2023-02-02T20:29:23Z",
+    "created_at": "2025-10-12T20:35:05.154693+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "2kLmAwQCBSlvtcptioAoTv",
+    "track_name": "5IVE",
+    "artists": [
+      "LOVV66"
+    ],
+    "artist_ids": [
+      "5A9NWhs9ydYZPGgvcWI8Ms"
+    ],
+    "duration_ms": 143013,
+    "popularity": 47,
+    "explicit": true,
+    "added_at": "2023-03-02T10:24:22Z",
+    "created_at": "2025-10-12T20:35:05.154698+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "0LLmy3p6uYTiyCNPQYVyg2",
+    "track_name": "Первый",
+    "artists": [
+      "Skryptonite",
+      "Basta"
+    ],
+    "artist_ids": [
+      "3vvLuXEEf7sl3izJcw0GIn",
+      "7as5DY4Rz9jac9tgoTrj9H"
+    ],
+    "duration_ms": 237500,
+    "popularity": 29,
+    "explicit": true,
+    "added_at": "2023-03-05T14:37:24Z",
+    "created_at": "2025-10-12T20:35:05.154702+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "0qyeRF33qX9pNm16m4Yykb",
+    "track_name": "Фиеста",
+    "artists": [
+      "Aarne",
+      "Yanix",
+      "SEEMEE"
+    ],
+    "artist_ids": [
+      "5B5qmrbTFvA7TAxWruuwbo",
+      "7gmUEqRjXK144s5jQMVc8c",
+      "2ngiK5FQchV4i7eOyXOXKt"
+    ],
+    "duration_ms": 112874,
+    "popularity": 41,
+    "explicit": true,
+    "added_at": "2023-03-07T01:29:01Z",
+    "created_at": "2025-10-12T20:35:05.154707+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "4g22x3fIQVUlY39ICUBB7Z",
+    "track_name": "HOODAK MP3",
+    "artists": [
+      "Big Baby Tape",
+      "Aarne"
+    ],
+    "artist_ids": [
+      "5NMwoStnfHT4LdETlJSwDT",
+      "5B5qmrbTFvA7TAxWruuwbo"
+    ],
+    "duration_ms": 203155,
+    "popularity": 0,
+    "explicit": true,
+    "added_at": "2023-03-08T12:06:42Z",
+    "created_at": "2025-10-12T20:35:05.154712+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "7dbyaRWWFvB9UG2vcwTd3J",
+    "track_name": "Champagne Shots",
+    "artists": [
+      "Sainté"
+    ],
+    "artist_ids": [
+      "3DEdNjxF3ea9taOMCXouZ6"
+    ],
+    "duration_ms": 144000,
+    "popularity": 65,
+    "explicit": false,
+    "added_at": "2023-03-17T16:17:36Z",
+    "created_at": "2025-10-12T20:35:05.154717+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "1LN4BhQjklLJyp0cBzcYDL",
+    "track_name": "Звонок",
+    "artists": [
+      "SODA LUV"
+    ],
+    "artist_ids": [
+      "3TikHXhctY4FUIMlkl0tzR"
+    ],
+    "duration_ms": 190000,
+    "popularity": 0,
+    "explicit": true,
+    "added_at": "2023-03-17T22:29:02Z",
+    "created_at": "2025-10-12T20:35:05.154721+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "3Qo7FF0WmgEt3JG3B2qngy",
+    "track_name": "Abu Dhabi Ba6y",
+    "artists": [
+      "Платина",
+      "OG Buda",
+      "MAYOT"
+    ],
+    "artist_ids": [
+      "4TzGOY9RpErzedN02w8Boh",
+      "1H1zBr7TXFwTwsHU5kX9gW",
+      "3KtiWEUyKC5lgHedcN6y6C"
+    ],
+    "duration_ms": 180000,
+    "popularity": 47,
+    "explicit": true,
+    "added_at": "2023-03-20T13:00:05Z",
+    "created_at": "2025-10-12T20:35:05.154725+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "7zAmDwzflyyiuTmpX0Yw0m",
+    "track_name": "COLE BENNETT",
+    "artists": [
+      "SODA LUV"
+    ],
+    "artist_ids": [
+      "3TikHXhctY4FUIMlkl0tzR"
+    ],
+    "duration_ms": 116641,
+    "popularity": 0,
+    "explicit": true,
+    "added_at": "2023-03-25T16:25:22Z",
+    "created_at": "2025-10-12T20:35:05.154729+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "6ugYbXPyqfpYTtG9z6YRvH",
+    "track_name": "Коми",
+    "artists": [
+      "SODA LUV",
+      "BUSHIDO ZHO"
+    ],
+    "artist_ids": [
+      "3TikHXhctY4FUIMlkl0tzR",
+      "27kGBCjiz5OXojkKX4xQ6R"
+    ],
+    "duration_ms": 171360,
+    "popularity": 42,
+    "explicit": true,
+    "added_at": "2023-03-28T15:13:33Z",
+    "created_at": "2025-10-12T20:35:05.154741+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "7pimTwSxwlq3OeG8ARZqEK",
+    "track_name": "Go! Смув",
+    "artists": [
+      "SODA LUV"
+    ],
+    "artist_ids": [
+      "3TikHXhctY4FUIMlkl0tzR"
+    ],
+    "duration_ms": 150361,
+    "popularity": 34,
+    "explicit": true,
+    "added_at": "2023-03-28T15:26:00Z",
+    "created_at": "2025-10-12T20:35:05.154746+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "4qlMFQs9oEp5bVxERhTZBU",
+    "track_name": "На заре",
+    "artists": [
+      "Basta"
+    ],
+    "artist_ids": [
+      "7as5DY4Rz9jac9tgoTrj9H"
+    ],
+    "duration_ms": 306415,
+    "popularity": 55,
+    "explicit": false,
+    "added_at": "2023-04-10T14:19:35Z",
+    "created_at": "2025-10-12T20:35:05.154751+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "2Y0edoU1YQJ1N5Zy5YIZs9",
+    "track_name": "Эй, Бро!",
+    "artists": [
+      "L'One"
+    ],
+    "artist_ids": [
+      "0x9j5hqljRaIIGjDSmsLT0"
+    ],
+    "duration_ms": 222422,
+    "popularity": 25,
+    "explicit": false,
+    "added_at": "2023-04-18T20:00:37Z",
+    "created_at": "2025-10-12T20:35:05.154755+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "6W2lidGlqAqjlXBFOX3Mq6",
+    "track_name": "Лил мами",
+    "artists": [
+      "OG Buda",
+      "LIL KRYSTALLL"
+    ],
+    "artist_ids": [
+      "1H1zBr7TXFwTwsHU5kX9gW",
+      "2cYbwKKlCOv5VaoU9DZwGA"
+    ],
+    "duration_ms": 138750,
+    "popularity": 15,
+    "explicit": true,
+    "added_at": "2023-05-10T20:22:18Z",
+    "created_at": "2025-10-12T20:35:05.154760+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "2PpAAi4RMQKof0Ya3JEJfU",
+    "track_name": "Зеркало",
+    "artists": [
+      "kizaru"
+    ],
+    "artist_ids": [
+      "5NipqMGsY4AUeb7kGT8aVz"
+    ],
+    "duration_ms": 152000,
+    "popularity": 0,
+    "explicit": true,
+    "added_at": "2023-05-20T18:37:38Z",
+    "created_at": "2025-10-12T20:35:05.154764+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "3F3AMqRdIfP7jEJm8S3JpW",
+    "track_name": "Bon Voyage",
+    "artists": [
+      "Big Baby Tape",
+      "kizaru"
+    ],
+    "artist_ids": [
+      "5NMwoStnfHT4LdETlJSwDT",
+      "5NipqMGsY4AUeb7kGT8aVz"
+    ],
+    "duration_ms": 134957,
+    "popularity": 42,
+    "explicit": true,
+    "added_at": "2023-05-29T21:53:38Z",
+    "created_at": "2025-10-12T20:35:05.154768+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "6xKHZ3Gr9uisd19Omc0Om0",
+    "track_name": "Приятная",
+    "artists": [
+      "Endspiel",
+      "Ollane"
+    ],
+    "artist_ids": [
+      "35m8HjyHmGQxAKfIBVHZpF",
+      "38QFXoA64TnwDvE0nK2TYa"
+    ],
+    "duration_ms": 240000,
+    "popularity": 62,
+    "explicit": false,
+    "added_at": "2023-06-27T12:56:30Z",
+    "created_at": "2025-10-12T20:35:05.154773+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "4DxI2tFfcvszHDadoHLv0e",
+    "track_name": "Санавабич",
+    "artists": [
+      "MiyaGi & Endspiel"
+    ],
+    "artist_ids": [
+      "6L5bLEtpxwd0KOdOr3gtW4"
+    ],
+    "duration_ms": 185691,
+    "popularity": 56,
+    "explicit": true,
+    "added_at": "2023-06-27T13:13:25Z",
+    "created_at": "2025-10-12T20:35:05.154780+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "2L9wC2iWVnIWZKj2Lc4qKw",
+    "track_name": "Slip & Slide",
+    "artists": [
+      "Big Baby Tape",
+      "kizaru"
+    ],
+    "artist_ids": [
+      "5NMwoStnfHT4LdETlJSwDT",
+      "5NipqMGsY4AUeb7kGT8aVz"
+    ],
+    "duration_ms": 114509,
+    "popularity": 46,
+    "explicit": true,
+    "added_at": "2023-07-01T19:09:37Z",
+    "created_at": "2025-10-12T20:35:05.154786+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "2MjMSLxSZ0nvLMNBqRc8aL",
+    "track_name": "ПОЛЯНА",
+    "artists": [
+      "163ONMYNECK"
+    ],
+    "artist_ids": [
+      "0ne2rg2JwZmIy7X1aVNq7y"
+    ],
+    "duration_ms": 139000,
+    "popularity": 0,
+    "explicit": true,
+    "added_at": "2023-07-01T19:11:28Z",
+    "created_at": "2025-10-12T20:35:05.154790+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "6pkh5va0Hv9YnQ3FXOt1Vj",
+    "track_name": "Listen to Your Heart",
+    "artists": [
+      "MiyaGi & Endspiel"
+    ],
+    "artist_ids": [
+      "6L5bLEtpxwd0KOdOr3gtW4"
+    ],
+    "duration_ms": 204746,
+    "popularity": 54,
+    "explicit": true,
+    "added_at": "2023-07-09T16:18:25Z",
+    "created_at": "2025-10-12T20:35:05.154794+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "27XMmSWSOXJ7eVb40tH93T",
+    "track_name": "MEMORIES!",
+    "artists": [
+      "347aidan"
+    ],
+    "artist_ids": [
+      "0bBz5bRBkExaej2HxtVfCw"
+    ],
+    "duration_ms": 137806,
+    "popularity": 68,
+    "explicit": false,
+    "added_at": "2023-07-12T08:14:22Z",
+    "created_at": "2025-10-12T20:35:05.154800+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "3DTmJAeZfSNWzITiGKTzKC",
+    "track_name": "С тобой",
+    "artists": [
+      "Jakone",
+      "A.V.G",
+      "BAGARDI",
+      "Goro",
+      "Asatro"
+    ],
+    "artist_ids": [
+      "0Kwx9LPnkelacgHzRI8vxl",
+      "3a4bEvoyyeZPOLxCkSgPO6",
+      "4ViGhJKDjIjwanItcs3j44",
+      "0dXxXRpeXSNfAG3t7HrLDf",
+      "1YT5EWH5lQu5nSz0j7q8jW"
+    ],
+    "duration_ms": 170272,
+    "popularity": 54,
+    "explicit": false,
+    "added_at": "2023-07-12T17:20:25Z",
+    "created_at": "2025-10-12T20:35:05.154806+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "5hm9pOWazSnmOzsNH8UvGP",
+    "track_name": "Stack",
+    "artists": [
+      "SEEYASIDE"
+    ],
+    "artist_ids": [
+      "2FZkHhMxN4qUeRYhjeselB"
+    ],
+    "duration_ms": 111428,
+    "popularity": 37,
+    "explicit": true,
+    "added_at": "2023-07-15T20:02:57Z",
+    "created_at": "2025-10-12T20:35:05.154810+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "0Dc4So11xZAmNfZrDJxQKq",
+    "track_name": "Force",
+    "artists": [
+      "MiyaGi",
+      "Andy Panda",
+      "TumaniYO"
+    ],
+    "artist_ids": [
+      "1kmpkcYbuaZ8tnFejLzkj2",
+      "4b20nn6eekG7JQYjX7zJPx",
+      "6GSMqHdLtTCTR9pv5ytaTo"
+    ],
+    "duration_ms": 230315,
+    "popularity": 47,
+    "explicit": false,
+    "added_at": "2023-07-17T17:10:06Z",
+    "created_at": "2025-10-12T20:35:05.154815+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "43wgyQXc2M9KmTDUqVzugM",
+    "track_name": "I Got Love",
+    "artists": [
+      "MiyaGi & Endspiel",
+      "Rem Digga"
+    ],
+    "artist_ids": [
+      "6L5bLEtpxwd0KOdOr3gtW4",
+      "2R1OELuSJzXjRm8lc8FjPC"
+    ],
+    "duration_ms": 276687,
+    "popularity": 69,
+    "explicit": false,
+    "added_at": "2023-08-05T14:18:47Z",
+    "created_at": "2025-10-12T20:35:05.154819+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "0mbwEKPsT0TA3DXrESonRk",
+    "track_name": "Bounty",
+    "artists": [
+      "MiyaGi & Endspiel"
+    ],
+    "artist_ids": [
+      "6L5bLEtpxwd0KOdOr3gtW4"
+    ],
+    "duration_ms": 200028,
+    "popularity": 43,
+    "explicit": false,
+    "added_at": "2023-08-05T14:23:29Z",
+    "created_at": "2025-10-12T20:35:05.154825+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "1YZoR1GDYGSLVFaVEJmQXU",
+    "track_name": "Mama Makusa",
+    "artists": [
+      "Big Baby Tape",
+      "kizaru"
+    ],
+    "artist_ids": [
+      "5NMwoStnfHT4LdETlJSwDT",
+      "5NipqMGsY4AUeb7kGT8aVz"
+    ],
+    "duration_ms": 172787,
+    "popularity": 43,
+    "explicit": true,
+    "added_at": "2023-08-05T17:47:21Z",
+    "created_at": "2025-10-12T20:35:05.154831+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "1tiYLpwiwHkKMoB7XqIXqn",
+    "track_name": "2019 МИНУС 3Б4ЛО",
+    "artists": [
+      "SODA LUV",
+      "OSA"
+    ],
+    "artist_ids": [
+      "3TikHXhctY4FUIMlkl0tzR",
+      "7hZzcbvzGtZyW9kpLNbPAx"
+    ],
+    "duration_ms": 126666,
+    "popularity": 0,
+    "explicit": true,
+    "added_at": "2023-08-19T20:28:31Z",
+    "created_at": "2025-10-12T20:35:05.154835+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "5VbtwldokIWy266zZqq9Bt",
+    "track_name": "Моя Тень и Я",
+    "artists": [
+      "kizaru"
+    ],
+    "artist_ids": [
+      "5NipqMGsY4AUeb7kGT8aVz"
+    ],
+    "duration_ms": 169056,
+    "popularity": 0,
+    "explicit": true,
+    "added_at": "2023-08-20T09:43:16Z",
+    "created_at": "2025-10-12T20:35:05.154840+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "6eqth4FmYzrreFVlTlp53I",
+    "track_name": "Не жалея",
+    "artists": [
+      "Miyagi & Andy Panda"
+    ],
+    "artist_ids": [
+      "0hmUwzWBrPHpGWGrYH05c3"
+    ],
+    "duration_ms": 214500,
+    "popularity": 56,
+    "explicit": false,
+    "added_at": "2023-09-26T10:39:51Z",
+    "created_at": "2025-10-12T20:35:05.154848+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "1AZuaG5hJkoapYDd1g45iU",
+    "track_name": "Не бесконечно",
+    "artists": [
+      "T-Fest"
+    ],
+    "artist_ids": [
+      "01lZudgXsojt5TBHuygB8r"
+    ],
+    "duration_ms": 209000,
+    "popularity": 30,
+    "explicit": false,
+    "added_at": "2023-10-15T15:23:04Z",
+    "created_at": "2025-10-12T20:35:05.154853+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "12sOWd1sqIA7WGBRvYyuA2",
+    "track_name": "S.P.A.",
+    "artists": [
+      "SODA LUV",
+      "L'One"
+    ],
+    "artist_ids": [
+      "3TikHXhctY4FUIMlkl0tzR",
+      "0x9j5hqljRaIIGjDSmsLT0"
+    ],
+    "duration_ms": 218181,
+    "popularity": 20,
+    "explicit": true,
+    "added_at": "2023-11-20T14:59:00Z",
+    "created_at": "2025-10-12T20:35:05.154857+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "6zu98XBex3ksqNSlqJp8jh",
+    "track_name": "na Circus",
+    "artists": [
+      "FRIENDLY THUG 52 NGG",
+      "Skryptonite"
+    ],
+    "artist_ids": [
+      "5xtbUYHaOycg6HIi10EZdV",
+      "3vvLuXEEf7sl3izJcw0GIn"
+    ],
+    "duration_ms": 190413,
+    "popularity": 57,
+    "explicit": true,
+    "added_at": "2023-12-03T16:27:49Z",
+    "created_at": "2025-10-12T20:35:05.154861+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "1lx65Q3Vfy8NsfaA5DXUcJ",
+    "track_name": "Sladki Snov Rapper 2",
+    "artists": [
+      "FRIENDLY THUG 52 NGG"
+    ],
+    "artist_ids": [
+      "5xtbUYHaOycg6HIi10EZdV"
+    ],
+    "duration_ms": 134400,
+    "popularity": 61,
+    "explicit": true,
+    "added_at": "2023-12-05T15:07:59Z",
+    "created_at": "2025-10-12T20:35:05.154865+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "35BYBOuh5aa6TyJBG9N15R",
+    "track_name": "Acele",
+    "artists": [
+      "Carla's Dreams"
+    ],
+    "artist_ids": [
+      "1n5LD9Ar3D6RK2X2ewGvXb"
+    ],
+    "duration_ms": 206755,
+    "popularity": 28,
+    "explicit": false,
+    "added_at": "2023-12-05T15:08:15Z",
+    "created_at": "2025-10-12T20:35:05.154870+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "7oHpmG8BzdbW2RTWZn0srN",
+    "track_name": "Трата времени",
+    "artists": [
+      "Skryptonite"
+    ],
+    "artist_ids": [
+      "3vvLuXEEf7sl3izJcw0GIn"
+    ],
+    "duration_ms": 217403,
+    "popularity": 48,
+    "explicit": true,
+    "added_at": "2023-12-25T11:26:11Z",
+    "created_at": "2025-10-12T20:35:05.154874+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "13Rl0xAONgI3k7KDcCDh0j",
+    "track_name": "Block Baby",
+    "artists": [
+      "kizaru"
+    ],
+    "artist_ids": [
+      "5NipqMGsY4AUeb7kGT8aVz"
+    ],
+    "duration_ms": 208731,
+    "popularity": 45,
+    "explicit": true,
+    "added_at": "2024-01-09T23:40:53Z",
+    "created_at": "2025-10-12T20:35:05.154878+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "2USmrHWn4CfbRipGRmtfQq",
+    "track_name": "Твои сонные глаза",
+    "artists": [
+      "Jah Khalib"
+    ],
+    "artist_ids": [
+      "4TjXA854eWs8P5EBgCbQmv"
+    ],
+    "duration_ms": 215823,
+    "popularity": 55,
+    "explicit": false,
+    "added_at": "2024-01-13T13:30:07Z",
+    "created_at": "2025-10-12T20:35:05.154882+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "0PxfO6D2BYt863L1ZHRgst",
+    "track_name": "18+",
+    "artists": [
+      "Kaspiyskiy Gruz",
+      "Rigos",
+      "SLIMUS"
+    ],
+    "artist_ids": [
+      "5g5a3ENOYfn6myyLen218w",
+      "5vErdhElEWIQgdFTQE3DVY",
+      "0Etr2CvTxXjbeZ55CLmAF6"
+    ],
+    "duration_ms": 304901,
+    "popularity": 52,
+    "explicit": true,
+    "added_at": "2024-01-24T15:26:46Z",
+    "created_at": "2025-10-12T20:35:05.154890+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "5yY9lUy8nbvjM1Uyo1Uqoc",
+    "track_name": "Life Is Good (feat. Drake)",
+    "artists": [
+      "Future",
+      "Drake"
+    ],
+    "artist_ids": [
+      "1RyvyyTE3xzB2ZywiAwp0i",
+      "3TVXtAsR1Inumwj472S9r4"
+    ],
+    "duration_ms": 237735,
+    "popularity": 72,
+    "explicit": true,
+    "added_at": "2024-02-02T13:09:38Z",
+    "created_at": "2025-10-12T20:35:05.154894+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "2DSy4HfDQoBsPPcRSoeM16",
+    "track_name": "Rich Baby Daddy (feat. Sexyy Red & SZA)",
+    "artists": [
+      "Drake",
+      "Sexyy Red",
+      "SZA"
+    ],
+    "artist_ids": [
+      "3TVXtAsR1Inumwj472S9r4",
+      "3DbwFQlvLxRSi2uX8mf81A",
+      "7tYKF4w9nC0nq9CsPZTHyP"
+    ],
+    "duration_ms": 319191,
+    "popularity": 52,
+    "explicit": true,
+    "added_at": "2024-02-02T17:09:09Z",
+    "created_at": "2025-10-12T20:35:05.154899+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "6pgZZ8xfIBewpXeeVvIjyl",
+    "track_name": "Haunted House",
+    "artists": [
+      "Aarne",
+      "Big Baby Tape",
+      "kizaru"
+    ],
+    "artist_ids": [
+      "5B5qmrbTFvA7TAxWruuwbo",
+      "5NMwoStnfHT4LdETlJSwDT",
+      "5NipqMGsY4AUeb7kGT8aVz"
+    ],
+    "duration_ms": 153600,
+    "popularity": 0,
+    "explicit": true,
+    "added_at": "2024-02-05T15:05:28Z",
+    "created_at": "2025-10-12T20:35:05.154903+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "6QG3PhgXcYShWkDwBOkqLz",
+    "track_name": "Сжигая дотла",
+    "artists": [
+      "Jah Khalib"
+    ],
+    "artist_ids": [
+      "4TjXA854eWs8P5EBgCbQmv"
+    ],
+    "duration_ms": 251898,
+    "popularity": 60,
+    "explicit": false,
+    "added_at": "2024-02-05T15:06:59Z",
+    "created_at": "2025-10-12T20:35:05.154908+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "3cHHxlwvB16a1PllSM97jX",
+    "track_name": "Дымок",
+    "artists": [
+      "Ицык Цыпер",
+      "Игорь Цыба"
+    ],
+    "artist_ids": [
+      "3itorhtp2xgFl1iMPwvAGs",
+      "02Gn2Lbcdednu9WM1T12nz"
+    ],
+    "duration_ms": 139925,
+    "popularity": 48,
+    "explicit": false,
+    "added_at": "2024-02-10T12:28:56Z",
+    "created_at": "2025-10-12T20:35:05.154912+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "3a5TMs2f4X05wQOPuXNcrh",
+    "track_name": "Круговорот",
+    "artists": [
+      "MiyaGi & Endspiel"
+    ],
+    "artist_ids": [
+      "6L5bLEtpxwd0KOdOr3gtW4"
+    ],
+    "duration_ms": 158687,
+    "popularity": 53,
+    "explicit": false,
+    "added_at": "2024-02-18T16:10:54Z",
+    "created_at": "2025-10-12T20:35:05.154916+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "3nr5BrdRJuav9jb2iWwqbj",
+    "track_name": "Восход",
+    "artists": [
+      "MiyaGi & Endspiel"
+    ],
+    "artist_ids": [
+      "6L5bLEtpxwd0KOdOr3gtW4"
+    ],
+    "duration_ms": 180274,
+    "popularity": 39,
+    "explicit": false,
+    "added_at": "2024-02-25T14:11:21Z",
+    "created_at": "2025-10-12T20:35:05.154920+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "61nzEAmKgzWRL5vFuwwd3B",
+    "track_name": "Любовь HD1080",
+    "artists": [
+      "Kaspiyskiy Gruz"
+    ],
+    "artist_ids": [
+      "5g5a3ENOYfn6myyLen218w"
+    ],
+    "duration_ms": 178264,
+    "popularity": 61,
+    "explicit": true,
+    "added_at": "2024-03-09T21:30:32Z",
+    "created_at": "2025-10-12T20:35:05.154924+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "4zFFCpXxwzBOWpx5EdAo1R",
+    "track_name": "Famicom",
+    "artists": [
+      "SODA LUV"
+    ],
+    "artist_ids": [
+      "3TikHXhctY4FUIMlkl0tzR"
+    ],
+    "duration_ms": 144000,
+    "popularity": 26,
+    "explicit": true,
+    "added_at": "2024-03-13T01:22:29Z",
+    "created_at": "2025-10-12T20:35:05.154928+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "3oUEzTAoOxqZHN4xiqTGqJ",
+    "track_name": "Bécane - A COLORS SHOW",
+    "artists": [
+      "Yamê",
+      "COLORS"
+    ],
+    "artist_ids": [
+      "0wiCfDEHaEcPkKZOi7Nivl",
+      "3FvwVFWRyvxmLyVBO9nBmM"
+    ],
+    "duration_ms": 182440,
+    "popularity": 65,
+    "explicit": true,
+    "added_at": "2024-03-31T16:59:18Z",
+    "created_at": "2025-10-12T20:35:05.154932+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "7l8Q5hVtKz2Ztold6N2gLh",
+    "track_name": "SAVE DAT",
+    "artists": [
+      "Toxi$",
+      "Egor Kreed"
+    ],
+    "artist_ids": [
+      "2hTmpvdwhpNZryOkwTisRW",
+      "2KoLmBXwsgMkfAvoPBlPmb"
+    ],
+    "duration_ms": 149013,
+    "popularity": 0,
+    "explicit": true,
+    "added_at": "2024-03-31T16:59:55Z",
+    "created_at": "2025-10-12T20:35:05.154937+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "3bSdSvGsYkPE48DktgEBZl",
+    "track_name": "Language Outro",
+    "artists": [
+      "Aarne"
+    ],
+    "artist_ids": [
+      "5B5qmrbTFvA7TAxWruuwbo"
+    ],
+    "duration_ms": 125760,
+    "popularity": 0,
+    "explicit": true,
+    "added_at": "2024-04-03T12:47:54Z",
+    "created_at": "2025-10-12T20:35:05.154941+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "1lOe9qE0vR9zwWQAOk6CoO",
+    "track_name": "Ransom",
+    "artists": [
+      "Lil Tecca"
+    ],
+    "artist_ids": [
+      "4Ga1P7PMIsmqEZqhYZQgDo"
+    ],
+    "duration_ms": 131240,
+    "popularity": 82,
+    "explicit": true,
+    "added_at": "2024-04-15T09:01:14Z",
+    "created_at": "2025-10-12T20:35:05.154945+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "2Vvr6Y6Q0zuYVhaElaT7cf",
+    "track_name": "Новый день",
+    "artists": [
+      "MiyaGi & Endspiel"
+    ],
+    "artist_ids": [
+      "6L5bLEtpxwd0KOdOr3gtW4"
+    ],
+    "duration_ms": 192807,
+    "popularity": 41,
+    "explicit": false,
+    "added_at": "2024-04-16T10:53:28Z",
+    "created_at": "2025-10-12T20:35:05.154949+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "7eraH0QBa5UrNKyN9a8d75",
+    "track_name": "Разница",
+    "artists": [
+      "Whole Lotta Swag"
+    ],
+    "artist_ids": [
+      "6BWpoXnUFVamLwShpnE24C"
+    ],
+    "duration_ms": 140500,
+    "popularity": 51,
+    "explicit": true,
+    "added_at": "2024-04-29T21:17:32Z",
+    "created_at": "2025-10-12T20:35:05.154954+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "7srjQ6G3hEtIcksoxrYTW9",
+    "track_name": "OneLove",
+    "artists": [
+      "MiyaGi & Endspiel"
+    ],
+    "artist_ids": [
+      "6L5bLEtpxwd0KOdOr3gtW4"
+    ],
+    "duration_ms": 210247,
+    "popularity": 47,
+    "explicit": true,
+    "added_at": "2024-05-02T22:04:59Z",
+    "created_at": "2025-10-12T20:35:05.154957+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "4o9kHw0XBJfGazV6bgttU4",
+    "track_name": "Supersonic",
+    "artists": [
+      "Big Baby Tape",
+      "Aarne"
+    ],
+    "artist_ids": [
+      "5NMwoStnfHT4LdETlJSwDT",
+      "5B5qmrbTFvA7TAxWruuwbo"
+    ],
+    "duration_ms": 164000,
+    "popularity": 0,
+    "explicit": false,
+    "added_at": "2024-07-07T11:46:22Z",
+    "created_at": "2025-10-12T20:35:05.154962+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "2H45fxPQJ4YwSXJiIc3iT3",
+    "track_name": "Безумие (feat. Oxxxymiron) - Remix",
+    "artists": [
+      "LSP",
+      "Oxxxymiron"
+    ],
+    "artist_ids": [
+      "4h8pGxEIOi7j4me1yhYxlD",
+      "1gCOYbJNUa1LBVO5rlx0jB"
+    ],
+    "duration_ms": 225462,
+    "popularity": 50,
+    "explicit": true,
+    "added_at": "2024-07-07T17:39:10Z",
+    "created_at": "2025-10-12T20:35:05.154968+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "3T5Bg6yis8bTyIk8o1nxjf",
+    "track_name": "Айдахар",
+    "artists": [
+      "Irina Kairatovna"
+    ],
+    "artist_ids": [
+      "0AGZvVUGRD63ticvhaXZx1"
+    ],
+    "duration_ms": 186000,
+    "popularity": 48,
+    "explicit": false,
+    "added_at": "2024-07-08T07:43:09Z",
+    "created_at": "2025-10-12T20:35:05.154972+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "74qrCDDswH0NKgVAf6ZOlO",
+    "track_name": "Closer",
+    "artists": [
+      "Big Baby Tape",
+      "Aarne"
+    ],
+    "artist_ids": [
+      "5NMwoStnfHT4LdETlJSwDT",
+      "5B5qmrbTFvA7TAxWruuwbo"
+    ],
+    "duration_ms": 122750,
+    "popularity": 0,
+    "explicit": true,
+    "added_at": "2024-07-10T17:31:37Z",
+    "created_at": "2025-10-12T20:35:05.154977+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "1p7pPeugG6GiuUYw3BGhAG",
+    "track_name": "High",
+    "artists": [
+      "MAYOT"
+    ],
+    "artist_ids": [
+      "3KtiWEUyKC5lgHedcN6y6C"
+    ],
+    "duration_ms": 145510,
+    "popularity": 0,
+    "explicit": true,
+    "added_at": "2024-07-11T16:38:02Z",
+    "created_at": "2025-10-12T20:35:05.154981+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "11gTRcdz4wK32fghA2vrX7",
+    "track_name": "Lost Angeles",
+    "artists": [
+      "FRIENDLY THUG 52 NGG"
+    ],
+    "artist_ids": [
+      "5xtbUYHaOycg6HIi10EZdV"
+    ],
+    "duration_ms": 114437,
+    "popularity": 63,
+    "explicit": true,
+    "added_at": "2024-07-11T16:52:09Z",
+    "created_at": "2025-10-12T20:35:05.154985+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "4johxKfdxNMXE6ZbnxPilW",
+    "track_name": "Устал, беги",
+    "artists": [
+      "T-Fest",
+      "FRIENDLY THUG 52 NGG"
+    ],
+    "artist_ids": [
+      "01lZudgXsojt5TBHuygB8r",
+      "5xtbUYHaOycg6HIi10EZdV"
+    ],
+    "duration_ms": 254386,
+    "popularity": 52,
+    "explicit": true,
+    "added_at": "2024-07-15T15:07:59Z",
+    "created_at": "2025-10-12T20:35:05.154989+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "4E2Q47wuPnmZ1D64wSHbIq",
+    "track_name": "<3 / Забудь меня",
+    "artists": [
+      "Egor Kreed"
+    ],
+    "artist_ids": [
+      "2KoLmBXwsgMkfAvoPBlPmb"
+    ],
+    "duration_ms": 159642,
+    "popularity": 0,
+    "explicit": true,
+    "added_at": "2024-07-15T21:50:33Z",
+    "created_at": "2025-10-12T20:35:05.154993+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "6JFlNQjeB6hYTd9g1lvOk5",
+    "track_name": "2015",
+    "artists": [
+      "Whole Lotta Swag"
+    ],
+    "artist_ids": [
+      "6BWpoXnUFVamLwShpnE24C"
+    ],
+    "duration_ms": 156734,
+    "popularity": 40,
+    "explicit": true,
+    "added_at": "2024-07-18T21:50:31Z",
+    "created_at": "2025-10-12T20:35:05.154997+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "41gNPwN1Y63tDYhMv27t7J",
+    "track_name": "RudeBoys",
+    "artists": [
+      "MiyaGi & Endspiel"
+    ],
+    "artist_ids": [
+      "6L5bLEtpxwd0KOdOr3gtW4"
+    ],
+    "duration_ms": 196173,
+    "popularity": 44,
+    "explicit": true,
+    "added_at": "2024-07-23T07:19:28Z",
+    "created_at": "2025-10-12T20:35:05.155001+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "13hJUmR1UpCUzyHjotiImK",
+    "track_name": "Gen Z Luv",
+    "artists": [
+      "Central Cee"
+    ],
+    "artist_ids": [
+      "5H4yInM5zmHqpKIoMNAx4r"
+    ],
+    "duration_ms": 153266,
+    "popularity": 64,
+    "explicit": true,
+    "added_at": "2024-07-25T21:20:43Z",
+    "created_at": "2025-10-12T20:35:05.155007+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "74loibzxXRL875X20kenvk",
+    "track_name": "Poland",
+    "artists": [
+      "Lil Yachty"
+    ],
+    "artist_ids": [
+      "6icQOAFXDZKsumw3YXyusw"
+    ],
+    "duration_ms": 83200,
+    "popularity": 59,
+    "explicit": true,
+    "added_at": "2024-08-13T16:38:42Z",
+    "created_at": "2025-10-12T20:35:05.155011+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "62vpWI1CHwFy7tMIcSStl8",
+    "track_name": "No Role Modelz",
+    "artists": [
+      "J. Cole"
+    ],
+    "artist_ids": [
+      "6l3HvQ5sa6mXTsMTB19rO5"
+    ],
+    "duration_ms": 292986,
+    "popularity": 8,
+    "explicit": true,
+    "added_at": "2024-08-14T21:01:04Z",
+    "created_at": "2025-10-12T20:35:05.155015+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "4FyesJzVpA39hbYvcseO2d",
+    "track_name": "Just Wanna Rock",
+    "artists": [
+      "Lil Uzi Vert"
+    ],
+    "artist_ids": [
+      "4O15NlyKLIASxsJ0PrXPfz"
+    ],
+    "duration_ms": 123890,
+    "popularity": 70,
+    "explicit": true,
+    "added_at": "2024-08-14T21:16:26Z",
+    "created_at": "2025-10-12T20:35:05.155019+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "2tbNi0xvIrYFCI9NcWNwFu",
+    "track_name": "От луны до Марса",
+    "artists": [
+      "MATRANG"
+    ],
+    "artist_ids": [
+      "7MVKH9fm8zwRycJpRU1UGc"
+    ],
+    "duration_ms": 270375,
+    "popularity": 48,
+    "explicit": false,
+    "added_at": "2024-08-19T07:54:59Z",
+    "created_at": "2025-10-12T20:35:05.155022+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "5kHSMRbZKyGwaSwNSRrQXV",
+    "track_name": "Patha Patha Gugu - Drill Remix",
+    "artists": [
+      "Trinix Remix"
+    ],
+    "artist_ids": [
+      "0RvjLz7klSc5lNgxX7EiVZ"
+    ],
+    "duration_ms": 127058,
+    "popularity": 53,
+    "explicit": false,
+    "added_at": "2024-08-20T08:54:41Z",
+    "created_at": "2025-10-12T20:35:05.155026+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "0OA00aPt3BV10qeMIs3meW",
+    "track_name": "Big Dawgs",
+    "artists": [
+      "Hanumankind",
+      "Kalmi"
+    ],
+    "artist_ids": [
+      "4nVa6XlBFlIkF6msW57PHp",
+      "6tYCSHLtTI54AQJFOMfU45"
+    ],
+    "duration_ms": 190666,
+    "popularity": 77,
+    "explicit": true,
+    "added_at": "2024-08-23T12:22:10Z",
+    "created_at": "2025-10-12T20:35:05.155030+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "6AI3ezQ4o3HUoP6Dhudph3",
+    "track_name": "Not Like Us",
+    "artists": [
+      "Kendrick Lamar"
+    ],
+    "artist_ids": [
+      "2YZyLoL8N0Wb9xBt1NhZWg"
+    ],
+    "duration_ms": 274192,
+    "popularity": 87,
+    "explicit": true,
+    "added_at": "2024-08-23T12:27:02Z",
+    "created_at": "2025-10-12T20:35:05.155037+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "00Srvq2BtgG9afXY9kzB1V",
+    "track_name": "GANG",
+    "artists": [
+      "Kairo Keyz"
+    ],
+    "artist_ids": [
+      "16WiaItNjYShr5vFzzg7nQ"
+    ],
+    "duration_ms": 113142,
+    "popularity": 66,
+    "explicit": true,
+    "added_at": "2024-08-23T12:27:38Z",
+    "created_at": "2025-10-12T20:35:05.155041+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "6914nrqNob8EcW3qyEhihe",
+    "track_name": "Yo Bunny",
+    "artists": [
+      "prodbycpkshawn",
+      "Ugly Andz."
+    ],
+    "artist_ids": [
+      "4lSMHN0hTQWFJchmKwHE7Z",
+      "6o33ajgtOTzJPKrgvQR9pW"
+    ],
+    "duration_ms": 110471,
+    "popularity": 66,
+    "explicit": true,
+    "added_at": "2024-08-23T12:27:57Z",
+    "created_at": "2025-10-12T20:35:05.155045+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "14DLZ9FaTofhnXBiV38axE",
+    "track_name": "Bolide Noir",
+    "artists": [
+      "Central Cee",
+      "JRK 19"
+    ],
+    "artist_ids": [
+      "5H4yInM5zmHqpKIoMNAx4r",
+      "081t7kkrq7re69pk4vTurz"
+    ],
+    "duration_ms": 170800,
+    "popularity": 64,
+    "explicit": true,
+    "added_at": "2024-08-24T14:06:47Z",
+    "created_at": "2025-10-12T20:35:05.155049+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "1bpxWHaT6N8gD2k1TvhJYt",
+    "track_name": "Sold Out",
+    "artists": [
+      "FRIENDLY THUG 52 NGG",
+      "kizaru"
+    ],
+    "artist_ids": [
+      "5xtbUYHaOycg6HIi10EZdV",
+      "5NipqMGsY4AUeb7kGT8aVz"
+    ],
+    "duration_ms": 153442,
+    "popularity": 54,
+    "explicit": true,
+    "added_at": "2024-08-30T14:50:09Z",
+    "created_at": "2025-10-12T20:35:05.155053+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "0bbltOPNiLomKuJFtRBJ2t",
+    "track_name": "ЧУВСТВА",
+    "artists": [
+      "Aarne",
+      "BUSHIDO ZHO",
+      "ATL",
+      "АДЛИН"
+    ],
+    "artist_ids": [
+      "5B5qmrbTFvA7TAxWruuwbo",
+      "27kGBCjiz5OXojkKX4xQ6R",
+      "2n6CVwo43YvjiTgcPxYWrf",
+      "3vw4wtxW7yv7yJSDqkIuUz"
+    ],
+    "duration_ms": 154285,
+    "popularity": 0,
+    "explicit": true,
+    "added_at": "2024-09-02T17:25:23Z",
+    "created_at": "2025-10-12T20:35:05.155058+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "4enCMfd6Ubyn2m9Tkb8lUV",
+    "track_name": "Окраина",
+    "artists": [
+      "Whole Lotta Swag",
+      "Skryptonite"
+    ],
+    "artist_ids": [
+      "6BWpoXnUFVamLwShpnE24C",
+      "3vvLuXEEf7sl3izJcw0GIn"
+    ],
+    "duration_ms": 180645,
+    "popularity": 44,
+    "explicit": true,
+    "added_at": "2024-09-03T20:17:18Z",
+    "created_at": "2025-10-12T20:35:05.155062+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "5AMaSh2CGFCGC8wRGSQlJA",
+    "track_name": "High",
+    "artists": [
+      "MAYOT"
+    ],
+    "artist_ids": [
+      "3KtiWEUyKC5lgHedcN6y6C"
+    ],
+    "duration_ms": 145510,
+    "popularity": 43,
+    "explicit": true,
+    "added_at": "2024-09-03T20:17:29Z",
+    "created_at": "2025-10-12T20:35:05.155066+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "4BPKSRZrfxCs4dd6WdzbBQ",
+    "track_name": "МАМБЛ",
+    "artists": [
+      "GONE.Fludd"
+    ],
+    "artist_ids": [
+      "0ohUvVskERzK18bvWXFEqi"
+    ],
+    "duration_ms": 156055,
+    "popularity": 51,
+    "explicit": true,
+    "added_at": "2024-09-09T15:00:31Z",
+    "created_at": "2025-10-12T20:35:05.155070+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "4gypp6InByEhUi7ssgWtAx",
+    "track_name": "Phoenix",
+    "artists": [
+      "9mice",
+      "Kai Angel"
+    ],
+    "artist_ids": [
+      "3v0qTkZvuro4johOZyIhOm",
+      "1pxLlPRiWRUBGdSOrVL4f0"
+    ],
+    "duration_ms": 150441,
+    "popularity": 52,
+    "explicit": true,
+    "added_at": "2024-09-23T12:30:51Z",
+    "created_at": "2025-10-12T20:35:05.155074+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "57lsYy0OZLNb5OQ7fEa3Hs",
+    "track_name": "Did It First (with Central Cee)",
+    "artists": [
+      "Ice Spice",
+      "Central Cee"
+    ],
+    "artist_ids": [
+      "3LZZPxNDGDFVSIPqf4JuEf",
+      "5H4yInM5zmHqpKIoMNAx4r"
+    ],
+    "duration_ms": 118002,
+    "popularity": 68,
+    "explicit": true,
+    "added_at": "2024-09-23T19:13:05Z",
+    "created_at": "2025-10-12T20:35:05.155078+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "0jeLXKyydn20d2IxSOIdYa",
+    "track_name": "Ага, ну",
+    "artists": [
+      "T-Fest",
+      "Skryptonite"
+    ],
+    "artist_ids": [
+      "01lZudgXsojt5TBHuygB8r",
+      "3vvLuXEEf7sl3izJcw0GIn"
+    ],
+    "duration_ms": 144627,
+    "popularity": 38,
+    "explicit": false,
+    "added_at": "2024-09-28T09:22:08Z",
+    "created_at": "2025-10-12T20:35:05.155082+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "7sUvAp7OIIlkx1iPmmwMKU",
+    "track_name": "Голова",
+    "artists": [
+      "Endspiel"
+    ],
+    "artist_ids": [
+      "35m8HjyHmGQxAKfIBVHZpF"
+    ],
+    "duration_ms": 158510,
+    "popularity": 42,
+    "explicit": true,
+    "added_at": "2024-09-28T14:26:52Z",
+    "created_at": "2025-10-12T20:35:05.155086+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "4RTCJkmAS1BA6lIvGZDoVz",
+    "track_name": "Guantanamera",
+    "artists": [
+      "Kaspiyskiy Gruz",
+      "Адвайта"
+    ],
+    "artist_ids": [
+      "5g5a3ENOYfn6myyLen218w",
+      "7a94v6UTfTfuDmSXYNpiDr"
+    ],
+    "duration_ms": 266129,
+    "popularity": 26,
+    "explicit": false,
+    "added_at": "2024-10-01T16:37:25Z",
+    "created_at": "2025-10-12T20:35:05.155090+00:00"
+  },
+  {
+    "playlist_id": "6ER3JjC3J5Q1s9e6GtcLpA",
+    "playlist_name": "int main()",
+    "track_id": "3PbFcJIfH0BZjtxdSQyuSs",
+    "track_name": "Ствол дымится",
+    "artists": [
+      "N1NT3ND0"
+    ],
+    "artist_ids": [
+      "6WI9EjCdJWcwOFFtubMrGM"
+    ],
+    "duration_ms": 263208,
+    "popularity": 40,
+    "explicit": true,
+    "added_at": "2024-10-08T12:32:33Z",
+    "created_at": "2025-10-12T20:35:05.155094+00:00"
   },
   {
     "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
-    "collaborative": false,
-    "created_at": "2025-10-12T21:07:46.124623+00:00",
-    "description": "EDM WORKOUT &amp; MOTIVATION 💪 The perfect list for workout, gym, cardio &amp; running motivation. ",
-    "name": "RAGE 💪 EDM WORKOUT MOTIVATION",
-    "owner": "Tribal Trap",
-    "owner_id": "tribaltrap",
-    "public": true,
-    "tracks_count": 130
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "0I1imllcyCSpFxV9XtvdEM",
+    "track_name": "THE VOID - Ultra Slowed",
+    "artists": [
+      "N!GHTvisiøn",
+      "DudePlaya"
+    ],
+    "artist_ids": [
+      "069iCiM0s1UEgnn7jJorJ4",
+      "0ypzv0AG6k3yZjNxdhpnJF"
+    ],
+    "duration_ms": 152245,
+    "popularity": 56,
+    "explicit": false,
+    "added_at": "2025-06-19T10:25:34Z",
+    "created_at": "2025-10-12T20:35:05.936093+00:00"
   },
   {
-    "playlist_id": "3c4vSEwuHKc6fgi3EY3oMB",
-    "collaborative": false,
-    "created_at": "2025-10-12T21:07:46.124628+00:00",
-    "description": "",
-    "name": "Meine Playlist Nr. 2",
-    "owner": "Vadim",
-    "owner_id": "317fd22v4rytxoc6x6o4pi3ixpze",
-    "public": true,
-    "tracks_count": 0
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "5ZlUUZnSymtjQHTUf29RJP",
+    "track_name": "ALIBI",
+    "artists": [
+      "MARE",
+      "DJ ALEX",
+      "MissingR"
+    ],
+    "artist_ids": [
+      "0eGQLgDJaGfvvKv7spAgqX",
+      "7FqHcUwnhxJZAgS3I6GFFL",
+      "7jU9uuciLvwBg0Ahehe8QY"
+    ],
+    "duration_ms": 146250,
+    "popularity": 45,
+    "explicit": false,
+    "added_at": "2025-08-08T13:57:01Z",
+    "created_at": "2025-10-12T20:35:05.936120+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "1RXSE8kEN4l816k0s4Pv8U",
+    "track_name": "Prisoner Of Your Own Mind",
+    "artists": [
+      "Azulo"
+    ],
+    "artist_ids": [
+      "1T4SBodPtb9Wy2uLUEIF0I"
+    ],
+    "duration_ms": 204445,
+    "popularity": 47,
+    "explicit": true,
+    "added_at": "2025-08-28T22:34:49Z",
+    "created_at": "2025-10-12T20:35:05.936127+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "7LKfKpO56W1l3AUbfiwAeF",
+    "track_name": "DRUGS.mov - Super Slowed",
+    "artists": [
+      "Yb Wasg'ood",
+      "N!GHTvisiøn"
+    ],
+    "artist_ids": [
+      "02wf6SCDwrs2qTX09X0IRE",
+      "069iCiM0s1UEgnn7jJorJ4"
+    ],
+    "duration_ms": 122211,
+    "popularity": 47,
+    "explicit": false,
+    "added_at": "2025-06-13T08:33:26Z",
+    "created_at": "2025-10-12T20:35:05.936136+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "5VBD83mK76CvRKVxkddxn5",
+    "track_name": "ECLIPSE - Super Slowed",
+    "artists": [
+      "N!GHTvisiøn",
+      "Nxxkz"
+    ],
+    "artist_ids": [
+      "069iCiM0s1UEgnn7jJorJ4",
+      "5AEQFkU5i6WoB4OkHb32Eb"
+    ],
+    "duration_ms": 157009,
+    "popularity": 38,
+    "explicit": false,
+    "added_at": "2025-09-26T12:13:57Z",
+    "created_at": "2025-10-12T20:35:05.936142+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "11uo4du1Zafit55LxcV3th",
+    "track_name": "DOOM",
+    "artists": [
+      "HXLLGANG",
+      "REVTA"
+    ],
+    "artist_ids": [
+      "75TXk71aO72EDVxp9LZA28",
+      "5W2WXl34uwIKhU5H3q2HU6"
+    ],
+    "duration_ms": 104884,
+    "popularity": 22,
+    "explicit": false,
+    "added_at": "2025-10-06T11:56:53Z",
+    "created_at": "2025-10-12T20:35:05.936148+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "4Sk5oJy9QYRxW4bPJo8TiT",
+    "track_name": "CORAÇÃO",
+    "artists": [
+      "sma$her",
+      "stxrbøy"
+    ],
+    "artist_ids": [
+      "1Fl1fc7bZfRVUCffh9Uudx",
+      "4hDC6zuK2V5qwyeJcydSPS"
+    ],
+    "duration_ms": 72727,
+    "popularity": 50,
+    "explicit": false,
+    "added_at": "2025-09-29T08:49:40Z",
+    "created_at": "2025-10-12T20:35:05.936153+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "69ASzHq2CgXqKfmqlTlozL",
+    "track_name": "EVENCLOSE",
+    "artists": [
+      "ICEHATE"
+    ],
+    "artist_ids": [
+      "0KM5LspflQapNZnp3InHbB"
+    ],
+    "duration_ms": 117642,
+    "popularity": 30,
+    "explicit": false,
+    "added_at": "2025-09-12T13:27:37Z",
+    "created_at": "2025-10-12T20:35:05.936159+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "0U6wcDvZYGVx1zfoh5jCuU",
+    "track_name": "BROTA NA BASE",
+    "artists": [
+      "HIMXN",
+      "NOTXNDYBOY",
+      "Mc Bockaum"
+    ],
+    "artist_ids": [
+      "50LbWtqqQeduRjJHLuwQed",
+      "5dt5VvKgK1bVZodVPnx7AI",
+      "6Gr49ikaor5MuFQPBlOZ29"
+    ],
+    "duration_ms": 99000,
+    "popularity": 64,
+    "explicit": false,
+    "added_at": "2025-06-13T08:33:26Z",
+    "created_at": "2025-10-12T20:35:05.936165+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "1GTYNZq3pdRNz7JhnkeGJP",
+    "track_name": "FUNK DO BOUNCE (BEAUZ Remix)",
+    "artists": [
+      "Ariis",
+      "BEAUZ"
+    ],
+    "artist_ids": [
+      "09cKncAQn28NqTUORLMwSR",
+      "2Wzb0u138rgoZQTK3ytknT"
+    ],
+    "duration_ms": 116000,
+    "popularity": 37,
+    "explicit": false,
+    "added_at": "2025-06-13T08:33:26Z",
+    "created_at": "2025-10-12T20:35:05.936171+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "3wynI4tCs1XMc4zlmG6pvu",
+    "track_name": "fragment - slowed",
+    "artists": [
+      "slxughter"
+    ],
+    "artist_ids": [
+      "1M02J1PLobtQYok93DEvVa"
+    ],
+    "duration_ms": 97857,
+    "popularity": 77,
+    "explicit": false,
+    "added_at": "2025-06-13T08:33:26Z",
+    "created_at": "2025-10-12T20:35:05.936177+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "17jtKVi0oQGagy6x07klo4",
+    "track_name": "MEDICINE",
+    "artists": [
+      "Natte Visstick"
+    ],
+    "artist_ids": [
+      "5hUbXqyif2dZ3ArU1v9Rli"
+    ],
+    "duration_ms": 127201,
+    "popularity": 39,
+    "explicit": true,
+    "added_at": "2025-08-28T20:51:52Z",
+    "created_at": "2025-10-12T20:35:05.936181+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "5vg0Px9xR1hoDDyWo7qvR0",
+    "track_name": "CHERRY KILLER",
+    "artists": [
+      "Sei Lean",
+      "Yansanes",
+      "Teufelsschloss"
+    ],
+    "artist_ids": [
+      "6V2yd0Ru6yTlI9nEPaWcaO",
+      "0NvI8597xPNHOZlXbRdlRA",
+      "6YL14JXAhBYVbRZVq06frT"
+    ],
+    "duration_ms": 108003,
+    "popularity": 33,
+    "explicit": false,
+    "added_at": "2025-09-16T22:40:08Z",
+    "created_at": "2025-10-12T20:35:05.936186+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "6bcDrajNpOq5wCxBO8A5iS",
+    "track_name": "SHATTERED",
+    "artists": [
+      "LXG666",
+      "justforgetme"
+    ],
+    "artist_ids": [
+      "72XTsCwU40QABwSkdRGMti",
+      "4thCAXlpGSQSUe13fvzjrA"
+    ],
+    "duration_ms": 137435,
+    "popularity": 31,
+    "explicit": false,
+    "added_at": "2025-09-16T13:39:54Z",
+    "created_at": "2025-10-12T20:35:05.936190+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "7xlaEN0brE25pdeMqLf0L5",
+    "track_name": "relic",
+    "artists": [
+      "NISVANIS"
+    ],
+    "artist_ids": [
+      "4IolqVFBxzemV4hyZNB00G"
+    ],
+    "duration_ms": 78756,
+    "popularity": 24,
+    "explicit": false,
+    "added_at": "2025-09-29T08:50:33Z",
+    "created_at": "2025-10-12T20:35:05.936194+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "2rIp91hwB1X5MVsdWICHc1",
+    "track_name": "SEM NADA",
+    "artists": [
+      "Ogryzek",
+      "F!xmexed",
+      "LeoTHM"
+    ],
+    "artist_ids": [
+      "1Sdc6ySbIvzO0X9vbyHzWm",
+      "3TpW05xcxfUF77wBf9LP2j",
+      "6E7d0UydWwTMqxXzNRdp78"
+    ],
+    "duration_ms": 73861,
+    "popularity": 49,
+    "explicit": false,
+    "added_at": "2025-10-03T08:20:38Z",
+    "created_at": "2025-10-12T20:35:05.936199+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "4sAOtFRskYoS7gcH0tkrNs",
+    "track_name": "DING DONG",
+    "artists": [
+      "IMHAPPY"
+    ],
+    "artist_ids": [
+      "610Cl4EOB0UT1FSg8zjedB"
+    ],
+    "duration_ms": 165007,
+    "popularity": 41,
+    "explicit": false,
+    "added_at": "2025-06-13T08:33:26Z",
+    "created_at": "2025-10-12T20:35:05.936203+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "1GFkPya3vFtqYWqnRg016z",
+    "track_name": "The Kraken!",
+    "artists": [
+      "yngastrobeatz.",
+      "ZomboBox!",
+      "CHXFTE1N"
+    ],
+    "artist_ids": [
+      "5sZrMlmLdssEPC5EsdPMhm",
+      "6BnAxEWBJqCZsM1ASyXd4G",
+      "72tKnMS7utMKZsMT0tzxKC"
+    ],
+    "duration_ms": 143402,
+    "popularity": 37,
+    "explicit": false,
+    "added_at": "2025-08-29T11:17:55Z",
+    "created_at": "2025-10-12T20:35:05.936207+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "41hlRQMjaiR9CY1bfqMs1O",
+    "track_name": "Digital Gang",
+    "artists": [
+      "RAMØN"
+    ],
+    "artist_ids": [
+      "3wGq6ADKJWJOBfHw0kzytT"
+    ],
+    "duration_ms": 181875,
+    "popularity": 36,
+    "explicit": false,
+    "added_at": "2025-09-19T07:23:49Z",
+    "created_at": "2025-10-12T20:35:05.936211+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "4AvXDhEbQzZrTP24xLTwFR",
+    "track_name": "O MAIS FORTE",
+    "artists": [
+      "BLXDE"
+    ],
+    "artist_ids": [
+      "7AqsFWr2ypvpXCfClKrfGj"
+    ],
+    "duration_ms": 73043,
+    "popularity": 35,
+    "explicit": false,
+    "added_at": "2025-07-22T14:22:39Z",
+    "created_at": "2025-10-12T20:35:05.936215+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "4I7nOFr3RP43sHEyQoxuQc",
+    "track_name": "TRUST",
+    "artists": [
+      "DrDeagle"
+    ],
+    "artist_ids": [
+      "0JFdYafPV1FuaD6n0mMAwi"
+    ],
+    "duration_ms": 107514,
+    "popularity": 51,
+    "explicit": false,
+    "added_at": "2025-08-28T20:52:19Z",
+    "created_at": "2025-10-12T20:35:05.936220+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "2A1knh91HBJEwx3GB9Lk0B",
+    "track_name": "Aristocat - YOSUF Hardstyle Remix",
+    "artists": [
+      "Alfons",
+      "Yosuf"
+    ],
+    "artist_ids": [
+      "5f5mH9BDkeyXmDbzevu38d",
+      "0pceb68in41LfgvQbkvCzg"
+    ],
+    "duration_ms": 114947,
+    "popularity": 39,
+    "explicit": false,
+    "added_at": "2025-07-11T05:39:55Z",
+    "created_at": "2025-10-12T20:35:05.936224+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "1XaP4quG4CjTMIoC9o009h",
+    "track_name": "Evolution",
+    "artists": [
+      "PXLWYSE",
+      "Raiden"
+    ],
+    "artist_ids": [
+      "6OwbqUSj4XbZdjexPsKkdH",
+      "6dmXj3qV9S4iLb2gpkYa7n"
+    ],
+    "duration_ms": 141345,
+    "popularity": 39,
+    "explicit": false,
+    "added_at": "2025-06-13T17:42:34Z",
+    "created_at": "2025-10-12T20:35:05.936228+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "3i76TcSDxNG5lIGNFvWTzm",
+    "track_name": "All The Way Up",
+    "artists": [
+      "CryJaxx",
+      "Noise Affairs",
+      "Justtjokay"
+    ],
+    "artist_ids": [
+      "4FidvjA9dxE6bhpHGC6ns9",
+      "2GKDrE503MMZkSGOA2XIZs",
+      "4AsEwe2pYHpTM6xB5KAa2y"
+    ],
+    "duration_ms": 164347,
+    "popularity": 37,
+    "explicit": true,
+    "added_at": "2025-06-13T08:33:26Z",
+    "created_at": "2025-10-12T20:35:05.936233+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "1nmqpNDIp1EW4HrOR6An5O",
+    "track_name": "PE PE PE",
+    "artists": [
+      "CLAESSENS"
+    ],
+    "artist_ids": [
+      "3izGC7y6FX9bQplBju9aUs"
+    ],
+    "duration_ms": 119220,
+    "popularity": 37,
+    "explicit": false,
+    "added_at": "2025-07-25T17:08:22Z",
+    "created_at": "2025-10-12T20:35:05.936237+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "69DmuFrT1YtYP5jZ9pNWae",
+    "track_name": "INSOMNIA",
+    "artists": [
+      "HXLLGANG"
+    ],
+    "artist_ids": [
+      "75TXk71aO72EDVxp9LZA28"
+    ],
+    "duration_ms": 99692,
+    "popularity": 56,
+    "explicit": false,
+    "added_at": "2025-06-13T08:33:26Z",
+    "created_at": "2025-10-12T20:35:05.936241+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "283hApzR3HjIC3B5XaFXVt",
+    "track_name": "I SMELL FEAR",
+    "artists": [
+      "RAGETRAIN"
+    ],
+    "artist_ids": [
+      "4Jpt4xGfDFMOsx5yaNsZ6V"
+    ],
+    "duration_ms": 225265,
+    "popularity": 46,
+    "explicit": false,
+    "added_at": "2025-06-13T08:33:26Z",
+    "created_at": "2025-10-12T20:35:05.936245+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "4ZBXf4mifQ4eYyfKEjPmTR",
+    "track_name": "BLOOD_RITE",
+    "artists": [
+      "pvlsxr",
+      "KVMIKAZE"
+    ],
+    "artist_ids": [
+      "0h530Gq0iUJMhSV5ZQUhRD",
+      "3VXSsrwSCcwzVCl097DthY"
+    ],
+    "duration_ms": 99692,
+    "popularity": 26,
+    "explicit": false,
+    "added_at": "2025-08-28T20:59:57Z",
+    "created_at": "2025-10-12T20:35:05.936249+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "7atvwsPSgDH0cdy7JBa0uj",
+    "track_name": "DATAHATE - Slowed",
+    "artists": [
+      "dvspair"
+    ],
+    "artist_ids": [
+      "3z0A4imcC68KLhZGn4uwzw"
+    ],
+    "duration_ms": 122181,
+    "popularity": 34,
+    "explicit": false,
+    "added_at": "2025-08-14T09:57:28Z",
+    "created_at": "2025-10-12T20:35:05.936253+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "6t3H2gwyidxtxlX7raCPao",
+    "track_name": "I Got That",
+    "artists": [
+      "CLAESSENS",
+      "Reggio"
+    ],
+    "artist_ids": [
+      "3izGC7y6FX9bQplBju9aUs",
+      "1Q6CDBTFFKnanZ20DS2QnQ"
+    ],
+    "duration_ms": 252387,
+    "popularity": 30,
+    "explicit": false,
+    "added_at": "2025-07-05T19:12:21Z",
+    "created_at": "2025-10-12T20:35:05.936258+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "2tJWUMV5tubJi3qcm3tbr6",
+    "track_name": "FORÇA OBSCURA",
+    "artists": [
+      "GHXSTBR",
+      "Nocturne"
+    ],
+    "artist_ids": [
+      "30CufiKYfHsWnLYn10Fdqr",
+      "0reOir0cqpabsws2U2G8JP"
+    ],
+    "duration_ms": 118793,
+    "popularity": 41,
+    "explicit": false,
+    "added_at": "2025-07-22T14:12:13Z",
+    "created_at": "2025-10-12T20:35:05.936262+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "4y1pNiG79ctvbjANiG5TxO",
+    "track_name": "NEW BLOOD",
+    "artists": [
+      "RAIZHELL",
+      "DEATHPIXIE"
+    ],
+    "artist_ids": [
+      "24sVPKlhUfQ8rMyUg7qLUq",
+      "5uzPIJDzWAujemRDKiJMRj"
+    ],
+    "duration_ms": 136695,
+    "popularity": 36,
+    "explicit": false,
+    "added_at": "2025-06-13T08:33:26Z",
+    "created_at": "2025-10-12T20:35:05.936266+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "02xAELu6YCnWSm2XIrMabN",
+    "track_name": "PODIUM OF GREED",
+    "artists": [
+      "DrDeagle",
+      "HXLLGANG"
+    ],
+    "artist_ids": [
+      "0JFdYafPV1FuaD6n0mMAwi",
+      "75TXk71aO72EDVxp9LZA28"
+    ],
+    "duration_ms": 138952,
+    "popularity": 45,
+    "explicit": false,
+    "added_at": "2025-06-16T17:11:52Z",
+    "created_at": "2025-10-12T20:35:05.936270+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "1lS2qOUk6GA20XvjjrWc25",
+    "track_name": "MANDA BALA",
+    "artists": [
+      "Ariis"
+    ],
+    "artist_ids": [
+      "09cKncAQn28NqTUORLMwSR"
+    ],
+    "duration_ms": 100465,
+    "popularity": 65,
+    "explicit": false,
+    "added_at": "2025-06-13T08:33:26Z",
+    "created_at": "2025-10-12T20:35:05.936274+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "1VtPgxEcVL9WXyh3bPXSdE",
+    "track_name": "EXECUTIONER",
+    "artists": [
+      "CRXSXDE"
+    ],
+    "artist_ids": [
+      "0UU33EaoXPdJmS3n4UqkMB"
+    ],
+    "duration_ms": 82000,
+    "popularity": 28,
+    "explicit": false,
+    "added_at": "2025-08-16T14:46:46Z",
+    "created_at": "2025-10-12T20:35:05.936277+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "0lAKvLOGhgKFcINq5ADSGb",
+    "track_name": "DOMILITANT",
+    "artists": [
+      "HIMXN"
+    ],
+    "artist_ids": [
+      "50LbWtqqQeduRjJHLuwQed"
+    ],
+    "duration_ms": 182400,
+    "popularity": 48,
+    "explicit": false,
+    "added_at": "2025-06-13T08:33:26Z",
+    "created_at": "2025-10-12T20:35:05.936282+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "4ScXIFWjw5fyDssodVaGTn",
+    "track_name": "SWAROG FUNK",
+    "artists": [
+      "ENDLESS",
+      "Filip Lackovic"
+    ],
+    "artist_ids": [
+      "4t4QytdT3mhrRgKue8Q0GK",
+      "01jsyCt7tvyaOfCkCKYjCw"
+    ],
+    "duration_ms": 108068,
+    "popularity": 44,
+    "explicit": false,
+    "added_at": "2025-06-13T08:33:26Z",
+    "created_at": "2025-10-12T20:35:05.936286+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "0jr1t9YGlEGjF7wr05WkNn",
+    "track_name": "Anxiety",
+    "artists": [
+      "THNDERZ",
+      "Jaime Arin"
+    ],
+    "artist_ids": [
+      "4rCSOIelSj4xsI1Zo5WM23",
+      "76d4UFHUwNmore3JpmeOof"
+    ],
+    "duration_ms": 185406,
+    "popularity": 39,
+    "explicit": false,
+    "added_at": "2025-06-13T08:33:26Z",
+    "created_at": "2025-10-12T20:35:05.936290+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "676QSr8Hwl59ZGvwTb5tj9",
+    "track_name": "SLAVA BLOOD! 2",
+    "artists": [
+      "Rubikdice",
+      "Avenxir",
+      "Chilx",
+      "Filip Lackovic"
+    ],
+    "artist_ids": [
+      "6l3xqTokYcPPqrFhTlq9qQ",
+      "4Q2hJ2sAi0Tw1G5Gxv668a",
+      "1kqRQGby2asyPEdtliZYOG",
+      "01jsyCt7tvyaOfCkCKYjCw"
+    ],
+    "duration_ms": 127389,
+    "popularity": 40,
+    "explicit": false,
+    "added_at": "2025-09-11T15:42:06Z",
+    "created_at": "2025-10-12T20:35:05.936295+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "0EcAaJRhjLN6DvS28uWLHJ",
+    "track_name": "VARKH",
+    "artists": [
+      "NISVANIS",
+      "KPHK"
+    ],
+    "artist_ids": [
+      "4IolqVFBxzemV4hyZNB00G",
+      "3xJiemGM1VxCDi2QhGU08l"
+    ],
+    "duration_ms": 76428,
+    "popularity": 49,
+    "explicit": false,
+    "added_at": "2025-08-15T11:46:41Z",
+    "created_at": "2025-10-12T20:35:05.936299+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "56BZSVROHDzuiYM8C2Zv3y",
+    "track_name": "FUNK INFERNAL",
+    "artists": [
+      "DYGO",
+      "Mxng0"
+    ],
+    "artist_ids": [
+      "6ZhleMHIGIpjkBHrQDl4G7",
+      "1KoTNs0Ev2KGs7AF5lWlx3"
+    ],
+    "duration_ms": 90000,
+    "popularity": 74,
+    "explicit": false,
+    "added_at": "2025-06-13T08:33:26Z",
+    "created_at": "2025-10-12T20:35:05.936303+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "20UVR22opf6YEQsK92LDos",
+    "track_name": "THE VOID",
+    "artists": [
+      "N!GHTvisiøn",
+      "DudePlaya"
+    ],
+    "artist_ids": [
+      "069iCiM0s1UEgnn7jJorJ4",
+      "0ypzv0AG6k3yZjNxdhpnJF"
+    ],
+    "duration_ms": 121846,
+    "popularity": 50,
+    "explicit": false,
+    "added_at": "2025-06-13T08:33:26Z",
+    "created_at": "2025-10-12T20:35:05.936308+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "4OGyEiOBFKFxeOJqL8J6hm",
+    "track_name": "DARKSIDE",
+    "artists": [
+      "KNVCKLES"
+    ],
+    "artist_ids": [
+      "1QOyhzgTCJeJEentpXc3cB"
+    ],
+    "duration_ms": 120000,
+    "popularity": 24,
+    "explicit": false,
+    "added_at": "2025-06-13T08:33:26Z",
+    "created_at": "2025-10-12T20:35:05.936311+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "2ZrHpHD2TP5bGHuznQg3wS",
+    "track_name": "ACORDAR",
+    "artists": [
+      "Brevis"
+    ],
+    "artist_ids": [
+      "5FltlsNXcB1hNGvSCwzGhx"
+    ],
+    "duration_ms": 100615,
+    "popularity": 35,
+    "explicit": false,
+    "added_at": "2025-08-22T13:58:11Z",
+    "created_at": "2025-10-12T20:35:05.936316+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "0GSXlOZhZFNkTqh9m5zRPH",
+    "track_name": "PACTO",
+    "artists": [
+      "BLOOD†ERNAL",
+      "Hybrid Noise"
+    ],
+    "artist_ids": [
+      "5JaHMRieeLJunYLunVxmCX",
+      "5rBvo2ceiKXRcEqZKB1h3Q"
+    ],
+    "duration_ms": 78673,
+    "popularity": 29,
+    "explicit": false,
+    "added_at": "2025-08-22T14:01:57Z",
+    "created_at": "2025-10-12T20:35:05.936320+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "72JUYbtjJILAcr5Kd8jPOD",
+    "track_name": "Vampire",
+    "artists": [
+      "Murdbrain"
+    ],
+    "artist_ids": [
+      "1uJZAXeNu4zmrwkjHwUysn"
+    ],
+    "duration_ms": 135711,
+    "popularity": 24,
+    "explicit": false,
+    "added_at": "2025-06-20T07:51:34Z",
+    "created_at": "2025-10-12T20:35:05.936324+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "2ior6NeQGRhbHjd70J8Ar6",
+    "track_name": "SCARY FUNK 1.0",
+    "artists": [
+      "VAMPXL",
+      "LØST SIGNAL",
+      "NTPV"
+    ],
+    "artist_ids": [
+      "0T7GKus4906b5ktX9HWBQL",
+      "4lhyolukuFODU8oTkbJ1oS",
+      "4ln235vY1WKuyeLoGJSdwZ"
+    ],
+    "duration_ms": 104732,
+    "popularity": 32,
+    "explicit": false,
+    "added_at": "2025-06-13T08:33:26Z",
+    "created_at": "2025-10-12T20:35:05.936328+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "0ufxdEfiRz4W5U2nhoWoCv",
+    "track_name": "new_wave_25",
+    "artists": [
+      "FXRR"
+    ],
+    "artist_ids": [
+      "18Aa5fsiPr4pXRAwezZN6i"
+    ],
+    "duration_ms": 108923,
+    "popularity": 27,
+    "explicit": false,
+    "added_at": "2025-06-13T08:33:26Z",
+    "created_at": "2025-10-12T20:35:05.936332+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "1t1Ko5fJw2Pbd7C65nUKbO",
+    "track_name": "CORRUPÇÃO FUNK",
+    "artists": [
+      "zxnc.",
+      "DARKANASE",
+      "NTPV"
+    ],
+    "artist_ids": [
+      "0z9ZCh4EXDX3iXuw7QGiLp",
+      "3FUCRB0hJhe9BrXW1yonDh",
+      "4ln235vY1WKuyeLoGJSdwZ"
+    ],
+    "duration_ms": 134526,
+    "popularity": 61,
+    "explicit": false,
+    "added_at": "2025-06-13T08:33:26Z",
+    "created_at": "2025-10-12T20:35:05.936337+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "65KTsqXbjSr9k8K6X65CIa",
+    "track_name": "Bassline Slut",
+    "artists": [
+      "Natte Visstick",
+      "Vieze Asbak",
+      "Lil Texas"
+    ],
+    "artist_ids": [
+      "5hUbXqyif2dZ3ArU1v9Rli",
+      "66FZq0wsY6770bc4O9Dlig",
+      "76raIy8boaM9sf9gMGXGJ5"
+    ],
+    "duration_ms": 137142,
+    "popularity": 51,
+    "explicit": true,
+    "added_at": "2025-08-23T15:16:03Z",
+    "created_at": "2025-10-12T20:35:05.936345+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "3yFfxTtf1zZOnnohtGM88i",
+    "track_name": "ATAQUE AO CASTELO",
+    "artists": [
+      "VAMPXL",
+      "crancked",
+      "Phonkdope"
+    ],
+    "artist_ids": [
+      "0T7GKus4906b5ktX9HWBQL",
+      "0ligoiJADn90vcWCo6fwwc",
+      "5xy2v1ZbpuIiSH9Ds5B5cc"
+    ],
+    "duration_ms": 112504,
+    "popularity": 35,
+    "explicit": false,
+    "added_at": "2025-07-22T14:19:22Z",
+    "created_at": "2025-10-12T20:35:05.936349+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "0FGtcWC0pgMkSLqyvOFwbN",
+    "track_name": "Vergiss Die Zeit",
+    "artists": [
+      "CLAESSENS",
+      "Tiara Black"
+    ],
+    "artist_ids": [
+      "3izGC7y6FX9bQplBju9aUs",
+      "13cNomVyc3ER9Yhiu7bbfD"
+    ],
+    "duration_ms": 186000,
+    "popularity": 34,
+    "explicit": false,
+    "added_at": "2025-06-13T08:33:26Z",
+    "created_at": "2025-10-12T20:35:05.936353+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "2E9XvHSKjCEqe4jXXe2WlY",
+    "track_name": "Domination",
+    "artists": [
+      "URI",
+      "Remon Verhoeve"
+    ],
+    "artist_ids": [
+      "7gGrcuMxnavGamcBRvhEXM",
+      "56EmpRe6MZOCu8NYE0BG9T"
+    ],
+    "duration_ms": 328357,
+    "popularity": 35,
+    "explicit": false,
+    "added_at": "2025-06-13T08:33:26Z",
+    "created_at": "2025-10-12T20:35:05.936357+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "068bY7Gu2AKfAndMbjwVSu",
+    "track_name": "STAB",
+    "artists": [
+      "RAGETRAIN"
+    ],
+    "artist_ids": [
+      "4Jpt4xGfDFMOsx5yaNsZ6V"
+    ],
+    "duration_ms": 210003,
+    "popularity": 42,
+    "explicit": false,
+    "added_at": "2025-06-13T08:33:26Z",
+    "created_at": "2025-10-12T20:35:05.936362+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "4m4tbbuLoSTQCI1mvyt85W",
+    "track_name": "SLAVA BLOOD!",
+    "artists": [
+      "Avenxir",
+      "Rubikdice",
+      "Chilx",
+      "Filip Lackovic"
+    ],
+    "artist_ids": [
+      "4Q2hJ2sAi0Tw1G5Gxv668a",
+      "6l3xqTokYcPPqrFhTlq9qQ",
+      "1kqRQGby2asyPEdtliZYOG",
+      "01jsyCt7tvyaOfCkCKYjCw"
+    ],
+    "duration_ms": 150466,
+    "popularity": 47,
+    "explicit": false,
+    "added_at": "2025-06-13T08:33:26Z",
+    "created_at": "2025-10-12T20:35:05.936366+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "5EAkOTs51tOEG2oXPaqwKu",
+    "track_name": "INVIOLABLE",
+    "artists": [
+      "HXLLGANG",
+      "DrDeagle"
+    ],
+    "artist_ids": [
+      "75TXk71aO72EDVxp9LZA28",
+      "0JFdYafPV1FuaD6n0mMAwi"
+    ],
+    "duration_ms": 109134,
+    "popularity": 36,
+    "explicit": false,
+    "added_at": "2025-09-02T07:33:59Z",
+    "created_at": "2025-10-12T20:35:05.936370+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "3Hsu3r8MzWJy3keUqwlSSZ",
+    "track_name": "Money Down Low",
+    "artists": [
+      "CLAESSENS",
+      "Stoltenhoff",
+      "June Stutterheim"
+    ],
+    "artist_ids": [
+      "3izGC7y6FX9bQplBju9aUs",
+      "6HKR0MHpgba3ZRBXYfPiq0",
+      "3zQztYj3pJzxwXC1F4j4hp"
+    ],
+    "duration_ms": 172312,
+    "popularity": 31,
+    "explicit": false,
+    "added_at": "2025-06-13T08:33:26Z",
+    "created_at": "2025-10-12T20:35:05.936374+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "2h64EEKTxOZQkMcK09YeHP",
+    "track_name": "Demolition",
+    "artists": [
+      "Prost",
+      "viralune"
+    ],
+    "artist_ids": [
+      "03pt9mCEKaO0GepoXTV5uZ",
+      "0xfPuxmReBnz2LGTtKEZYx"
+    ],
+    "duration_ms": 150883,
+    "popularity": 26,
+    "explicit": false,
+    "added_at": "2025-06-13T08:33:26Z",
+    "created_at": "2025-10-12T20:35:05.936378+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "2xBXLFJRja72cfOVR4o8WY",
+    "track_name": "Dam Dam Dam",
+    "artists": [
+      "Shlømo",
+      "Vortek's"
+    ],
+    "artist_ids": [
+      "0ZdNs1hU6aAiaZxvFbtDWF",
+      "6Ztv937rk7iQxBObBW9ye0"
+    ],
+    "duration_ms": 348192,
+    "popularity": 50,
+    "explicit": false,
+    "added_at": "2025-06-13T08:33:26Z",
+    "created_at": "2025-10-12T20:35:05.936382+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "6ZC6Ph5dNwFWRlTOhI72cQ",
+    "track_name": "MONTAGEM ESCURIDÃO",
+    "artists": [
+      "luc wall",
+      "MC MN"
+    ],
+    "artist_ids": [
+      "1viY0nAiEbhiEVJTu2eKDi",
+      "4hV3aU0WKvFaiX5ugXP5hp"
+    ],
+    "duration_ms": 88615,
+    "popularity": 37,
+    "explicit": false,
+    "added_at": "2025-06-13T08:33:26Z",
+    "created_at": "2025-10-12T20:35:05.936386+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "2ggTzBwJp11aM5Ii6SzZJA",
+    "track_name": "The Unknown",
+    "artists": [
+      "Sjosjo"
+    ],
+    "artist_ids": [
+      "7fBLGr93Le6xbyLwQK1ZhA"
+    ],
+    "duration_ms": 185098,
+    "popularity": 44,
+    "explicit": false,
+    "added_at": "2025-06-13T08:33:26Z",
+    "created_at": "2025-10-12T20:35:05.936390+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "4qPo1vRRkZmv59VqBDnlH3",
+    "track_name": "MONTAGEM CARBONO",
+    "artists": [
+      "PXRKX",
+      "RZXT!"
+    ],
+    "artist_ids": [
+      "5sj3P8OH8O5aVmey1C2mf4",
+      "5hfVobwxTC73whNVhzwlcP"
+    ],
+    "duration_ms": 117600,
+    "popularity": 32,
+    "explicit": false,
+    "added_at": "2025-06-13T08:33:26Z",
+    "created_at": "2025-10-12T20:35:05.936394+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "4kweDpI4WHGUfvmItISeVj",
+    "track_name": "Leave The Club",
+    "artists": [
+      "CryJaxx",
+      "Lucy Malfroy"
+    ],
+    "artist_ids": [
+      "4FidvjA9dxE6bhpHGC6ns9",
+      "06fuqnVk4qjdjbLW0VbJQE"
+    ],
+    "duration_ms": 136634,
+    "popularity": 30,
+    "explicit": false,
+    "added_at": "2025-06-13T08:33:26Z",
+    "created_at": "2025-10-12T20:35:05.936398+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "31nfdEooLEq7dn3UMcIeB5",
+    "track_name": "Vois sur ton chemin - Techno Mix",
+    "artists": [
+      "BENNETT"
+    ],
+    "artist_ids": [
+      "1r43wW70tnGUauQYvY5w48"
+    ],
+    "duration_ms": 178156,
+    "popularity": 79,
+    "explicit": false,
+    "added_at": "2025-06-13T08:33:26Z",
+    "created_at": "2025-10-12T20:35:05.936405+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "7sqi3zbxx4DbhpxoDH6wC8",
+    "track_name": "Livin Till I Die",
+    "artists": [
+      "Alfons"
+    ],
+    "artist_ids": [
+      "5f5mH9BDkeyXmDbzevu38d"
+    ],
+    "duration_ms": 80000,
+    "popularity": 28,
+    "explicit": false,
+    "added_at": "2025-06-13T08:33:26Z",
+    "created_at": "2025-10-12T20:35:05.936409+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "65TfEdEnKhLhc8K4ltx5gH",
+    "track_name": "blood_loss",
+    "artists": [
+      "6SIXSIX"
+    ],
+    "artist_ids": [
+      "1mMnunVIw4ejNRFNBEqRC2"
+    ],
+    "duration_ms": 102500,
+    "popularity": 33,
+    "explicit": false,
+    "added_at": "2025-06-13T08:33:26Z",
+    "created_at": "2025-10-12T20:35:05.936413+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "61HtZxnInUgUDNhDmeaZOD",
+    "track_name": "DRUM & FUNK",
+    "artists": [
+      "DR MØB",
+      "Y3LLAVISION"
+    ],
+    "artist_ids": [
+      "3BxW2wyYPKUAlvmbOWxiDe",
+      "0ApnjXe7M2x00FUNOP96JT"
+    ],
+    "duration_ms": 132592,
+    "popularity": 30,
+    "explicit": false,
+    "added_at": "2025-06-13T08:33:26Z",
+    "created_at": "2025-10-12T20:35:05.936418+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "4oHFy98ck5RxXqhMHaY12j",
+    "track_name": "TETRIS",
+    "artists": [
+      "XO1"
+    ],
+    "artist_ids": [
+      "7IVPJk3I9EYRxUliaCy876"
+    ],
+    "duration_ms": 101333,
+    "popularity": 33,
+    "explicit": false,
+    "added_at": "2025-06-13T08:33:26Z",
+    "created_at": "2025-10-12T20:35:05.936422+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "0b15u4ivj0S06b7MvVSSI1",
+    "track_name": "Where The Hood At",
+    "artists": [
+      "CryJaxx",
+      "Junior Charles"
+    ],
+    "artist_ids": [
+      "4FidvjA9dxE6bhpHGC6ns9",
+      "6XoMjNBDFTRqFgBcy48zHO"
+    ],
+    "duration_ms": 134193,
+    "popularity": 35,
+    "explicit": false,
+    "added_at": "2025-06-13T08:33:26Z",
+    "created_at": "2025-10-12T20:35:05.936426+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "1ivuWgxFQb2xzxVNSlB1hF",
+    "track_name": "DJ Turn It Up",
+    "artists": [
+      "Yellow Claw"
+    ],
+    "artist_ids": [
+      "47z7ZrgFoBvVpCnElCE3Zh"
+    ],
+    "duration_ms": 211776,
+    "popularity": 61,
+    "explicit": false,
+    "added_at": "2025-06-13T08:33:26Z",
+    "created_at": "2025-10-12T20:35:05.936430+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "6TsMPFxhMxSAXHCr2syN9I",
+    "track_name": "KNOCKED OUT",
+    "artists": [
+      "Qriminal"
+    ],
+    "artist_ids": [
+      "2sTHvEmfr75UDmlFFsdRot"
+    ],
+    "duration_ms": 226060,
+    "popularity": 31,
+    "explicit": false,
+    "added_at": "2025-08-16T14:43:26Z",
+    "created_at": "2025-10-12T20:35:05.936434+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "3eqLscSgjzXpp0QEHVdkTH",
+    "track_name": "CLEARED",
+    "artists": [
+      "prodByLone",
+      "r0pss"
+    ],
+    "artist_ids": [
+      "0sai1WQ8h4JvhSz9jgvsRv",
+      "1mYWtRJaiRhifspJSQ3BEj"
+    ],
+    "duration_ms": 113823,
+    "popularity": 35,
+    "explicit": false,
+    "added_at": "2025-06-13T08:33:26Z",
+    "created_at": "2025-10-12T20:35:05.936438+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "2IxTBlZLtXlH5D70tZRe6C",
+    "track_name": "Death Is No More (Funk)",
+    "artists": [
+      "Whito"
+    ],
+    "artist_ids": [
+      "3zuZnhwkVhu9TjXJGBZKUv"
+    ],
+    "duration_ms": 80519,
+    "popularity": 22,
+    "explicit": false,
+    "added_at": "2025-06-13T08:33:26Z",
+    "created_at": "2025-10-12T20:35:05.936442+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "6dQdVDxq8Ph4yDdLbSNpWO",
+    "track_name": "t0xic_s0und",
+    "artists": [
+      "DISGRACEMODE"
+    ],
+    "artist_ids": [
+      "7jNRvkQa0tjgv3WYOzH2St"
+    ],
+    "duration_ms": 138857,
+    "popularity": 25,
+    "explicit": false,
+    "added_at": "2025-06-13T08:33:26Z",
+    "created_at": "2025-10-12T20:35:05.936446+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "34aCTbJExYQrBS96RUoJza",
+    "track_name": "MTG JUMPSTYLE",
+    "artists": [
+      "6SIXSIX"
+    ],
+    "artist_ids": [
+      "1mMnunVIw4ejNRFNBEqRC2"
+    ],
+    "duration_ms": 89795,
+    "popularity": 28,
+    "explicit": false,
+    "added_at": "2025-06-13T08:33:26Z",
+    "created_at": "2025-10-12T20:35:05.936450+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "0zcIIazpeYl3amOtxIL2Dk",
+    "track_name": "Ellos Saben",
+    "artists": [
+      "VERGE!"
+    ],
+    "artist_ids": [
+      "0hS7jkZooqk8W5DaKwbW4v"
+    ],
+    "duration_ms": 95307,
+    "popularity": 28,
+    "explicit": false,
+    "added_at": "2025-06-13T08:33:26Z",
+    "created_at": "2025-10-12T20:35:05.936454+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "2f8Bw6MPjzGjJxjYUPCZdB",
+    "track_name": "DEUS V",
+    "artists": [
+      "viralune",
+      "Jeff Germita"
+    ],
+    "artist_ids": [
+      "0xfPuxmReBnz2LGTtKEZYx",
+      "2XIvRnp1lZPCejrJFmMTBo"
+    ],
+    "duration_ms": 105052,
+    "popularity": 22,
+    "explicit": false,
+    "added_at": "2025-06-13T08:33:26Z",
+    "created_at": "2025-10-12T20:35:05.936459+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "2vLMZtYWqZAG5jmprqAxbT",
+    "track_name": "MONTAGEM ALBINO",
+    "artists": [
+      "justforgetme",
+      "bloodybxrd"
+    ],
+    "artist_ids": [
+      "4thCAXlpGSQSUe13fvzjrA",
+      "1OF7M9L8l5owQmcuotZ53T"
+    ],
+    "duration_ms": 81600,
+    "popularity": 27,
+    "explicit": false,
+    "added_at": "2025-07-23T11:04:22Z",
+    "created_at": "2025-10-12T20:35:05.936463+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "74CqToRUV9aAxdHCo9rE8w",
+    "track_name": "ECOTE",
+    "artists": [
+      "shometyle",
+      "VUTILE"
+    ],
+    "artist_ids": [
+      "06bDmVGHXfwwfFkRxXSDl0",
+      "3dDclwEEs645LqJXBJegek"
+    ],
+    "duration_ms": 119129,
+    "popularity": 24,
+    "explicit": false,
+    "added_at": "2025-06-13T08:33:26Z",
+    "created_at": "2025-10-12T20:35:05.936467+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "4ubDOojpItl2JVAem6GOkG",
+    "track_name": "DiesesDrecksZeug",
+    "artists": [
+      "Toxic Offiziell"
+    ],
+    "artist_ids": [
+      "2hFHxApPCrwevj2fEfkHUr"
+    ],
+    "duration_ms": 142650,
+    "popularity": 44,
+    "explicit": false,
+    "added_at": "2025-06-13T08:33:26Z",
+    "created_at": "2025-10-12T20:35:05.936471+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "6jqj8o0dURuSaziBIEd5vB",
+    "track_name": "Run From The Police",
+    "artists": [
+      "Qriminal"
+    ],
+    "artist_ids": [
+      "2sTHvEmfr75UDmlFFsdRot"
+    ],
+    "duration_ms": 136708,
+    "popularity": 42,
+    "explicit": false,
+    "added_at": "2025-06-13T08:33:26Z",
+    "created_at": "2025-10-12T20:35:05.936475+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "0PpOIO96a3b5HvCIh7yizG",
+    "track_name": "cybr_y2k - evil mode",
+    "artists": [
+      "6SIXSIX"
+    ],
+    "artist_ids": [
+      "1mMnunVIw4ejNRFNBEqRC2"
+    ],
+    "duration_ms": 136421,
+    "popularity": 31,
+    "explicit": false,
+    "added_at": "2025-06-13T08:33:26Z",
+    "created_at": "2025-10-12T20:35:05.936479+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "444aYx5EUsSoQ3NlIMTr9S",
+    "track_name": "Decide",
+    "artists": [
+      "VUTILE",
+      "shometyle"
+    ],
+    "artist_ids": [
+      "3dDclwEEs645LqJXBJegek",
+      "06bDmVGHXfwwfFkRxXSDl0"
+    ],
+    "duration_ms": 117209,
+    "popularity": 21,
+    "explicit": false,
+    "added_at": "2025-06-13T08:33:26Z",
+    "created_at": "2025-10-12T20:35:05.936483+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "2ctJaVe4MOqmHwr5ItfGRT",
+    "track_name": "NO FEAR! (HARDSTYLE Remix)",
+    "artists": [
+      "ANDROMEDA",
+      "KVRXD",
+      "Limbee"
+    ],
+    "artist_ids": [
+      "1RklNDIiYVZ3dYdEUnB0cS",
+      "3BF0v9nGW4RzCFBBWWQarA",
+      "0B8HZIAjVkwfJkweHlJlGJ"
+    ],
+    "duration_ms": 97757,
+    "popularity": 32,
+    "explicit": false,
+    "added_at": "2025-06-13T08:33:26Z",
+    "created_at": "2025-10-12T20:35:05.936488+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "2eb5ZC8puQqN6sx2EnTK8o",
+    "track_name": "Hardcore Vibes",
+    "artists": [
+      "Tony Junior"
+    ],
+    "artist_ids": [
+      "17esEoE9uEHFKuzkar2UL0"
+    ],
+    "duration_ms": 120000,
+    "popularity": 29,
+    "explicit": false,
+    "added_at": "2025-06-13T08:33:26Z",
+    "created_at": "2025-10-12T20:35:05.936492+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "7p3WdqmEVxWybIRriwOJOp",
+    "track_name": "DOUGLAS",
+    "artists": [
+      "RZXT!"
+    ],
+    "artist_ids": [
+      "5hfVobwxTC73whNVhzwlcP"
+    ],
+    "duration_ms": 85271,
+    "popularity": 30,
+    "explicit": false,
+    "added_at": "2025-06-13T08:33:26Z",
+    "created_at": "2025-10-12T20:35:05.936496+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "4PP9AixDmMLG4EX5VYUwYd",
+    "track_name": "Rising Sun",
+    "artists": [
+      "Anabolic Impact"
+    ],
+    "artist_ids": [
+      "2QK7L7T6gYq7GmUfy3ukZp"
+    ],
+    "duration_ms": 160864,
+    "popularity": 34,
+    "explicit": false,
+    "added_at": "2025-06-13T08:33:26Z",
+    "created_at": "2025-10-12T20:35:05.936499+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "5tqpbHJxtrCrvI4VFohDB8",
+    "track_name": "in my veins",
+    "artists": [
+      "RushLow"
+    ],
+    "artist_ids": [
+      "5YJHeia6l8NPQGPsLZS5Mf"
+    ],
+    "duration_ms": 78066,
+    "popularity": 25,
+    "explicit": false,
+    "added_at": "2025-06-13T08:33:26Z",
+    "created_at": "2025-10-12T20:35:05.936503+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "3VgWvBd8JR6KCsZKoIcyAQ",
+    "track_name": "Gimme That",
+    "artists": [
+      "CryJaxx"
+    ],
+    "artist_ids": [
+      "4FidvjA9dxE6bhpHGC6ns9"
+    ],
+    "duration_ms": 159574,
+    "popularity": 33,
+    "explicit": false,
+    "added_at": "2025-06-13T08:33:26Z",
+    "created_at": "2025-10-12T20:35:05.936507+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "4LhRd3RpoqVCT1U5LXIOIp",
+    "track_name": "Devour",
+    "artists": [
+      "Jeff Germita"
+    ],
+    "artist_ids": [
+      "2XIvRnp1lZPCejrJFmMTBo"
+    ],
+    "duration_ms": 92552,
+    "popularity": 32,
+    "explicit": false,
+    "added_at": "2025-06-13T08:33:26Z",
+    "created_at": "2025-10-12T20:35:05.936512+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "3gwz9xHQ0yMoEWUXYgSPgu",
+    "track_name": "RAPTURE",
+    "artists": [
+      "shometyle",
+      "VUTILE"
+    ],
+    "artist_ids": [
+      "06bDmVGHXfwwfFkRxXSDl0",
+      "3dDclwEEs645LqJXBJegek"
+    ],
+    "duration_ms": 128407,
+    "popularity": 25,
+    "explicit": false,
+    "added_at": "2025-06-13T08:33:26Z",
+    "created_at": "2025-10-12T20:35:05.936516+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "1vc72pide6IyHp2maai8Fx",
+    "track_name": "The Underworld",
+    "artists": [
+      "Realyzed"
+    ],
+    "artist_ids": [
+      "270TArxVuKKNRsx2moi8O1"
+    ],
+    "duration_ms": 136948,
+    "popularity": 25,
+    "explicit": false,
+    "added_at": "2025-06-13T08:33:26Z",
+    "created_at": "2025-10-12T20:35:05.936520+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "7gLwPdTMFGq7ODU40CGqJP",
+    "track_name": "TROLLING YOU!",
+    "artists": [
+      "satirin",
+      "yngastrobeatz."
+    ],
+    "artist_ids": [
+      "7g38XDW5EXI4dMTUkYjVTO",
+      "5sZrMlmLdssEPC5EsdPMhm"
+    ],
+    "duration_ms": 79206,
+    "popularity": 20,
+    "explicit": false,
+    "added_at": "2025-06-13T08:33:26Z",
+    "created_at": "2025-10-12T20:35:05.936524+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "4Zaa3AQi6ArjJ4E2o74n6t",
+    "track_name": "TAKEOVERR!",
+    "artists": [
+      "Banitz"
+    ],
+    "artist_ids": [
+      "0auMsgY6jlGomnkXCFHgVa"
+    ],
+    "duration_ms": 220705,
+    "popularity": 47,
+    "explicit": false,
+    "added_at": "2025-06-13T08:33:26Z",
+    "created_at": "2025-10-12T20:35:05.936528+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "0T2KFDGf7FuFGv6I01XAPO",
+    "track_name": "Brand New",
+    "artists": [
+      "Pinotello"
+    ],
+    "artist_ids": [
+      "1WjmW8uqn4LwwsJxrDMM4d"
+    ],
+    "duration_ms": 154670,
+    "popularity": 47,
+    "explicit": false,
+    "added_at": "2025-06-13T08:33:26Z",
+    "created_at": "2025-10-12T20:35:05.936532+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "0IYMvYkKvVS8dWFJStikZK",
+    "track_name": "LEEEEZ GO",
+    "artists": [
+      "Rubikdice",
+      "CURSEDEVIL",
+      "Chilx"
+    ],
+    "artist_ids": [
+      "6l3xqTokYcPPqrFhTlq9qQ",
+      "6rzNFUmaEVnYb8kzh9tBTt",
+      "1kqRQGby2asyPEdtliZYOG"
+    ],
+    "duration_ms": 130623,
+    "popularity": 42,
+    "explicit": false,
+    "added_at": "2025-06-13T08:33:26Z",
+    "created_at": "2025-10-12T20:35:05.936537+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "7s2dkug6qI6eQucQ81t84z",
+    "track_name": "MEAN",
+    "artists": [
+      "Hooligunz"
+    ],
+    "artist_ids": [
+      "4mEGpRmbUuW8zX9U4sO2lX"
+    ],
+    "duration_ms": 151722,
+    "popularity": 25,
+    "explicit": false,
+    "added_at": "2025-06-13T08:33:26Z",
+    "created_at": "2025-10-12T20:35:05.936540+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "3PnmookbhwxhoM4wxvJrOO",
+    "track_name": "RXGE",
+    "artists": [
+      "Kause"
+    ],
+    "artist_ids": [
+      "37qf2fC109XWiZHw8clQS1"
+    ],
+    "duration_ms": 161238,
+    "popularity": 22,
+    "explicit": false,
+    "added_at": "2025-06-13T08:33:26Z",
+    "created_at": "2025-10-12T20:35:05.936544+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "3w7X8lHCi9wZG5inznbrCW",
+    "track_name": "I AM THE KING - Remix",
+    "artists": [
+      "L19U1D",
+      "Kordhell"
+    ],
+    "artist_ids": [
+      "6eIJYF4G64wbLdUXpxCKd2",
+      "2W6WP4pHQTFlbr2z9S4n54"
+    ],
+    "duration_ms": 115542,
+    "popularity": 32,
+    "explicit": true,
+    "added_at": "2025-06-13T08:33:26Z",
+    "created_at": "2025-10-12T20:35:05.936548+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "63mhc0xoS8ZMmUuQ2LsXBC",
+    "track_name": "Make You Drip",
+    "artists": [
+      "CryJaxx"
+    ],
+    "artist_ids": [
+      "4FidvjA9dxE6bhpHGC6ns9"
+    ],
+    "duration_ms": 208020,
+    "popularity": 30,
+    "explicit": false,
+    "added_at": "2025-06-13T08:33:26Z",
+    "created_at": "2025-10-12T20:35:05.936553+00:00"
   },
   {
     "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
-    "collaborative": false,
-    "created_at": "2025-10-12T21:07:46.124632+00:00",
-    "description": "",
-    "name": "NightGatherings",
-    "owner": "Vadim",
-    "owner_id": "317fd22v4rytxoc6x6o4pi3ixpze",
-    "public": true,
-    "tracks_count": 304
+    "playlist_name": "NightGatherings",
+    "track_id": "2UbMJbQq6G0TJnmnubgolV",
+    "track_name": "Genesis",
+    "artists": [
+      "$uicideboy$"
+    ],
+    "artist_ids": [
+      "1VPmR4DJC1PlOtd0IADAO0"
+    ],
+    "duration_ms": 162138,
+    "popularity": 63,
+    "explicit": true,
+    "added_at": "2023-02-17T13:26:32Z",
+    "created_at": "2025-10-12T20:35:06.688127+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "0hPRWztAIbNkt6GcFcLiqF",
+    "track_name": "Matte Black",
+    "artists": [
+      "$uicideboy$"
+    ],
+    "artist_ids": [
+      "1VPmR4DJC1PlOtd0IADAO0"
+    ],
+    "duration_ms": 238145,
+    "popularity": 73,
+    "explicit": true,
+    "added_at": "2023-02-17T13:26:32Z",
+    "created_at": "2025-10-12T20:35:06.688152+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "2gkVweydDn7MmHmqXAlEzk",
+    "track_name": "Fucking Your Culture",
+    "artists": [
+      "$uicideboy$"
+    ],
+    "artist_ids": [
+      "1VPmR4DJC1PlOtd0IADAO0"
+    ],
+    "duration_ms": 195994,
+    "popularity": 66,
+    "explicit": true,
+    "added_at": "2023-02-17T13:26:32Z",
+    "created_at": "2025-10-12T20:35:06.688158+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "09riz9pAPJyYYDVynE5xxY",
+    "track_name": "1000 Blunts",
+    "artists": [
+      "$uicideboy$"
+    ],
+    "artist_ids": [
+      "1VPmR4DJC1PlOtd0IADAO0"
+    ],
+    "duration_ms": 175476,
+    "popularity": 76,
+    "explicit": true,
+    "added_at": "2023-02-17T13:26:32Z",
+    "created_at": "2025-10-12T20:35:06.688163+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "1TnfJHuRolxBBbweTa3qby",
+    "track_name": "In Constant Sorrow",
+    "artists": [
+      "$uicideboy$"
+    ],
+    "artist_ids": [
+      "1VPmR4DJC1PlOtd0IADAO0"
+    ],
+    "duration_ms": 158516,
+    "popularity": 62,
+    "explicit": true,
+    "added_at": "2023-02-17T13:26:32Z",
+    "created_at": "2025-10-12T20:35:06.688167+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "12SqxMqtStXppn5fjDYr45",
+    "track_name": "Escape From BABYLON",
+    "artists": [
+      "$uicideboy$"
+    ],
+    "artist_ids": [
+      "1VPmR4DJC1PlOtd0IADAO0"
+    ],
+    "duration_ms": 141043,
+    "popularity": 58,
+    "explicit": true,
+    "added_at": "2023-02-17T13:26:32Z",
+    "created_at": "2025-10-12T20:35:06.688172+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "0GX0o6zfRAE50vvFoQQIph",
+    "track_name": "Ashes of Luxury",
+    "artists": [
+      "$uicideboy$"
+    ],
+    "artist_ids": [
+      "1VPmR4DJC1PlOtd0IADAO0"
+    ],
+    "duration_ms": 97300,
+    "popularity": 56,
+    "explicit": true,
+    "added_at": "2023-02-17T13:26:32Z",
+    "created_at": "2025-10-12T20:35:06.688176+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "0dKrkVDKJZHI787AaxmgQ0",
+    "track_name": "Resistance Is Useless",
+    "artists": [
+      "$uicideboy$"
+    ],
+    "artist_ids": [
+      "1VPmR4DJC1PlOtd0IADAO0"
+    ],
+    "duration_ms": 142668,
+    "popularity": 55,
+    "explicit": true,
+    "added_at": "2023-02-17T13:26:32Z",
+    "created_at": "2025-10-12T20:35:06.688181+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "5yshqP8Dvk7JmHeJ5BiLyP",
+    "track_name": "Eulogy",
+    "artists": [
+      "$uicideboy$"
+    ],
+    "artist_ids": [
+      "1VPmR4DJC1PlOtd0IADAO0"
+    ],
+    "duration_ms": 227505,
+    "popularity": 58,
+    "explicit": true,
+    "added_at": "2023-02-17T13:26:32Z",
+    "created_at": "2025-10-12T20:35:06.688186+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "3wGT3OycqbsHFjIKMZ8EEq",
+    "track_name": "No Matter Which Direction I'm Going In, I Never Chase These Hoes",
+    "artists": [
+      "$uicideboy$"
+    ],
+    "artist_ids": [
+      "1VPmR4DJC1PlOtd0IADAO0"
+    ],
+    "duration_ms": 154915,
+    "popularity": 60,
+    "explicit": true,
+    "added_at": "2023-02-17T13:26:32Z",
+    "created_at": "2025-10-12T20:35:06.688191+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "6LoaYlv0bC1TyctuADqNFh",
+    "track_name": "$uicideboy$ Were Better In 2015",
+    "artists": [
+      "$uicideboy$"
+    ],
+    "artist_ids": [
+      "1VPmR4DJC1PlOtd0IADAO0"
+    ],
+    "duration_ms": 143346,
+    "popularity": 61,
+    "explicit": true,
+    "added_at": "2023-02-17T13:26:32Z",
+    "created_at": "2025-10-12T20:35:06.688195+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "6zmOzxSclGHqbmgkjYdBdl",
+    "track_name": "Unlucky Me",
+    "artists": [
+      "$uicideboy$"
+    ],
+    "artist_ids": [
+      "1VPmR4DJC1PlOtd0IADAO0"
+    ],
+    "duration_ms": 155673,
+    "popularity": 59,
+    "explicit": true,
+    "added_at": "2023-02-17T13:26:32Z",
+    "created_at": "2025-10-12T20:35:06.688200+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "5diz02QLFSmDur9R9M6bcD",
+    "track_name": "THE_EVIL_THAT_MEN_DO",
+    "artists": [
+      "$uicideboy$"
+    ],
+    "artist_ids": [
+      "1VPmR4DJC1PlOtd0IADAO0"
+    ],
+    "duration_ms": 173372,
+    "popularity": 54,
+    "explicit": true,
+    "added_at": "2023-02-17T13:26:32Z",
+    "created_at": "2025-10-12T20:35:06.688205+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "1DoBPOlB884EHiftB46QGx",
+    "track_name": "All Dogs Go to Heaven",
+    "artists": [
+      "$uicideboy$"
+    ],
+    "artist_ids": [
+      "1VPmR4DJC1PlOtd0IADAO0"
+    ],
+    "duration_ms": 153652,
+    "popularity": 59,
+    "explicit": true,
+    "added_at": "2023-02-17T13:26:39Z",
+    "created_at": "2025-10-12T20:35:06.688210+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "2kwGrUme2JTUvF5Zf91Ocj",
+    "track_name": "I Wanna Be Romanticized",
+    "artists": [
+      "$uicideboy$"
+    ],
+    "artist_ids": [
+      "1VPmR4DJC1PlOtd0IADAO0"
+    ],
+    "duration_ms": 133746,
+    "popularity": 55,
+    "explicit": true,
+    "added_at": "2023-02-17T13:26:39Z",
+    "created_at": "2025-10-12T20:35:06.688215+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "5pVZABS2GkOJf7adB3b2al",
+    "track_name": "One Last Look at the Damage",
+    "artists": [
+      "$uicideboy$"
+    ],
+    "artist_ids": [
+      "1VPmR4DJC1PlOtd0IADAO0"
+    ],
+    "duration_ms": 97671,
+    "popularity": 56,
+    "explicit": true,
+    "added_at": "2023-02-17T13:26:39Z",
+    "created_at": "2025-10-12T20:35:06.688219+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "1S4MM1ukLm3ourrBJGHniC",
+    "track_name": "[whispers Indistinctly]",
+    "artists": [
+      "$uicideboy$"
+    ],
+    "artist_ids": [
+      "1VPmR4DJC1PlOtd0IADAO0"
+    ],
+    "duration_ms": 164623,
+    "popularity": 55,
+    "explicit": true,
+    "added_at": "2023-02-17T13:26:39Z",
+    "created_at": "2025-10-12T20:35:06.688223+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "0TtvdE2beN4abriNlNBlpJ",
+    "track_name": "Mega Zeph",
+    "artists": [
+      "$uicideboy$"
+    ],
+    "artist_ids": [
+      "1VPmR4DJC1PlOtd0IADAO0"
+    ],
+    "duration_ms": 101799,
+    "popularity": 51,
+    "explicit": true,
+    "added_at": "2023-02-17T13:26:39Z",
+    "created_at": "2025-10-12T20:35:06.688228+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "4x3vJJYSW9fZWIubv5mmww",
+    "track_name": "Putrid Pride",
+    "artists": [
+      "$uicideboy$"
+    ],
+    "artist_ids": [
+      "1VPmR4DJC1PlOtd0IADAO0"
+    ],
+    "duration_ms": 106971,
+    "popularity": 66,
+    "explicit": true,
+    "added_at": "2023-02-17T13:26:39Z",
+    "created_at": "2025-10-12T20:35:06.688233+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "3xQq3mpD6hunD2XG7FXHHu",
+    "track_name": "That Just Isn't Empirically Possible",
+    "artists": [
+      "$uicideboy$"
+    ],
+    "artist_ids": [
+      "1VPmR4DJC1PlOtd0IADAO0"
+    ],
+    "duration_ms": 123902,
+    "popularity": 71,
+    "explicit": true,
+    "added_at": "2023-02-17T13:26:39Z",
+    "created_at": "2025-10-12T20:35:06.688237+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "29iepR0ydOuYFaZp8um6H8",
+    "track_name": "What the Fuck is Happening",
+    "artists": [
+      "$uicideboy$"
+    ],
+    "artist_ids": [
+      "1VPmR4DJC1PlOtd0IADAO0"
+    ],
+    "duration_ms": 106340,
+    "popularity": 62,
+    "explicit": true,
+    "added_at": "2023-02-17T13:26:39Z",
+    "created_at": "2025-10-12T20:35:06.688241+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "3wYnfIWrBYOHx9MR3EcJzu",
+    "track_name": "Bizarro",
+    "artists": [
+      "$uicideboy$"
+    ],
+    "artist_ids": [
+      "1VPmR4DJC1PlOtd0IADAO0"
+    ],
+    "duration_ms": 214360,
+    "popularity": 51,
+    "explicit": true,
+    "added_at": "2023-02-17T13:26:39Z",
+    "created_at": "2025-10-12T20:35:06.688246+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "4RP6oacRQpBRFCSU8ErhUk",
+    "track_name": "Scope Set",
+    "artists": [
+      "$uicideboy$"
+    ],
+    "artist_ids": [
+      "1VPmR4DJC1PlOtd0IADAO0"
+    ],
+    "duration_ms": 93422,
+    "popularity": 51,
+    "explicit": true,
+    "added_at": "2023-02-17T13:26:39Z",
+    "created_at": "2025-10-12T20:35:06.688251+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "5LYjGMfcITu0nse2enQFPL",
+    "track_name": "Fuck Your Culture",
+    "artists": [
+      "$uicideboy$"
+    ],
+    "artist_ids": [
+      "1VPmR4DJC1PlOtd0IADAO0"
+    ],
+    "duration_ms": 102060,
+    "popularity": 55,
+    "explicit": true,
+    "added_at": "2023-02-17T13:26:39Z",
+    "created_at": "2025-10-12T20:35:06.688255+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "30QR0ndUdiiMQMA9g1PGCm",
+    "track_name": "...And to Those I Love, Thanks for Sticking Around",
+    "artists": [
+      "$uicideboy$"
+    ],
+    "artist_ids": [
+      "1VPmR4DJC1PlOtd0IADAO0"
+    ],
+    "duration_ms": 168489,
+    "popularity": 78,
+    "explicit": true,
+    "added_at": "2023-02-17T13:26:39Z",
+    "created_at": "2025-10-12T20:35:06.688259+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "3sUS7AZuOA4KKxqNJLmrM2",
+    "track_name": "Degeneration in the Key of A Minor",
+    "artists": [
+      "$uicideboy$"
+    ],
+    "artist_ids": [
+      "1VPmR4DJC1PlOtd0IADAO0"
+    ],
+    "duration_ms": 128000,
+    "popularity": 53,
+    "explicit": true,
+    "added_at": "2023-02-17T13:27:30Z",
+    "created_at": "2025-10-12T20:35:06.688264+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "5wRSnumY0x8O47QuxgqwhR",
+    "track_name": "Life Is but a Stream~",
+    "artists": [
+      "$uicideboy$"
+    ],
+    "artist_ids": [
+      "1VPmR4DJC1PlOtd0IADAO0"
+    ],
+    "duration_ms": 122880,
+    "popularity": 54,
+    "explicit": true,
+    "added_at": "2023-02-17T13:27:42Z",
+    "created_at": "2025-10-12T20:35:06.688268+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "1RSjxBz03F6vEqoHT9jWBa",
+    "track_name": "5 Grand at 8 to 1",
+    "artists": [
+      "$uicideboy$"
+    ],
+    "artist_ids": [
+      "1VPmR4DJC1PlOtd0IADAO0"
+    ],
+    "duration_ms": 169565,
+    "popularity": 60,
+    "explicit": true,
+    "added_at": "2023-02-17T13:29:41Z",
+    "created_at": "2025-10-12T20:35:06.688273+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "53SiIWzvx7vKzLmAHrZwog",
+    "track_name": "WE ENVY NOTHING IN THE WORLD.",
+    "artists": [
+      "$uicideboy$"
+    ],
+    "artist_ids": [
+      "1VPmR4DJC1PlOtd0IADAO0"
+    ],
+    "duration_ms": 171428,
+    "popularity": 54,
+    "explicit": true,
+    "added_at": "2023-02-17T13:29:56Z",
+    "created_at": "2025-10-12T20:35:06.688277+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "5C33XaYYMuEKvGmABGHwOa",
+    "track_name": "Bleach",
+    "artists": [
+      "$uicideboy$"
+    ],
+    "artist_ids": [
+      "1VPmR4DJC1PlOtd0IADAO0"
+    ],
+    "duration_ms": 160240,
+    "popularity": 55,
+    "explicit": true,
+    "added_at": "2023-02-17T13:31:07Z",
+    "created_at": "2025-10-12T20:35:06.688282+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "6DtlH2Ax805sJmaty5mtfK",
+    "track_name": "Forget It",
+    "artists": [
+      "$uicideboy$"
+    ],
+    "artist_ids": [
+      "1VPmR4DJC1PlOtd0IADAO0"
+    ],
+    "duration_ms": 198983,
+    "popularity": 52,
+    "explicit": true,
+    "added_at": "2023-02-17T13:31:23Z",
+    "created_at": "2025-10-12T20:35:06.688286+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "19n8izXThARSuQAXrOKNbO",
+    "track_name": "Avalon",
+    "artists": [
+      "$uicideboy$"
+    ],
+    "artist_ids": [
+      "1VPmR4DJC1PlOtd0IADAO0"
+    ],
+    "duration_ms": 140858,
+    "popularity": 71,
+    "explicit": true,
+    "added_at": "2023-02-17T13:31:28Z",
+    "created_at": "2025-10-12T20:35:06.688290+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "5xrH7dVah85mTEr4jgT1mu",
+    "track_name": "Materialism as a Means to an End",
+    "artists": [
+      "$uicideboy$"
+    ],
+    "artist_ids": [
+      "1VPmR4DJC1PlOtd0IADAO0"
+    ],
+    "duration_ms": 166250,
+    "popularity": 58,
+    "explicit": true,
+    "added_at": "2023-02-17T13:31:42Z",
+    "created_at": "2025-10-12T20:35:06.688294+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "3QQXpvZd9qmzHZ02wDf2im",
+    "track_name": "I Dream of Chrome",
+    "artists": [
+      "$uicideboy$",
+      "Germ"
+    ],
+    "artist_ids": [
+      "1VPmR4DJC1PlOtd0IADAO0",
+      "4OYIkXBBN6ET96coWyWAXh"
+    ],
+    "duration_ms": 145842,
+    "popularity": 54,
+    "explicit": true,
+    "added_at": "2023-02-17T13:32:59Z",
+    "created_at": "2025-10-12T20:35:06.688301+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "1UsvO5U72YRU8Xnq8Lp14O",
+    "track_name": "Champagne Face",
+    "artists": [
+      "$uicideboy$",
+      "Germ"
+    ],
+    "artist_ids": [
+      "1VPmR4DJC1PlOtd0IADAO0",
+      "4OYIkXBBN6ET96coWyWAXh"
+    ],
+    "duration_ms": 140288,
+    "popularity": 64,
+    "explicit": true,
+    "added_at": "2023-02-17T13:34:46Z",
+    "created_at": "2025-10-12T20:35:06.688306+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "2CkpD7gqMXrrpTCJ9TZ0bw",
+    "track_name": "The Serpent and the Rainbow",
+    "artists": [
+      "$uicideboy$",
+      "Germ"
+    ],
+    "artist_ids": [
+      "1VPmR4DJC1PlOtd0IADAO0",
+      "4OYIkXBBN6ET96coWyWAXh"
+    ],
+    "duration_ms": 177289,
+    "popularity": 53,
+    "explicit": true,
+    "added_at": "2023-02-17T13:34:55Z",
+    "created_at": "2025-10-12T20:35:06.688311+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "2ruH1qbTCL6DHpHSmgsbgc",
+    "track_name": "Killing 2 Birds with 22 Stones",
+    "artists": [
+      "$uicideboy$",
+      "Travis Barker",
+      "MUNKY"
+    ],
+    "artist_ids": [
+      "1VPmR4DJC1PlOtd0IADAO0",
+      "4exLIFE8sISLr28sqG1qNX",
+      "0BB7wMyRwT93gNrtzgCaz5"
+    ],
+    "duration_ms": 143259,
+    "popularity": 47,
+    "explicit": true,
+    "added_at": "2023-02-17T13:37:49Z",
+    "created_at": "2025-10-12T20:35:06.688316+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "6bMuWTjnruILqKPPCdUIlx",
+    "track_name": "DON'T TRUST ANYONE!",
+    "artists": [
+      "$uicideboy$",
+      "Travis Barker",
+      "MUNKY"
+    ],
+    "artist_ids": [
+      "1VPmR4DJC1PlOtd0IADAO0",
+      "4exLIFE8sISLr28sqG1qNX",
+      "0BB7wMyRwT93gNrtzgCaz5"
+    ],
+    "duration_ms": 140000,
+    "popularity": 43,
+    "explicit": true,
+    "added_at": "2023-02-17T13:38:25Z",
+    "created_at": "2025-10-12T20:35:06.688320+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "3GqG53vdl5FlSVwXcvvgKI",
+    "track_name": "Individuality Was So Last Year",
+    "artists": [
+      "$uicideboy$",
+      "Travis Barker",
+      "MUNKY"
+    ],
+    "artist_ids": [
+      "1VPmR4DJC1PlOtd0IADAO0",
+      "4exLIFE8sISLr28sqG1qNX",
+      "0BB7wMyRwT93gNrtzgCaz5"
+    ],
+    "duration_ms": 155576,
+    "popularity": 44,
+    "explicit": true,
+    "added_at": "2023-02-17T13:38:30Z",
+    "created_at": "2025-10-12T20:35:06.688325+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "4K1nlpgv1xytJAVrW2cgsp",
+    "track_name": "Aliens Are Ghosts",
+    "artists": [
+      "$uicideboy$",
+      "Travis Barker"
+    ],
+    "artist_ids": [
+      "1VPmR4DJC1PlOtd0IADAO0",
+      "4exLIFE8sISLr28sqG1qNX"
+    ],
+    "duration_ms": 133616,
+    "popularity": 42,
+    "explicit": true,
+    "added_at": "2023-02-17T13:40:10Z",
+    "created_at": "2025-10-12T20:35:06.688330+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "0KOcyzTV6w4mKvuHwk0Xpv",
+    "track_name": "Scrape",
+    "artists": [
+      "$uicideboy$"
+    ],
+    "artist_ids": [
+      "1VPmR4DJC1PlOtd0IADAO0"
+    ],
+    "duration_ms": 103824,
+    "popularity": 47,
+    "explicit": true,
+    "added_at": "2023-02-17T13:40:26Z",
+    "created_at": "2025-10-12T20:35:06.688334+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "2qXOuks93SBqKbQofW208w",
+    "track_name": "Nicotine Patches",
+    "artists": [
+      "$uicideboy$"
+    ],
+    "artist_ids": [
+      "1VPmR4DJC1PlOtd0IADAO0"
+    ],
+    "duration_ms": 156033,
+    "popularity": 58,
+    "explicit": true,
+    "added_at": "2023-02-17T13:40:56Z",
+    "created_at": "2025-10-12T20:35:06.688339+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "1m42iH7Kdbll4KC69k65C7",
+    "track_name": "I Am the Apocalypse",
+    "artists": [
+      "$uicideboy$"
+    ],
+    "artist_ids": [
+      "1VPmR4DJC1PlOtd0IADAO0"
+    ],
+    "duration_ms": 122241,
+    "popularity": 52,
+    "explicit": true,
+    "added_at": "2023-02-17T13:42:07Z",
+    "created_at": "2025-10-12T20:35:06.688343+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "5rgAdnZQiUhYfuguGrsjee",
+    "track_name": "From the Beginning of Time Until the End of Time",
+    "artists": [
+      "$uicideboy$"
+    ],
+    "artist_ids": [
+      "1VPmR4DJC1PlOtd0IADAO0"
+    ],
+    "duration_ms": 124043,
+    "popularity": 49,
+    "explicit": true,
+    "added_at": "2023-02-17T13:43:21Z",
+    "created_at": "2025-10-12T20:35:06.688347+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "4RYhSQFFlquCTb8XRMJgFU",
+    "track_name": "Venom",
+    "artists": [
+      "$uicideboy$",
+      "Shakewell"
+    ],
+    "artist_ids": [
+      "1VPmR4DJC1PlOtd0IADAO0",
+      "1w7GLktHE8w0aEhhaZ0QKB"
+    ],
+    "duration_ms": 123285,
+    "popularity": 62,
+    "explicit": true,
+    "added_at": "2023-02-17T13:44:04Z",
+    "created_at": "2025-10-12T20:35:06.688351+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "1smeI4gqEuepGWxlSw3tnC",
+    "track_name": "New Chains, Same Shackles",
+    "artists": [
+      "$uicideboy$"
+    ],
+    "artist_ids": [
+      "1VPmR4DJC1PlOtd0IADAO0"
+    ],
+    "duration_ms": 139246,
+    "popularity": 72,
+    "explicit": true,
+    "added_at": "2023-02-17T13:44:14Z",
+    "created_at": "2025-10-12T20:35:06.688356+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "4iKYe4neoybSn78i1AH7z7",
+    "track_name": "You're Now Tuning into 66.6 FM with DJ Rapture (The Hottest Hour of the Evening)",
+    "artists": [
+      "$uicideboy$"
+    ],
+    "artist_ids": [
+      "1VPmR4DJC1PlOtd0IADAO0"
+    ],
+    "duration_ms": 133891,
+    "popularity": 58,
+    "explicit": true,
+    "added_at": "2023-02-17T13:44:23Z",
+    "created_at": "2025-10-12T20:35:06.688360+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "0XwE208D5TzDLgCJUaYCFv",
+    "track_name": "Slip on a Banana Clip",
+    "artists": [
+      "$uicideboy$",
+      "Germ"
+    ],
+    "artist_ids": [
+      "1VPmR4DJC1PlOtd0IADAO0",
+      "4OYIkXBBN6ET96coWyWAXh"
+    ],
+    "duration_ms": 137194,
+    "popularity": 57,
+    "explicit": true,
+    "added_at": "2023-02-17T13:45:05Z",
+    "created_at": "2025-10-12T20:35:06.688366+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "6nQM3VyF8fQCRiIiZsvnMp",
+    "track_name": "Obey the Walrus",
+    "artists": [
+      "$uicideboy$",
+      "Germ"
+    ],
+    "artist_ids": [
+      "1VPmR4DJC1PlOtd0IADAO0",
+      "4OYIkXBBN6ET96coWyWAXh"
+    ],
+    "duration_ms": 141818,
+    "popularity": 58,
+    "explicit": true,
+    "added_at": "2023-02-17T13:45:05Z",
+    "created_at": "2025-10-12T20:35:06.688370+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "14SgTTYUWdcvzF0mEZbWRh",
+    "track_name": "20th CENTURION",
+    "artists": [
+      "$uicideboy$",
+      "Germ"
+    ],
+    "artist_ids": [
+      "1VPmR4DJC1PlOtd0IADAO0",
+      "4OYIkXBBN6ET96coWyWAXh"
+    ],
+    "duration_ms": 123350,
+    "popularity": 53,
+    "explicit": true,
+    "added_at": "2023-02-17T13:45:05Z",
+    "created_at": "2025-10-12T20:35:06.688374+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "4JJgAvyNsLxAwxv1v5UwHl",
+    "track_name": "Treat 'Em Like a Prostitute",
+    "artists": [
+      "$uicideboy$",
+      "Germ"
+    ],
+    "artist_ids": [
+      "1VPmR4DJC1PlOtd0IADAO0",
+      "4OYIkXBBN6ET96coWyWAXh"
+    ],
+    "duration_ms": 180923,
+    "popularity": 51,
+    "explicit": true,
+    "added_at": "2023-02-17T13:45:05Z",
+    "created_at": "2025-10-12T20:35:06.688379+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "4iuObbT7xWyC9erXVZ99nW",
+    "track_name": "King Cobra (Drippin')",
+    "artists": [
+      "$uicideboy$",
+      "Germ"
+    ],
+    "artist_ids": [
+      "1VPmR4DJC1PlOtd0IADAO0",
+      "4OYIkXBBN6ET96coWyWAXh"
+    ],
+    "duration_ms": 120058,
+    "popularity": 45,
+    "explicit": true,
+    "added_at": "2023-02-17T13:45:05Z",
+    "created_at": "2025-10-12T20:35:06.688383+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "3SBc4GevkColA5ID6lvXOS",
+    "track_name": "Here We Go Again",
+    "artists": [
+      "$uicideboy$",
+      "Germ"
+    ],
+    "artist_ids": [
+      "1VPmR4DJC1PlOtd0IADAO0",
+      "4OYIkXBBN6ET96coWyWAXh"
+    ],
+    "duration_ms": 168489,
+    "popularity": 51,
+    "explicit": true,
+    "added_at": "2023-02-17T13:45:05Z",
+    "created_at": "2025-10-12T20:35:06.688387+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "7hPBHYmZPI4RHJYiRDd4lH",
+    "track_name": "Not Much to Look At",
+    "artists": [
+      "$uicideboy$",
+      "Germ"
+    ],
+    "artist_ids": [
+      "1VPmR4DJC1PlOtd0IADAO0",
+      "4OYIkXBBN6ET96coWyWAXh"
+    ],
+    "duration_ms": 111490,
+    "popularity": 42,
+    "explicit": true,
+    "added_at": "2023-02-17T13:57:41Z",
+    "created_at": "2025-10-12T20:35:06.688392+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "2QwrRbCRelldkJySH9Og20",
+    "track_name": "West End",
+    "artists": [
+      "$uicideboy$",
+      "Germ"
+    ],
+    "artist_ids": [
+      "1VPmR4DJC1PlOtd0IADAO0",
+      "4OYIkXBBN6ET96coWyWAXh"
+    ],
+    "duration_ms": 147147,
+    "popularity": 48,
+    "explicit": true,
+    "added_at": "2023-02-17T13:57:41Z",
+    "created_at": "2025-10-12T20:35:06.688396+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "2GmorqBlcxgN4mcdwrTlEE",
+    "track_name": "Slenderman",
+    "artists": [
+      "$uicideboy$",
+      "Germ"
+    ],
+    "artist_ids": [
+      "1VPmR4DJC1PlOtd0IADAO0",
+      "4OYIkXBBN6ET96coWyWAXh"
+    ],
+    "duration_ms": 127869,
+    "popularity": 46,
+    "explicit": true,
+    "added_at": "2023-02-17T13:57:41Z",
+    "created_at": "2025-10-12T20:35:06.688400+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "5GPiwfbnuTPQIHXO5qcqpd",
+    "track_name": "Uzi Loogies",
+    "artists": [
+      "$uicideboy$",
+      "Germ"
+    ],
+    "artist_ids": [
+      "1VPmR4DJC1PlOtd0IADAO0",
+      "4OYIkXBBN6ET96coWyWAXh"
+    ],
+    "duration_ms": 124499,
+    "popularity": 50,
+    "explicit": true,
+    "added_at": "2023-02-17T13:57:41Z",
+    "created_at": "2025-10-12T20:35:06.688405+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "6Q6rmFbzcdzqhp8qhUKUy9",
+    "track_name": "Hepatitis G",
+    "artists": [
+      "$uicideboy$",
+      "Germ"
+    ],
+    "artist_ids": [
+      "1VPmR4DJC1PlOtd0IADAO0",
+      "4OYIkXBBN6ET96coWyWAXh"
+    ],
+    "duration_ms": 157570,
+    "popularity": 45,
+    "explicit": true,
+    "added_at": "2023-02-17T13:57:41Z",
+    "created_at": "2025-10-12T20:35:06.688409+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "05qiSWpC4dtdUZs81jqA2u",
+    "track_name": "Cold Turkey",
+    "artists": [
+      "$uicideboy$",
+      "Pouya"
+    ],
+    "artist_ids": [
+      "1VPmR4DJC1PlOtd0IADAO0",
+      "4nXOZlYoAD67hF9aUEncMY"
+    ],
+    "duration_ms": 182334,
+    "popularity": 56,
+    "explicit": true,
+    "added_at": "2023-02-17T13:58:14Z",
+    "created_at": "2025-10-12T20:35:06.688414+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "2HkzY7FmIS9SW0UHyNVWlG",
+    "track_name": "Muddy Blunts",
+    "artists": [
+      "$uicideboy$",
+      "Pouya"
+    ],
+    "artist_ids": [
+      "1VPmR4DJC1PlOtd0IADAO0",
+      "4nXOZlYoAD67hF9aUEncMY"
+    ],
+    "duration_ms": 187454,
+    "popularity": 57,
+    "explicit": true,
+    "added_at": "2023-02-17T13:58:14Z",
+    "created_at": "2025-10-12T20:35:06.688418+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "1tm7c4V0kqLiN0XPVnoUcT",
+    "track_name": "Runnin' Thru the 7th with My Woadies",
+    "artists": [
+      "$uicideboy$",
+      "Pouya"
+    ],
+    "artist_ids": [
+      "1VPmR4DJC1PlOtd0IADAO0",
+      "4nXOZlYoAD67hF9aUEncMY"
+    ],
+    "duration_ms": 205766,
+    "popularity": 74,
+    "explicit": true,
+    "added_at": "2023-02-17T13:58:14Z",
+    "created_at": "2025-10-12T20:35:06.688422+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "78SLMFGs6D5RoIMoxkpYsI",
+    "track_name": "Gluttony",
+    "artists": [
+      "$uicideboy$",
+      "Pouya"
+    ],
+    "artist_ids": [
+      "1VPmR4DJC1PlOtd0IADAO0",
+      "4nXOZlYoAD67hF9aUEncMY"
+    ],
+    "duration_ms": 216842,
+    "popularity": 55,
+    "explicit": true,
+    "added_at": "2023-02-17T13:58:14Z",
+    "created_at": "2025-10-12T20:35:06.688426+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "2Qp8MX0ggD5ATIuv0qJxdE",
+    "track_name": "$outh $ide $uicide",
+    "artists": [
+      "$uicideboy$",
+      "Pouya"
+    ],
+    "artist_ids": [
+      "1VPmR4DJC1PlOtd0IADAO0",
+      "4nXOZlYoAD67hF9aUEncMY"
+    ],
+    "duration_ms": 169168,
+    "popularity": 49,
+    "explicit": true,
+    "added_at": "2023-02-17T13:58:14Z",
+    "created_at": "2025-10-12T20:35:06.688430+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "6QFQqqYye5lAcnhCALvxKJ",
+    "track_name": "My Flaws Burn Through My Skin Like Demonic Flames from Hell",
+    "artists": [
+      "$uicideboy$"
+    ],
+    "artist_ids": [
+      "1VPmR4DJC1PlOtd0IADAO0"
+    ],
+    "duration_ms": 167679,
+    "popularity": 75,
+    "explicit": true,
+    "added_at": "2023-02-17T13:58:44Z",
+    "created_at": "2025-10-12T20:35:06.688435+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "6rX2gIdCoUBZLaBtz0WPh7",
+    "track_name": "My Scars Are Like Evidence Being Mailed to the Judge",
+    "artists": [
+      "$uicideboy$"
+    ],
+    "artist_ids": [
+      "1VPmR4DJC1PlOtd0IADAO0"
+    ],
+    "duration_ms": 122723,
+    "popularity": 58,
+    "explicit": true,
+    "added_at": "2023-02-17T13:58:44Z",
+    "created_at": "2025-10-12T20:35:06.688439+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "2QhigeSn7hjfmfXB0AYsgM",
+    "track_name": "I Will Celebrate for Stepping on Broken Glass and Slipping on Stomach Soaked Floors",
+    "artists": [
+      "$uicideboy$"
+    ],
+    "artist_ids": [
+      "1VPmR4DJC1PlOtd0IADAO0"
+    ],
+    "duration_ms": 138239,
+    "popularity": 58,
+    "explicit": true,
+    "added_at": "2023-02-17T13:58:44Z",
+    "created_at": "2025-10-12T20:35:06.688443+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "6vQl55CMfg0H47HFARwGgS",
+    "track_name": "Muddy",
+    "artists": [
+      "plenka"
+    ],
+    "artist_ids": [
+      "6yjz9vY01vOQUcFIAEYVQ0"
+    ],
+    "duration_ms": 181714,
+    "popularity": 28,
+    "explicit": false,
+    "added_at": "2023-02-17T20:37:36Z",
+    "created_at": "2025-10-12T20:35:06.688448+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "1vjon7jtpF5usLV2CVxtsw",
+    "track_name": "SHAMELESS $UICIDE",
+    "artists": [
+      "$uicideboy$",
+      "Shakewell"
+    ],
+    "artist_ids": [
+      "1VPmR4DJC1PlOtd0IADAO0",
+      "1w7GLktHE8w0aEhhaZ0QKB"
+    ],
+    "duration_ms": 243200,
+    "popularity": 52,
+    "explicit": true,
+    "added_at": "2023-03-02T01:07:19Z",
+    "created_at": "2025-10-12T20:35:06.688452+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "4s0R9lDVKIchcSlFBPosIN",
+    "track_name": "Whole Lotta Grey",
+    "artists": [
+      "$uicideboy$",
+      "Shakewell"
+    ],
+    "artist_ids": [
+      "1VPmR4DJC1PlOtd0IADAO0",
+      "1w7GLktHE8w0aEhhaZ0QKB"
+    ],
+    "duration_ms": 186093,
+    "popularity": 57,
+    "explicit": true,
+    "added_at": "2023-03-02T01:07:19Z",
+    "created_at": "2025-10-12T20:35:06.688456+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "2QLtGUtAIm6Mz3ld3pmvWv",
+    "track_name": "Gutter Bravado",
+    "artists": [
+      "$uicideboy$",
+      "Shakewell"
+    ],
+    "artist_ids": [
+      "1VPmR4DJC1PlOtd0IADAO0",
+      "1w7GLktHE8w0aEhhaZ0QKB"
+    ],
+    "duration_ms": 146737,
+    "popularity": 49,
+    "explicit": true,
+    "added_at": "2023-03-02T01:07:19Z",
+    "created_at": "2025-10-12T20:35:06.688461+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "5YgVfM7ScWReWeX8l0OU7i",
+    "track_name": "Went to Rehab and All I Got Was This Lousy T-Shirt",
+    "artists": [
+      "$uicideboy$",
+      "Shakewell"
+    ],
+    "artist_ids": [
+      "1VPmR4DJC1PlOtd0IADAO0",
+      "1w7GLktHE8w0aEhhaZ0QKB"
+    ],
+    "duration_ms": 123000,
+    "popularity": 50,
+    "explicit": true,
+    "added_at": "2023-03-02T01:07:19Z",
+    "created_at": "2025-10-12T20:35:06.688466+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "4Xid2bPvFoMcwp6NeUT2Ap",
+    "track_name": "Six Lines, Two Dragons, and a Messiah",
+    "artists": [
+      "$uicideboy$",
+      "Shakewell"
+    ],
+    "artist_ids": [
+      "1VPmR4DJC1PlOtd0IADAO0",
+      "1w7GLktHE8w0aEhhaZ0QKB"
+    ],
+    "duration_ms": 166420,
+    "popularity": 63,
+    "explicit": true,
+    "added_at": "2023-03-02T01:07:19Z",
+    "created_at": "2025-10-12T20:35:06.688470+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "0JDsxnw0kjsXX1M6Vagzak",
+    "track_name": "Big Shot Cream Soda",
+    "artists": [
+      "$uicideboy$",
+      "Shakewell"
+    ],
+    "artist_ids": [
+      "1VPmR4DJC1PlOtd0IADAO0",
+      "1w7GLktHE8w0aEhhaZ0QKB"
+    ],
+    "duration_ms": 195600,
+    "popularity": 47,
+    "explicit": true,
+    "added_at": "2023-03-02T01:07:19Z",
+    "created_at": "2025-10-12T20:35:06.688474+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "49YpGS0rVcRLtiDvx5JQyp",
+    "track_name": "Sorry for the Delay",
+    "artists": [
+      "$uicideboy$",
+      "Germ"
+    ],
+    "artist_ids": [
+      "1VPmR4DJC1PlOtd0IADAO0",
+      "4OYIkXBBN6ET96coWyWAXh"
+    ],
+    "duration_ms": 172399,
+    "popularity": 54,
+    "explicit": true,
+    "added_at": "2023-03-13T21:13:23Z",
+    "created_at": "2025-10-12T20:35:06.688479+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "5dol1hrERJOReznLRJ2VVQ",
+    "track_name": "BUCKHEAD",
+    "artists": [
+      "$uicideboy$",
+      "Germ"
+    ],
+    "artist_ids": [
+      "1VPmR4DJC1PlOtd0IADAO0",
+      "4OYIkXBBN6ET96coWyWAXh"
+    ],
+    "duration_ms": 183919,
+    "popularity": 54,
+    "explicit": true,
+    "added_at": "2023-03-13T21:13:23Z",
+    "created_at": "2025-10-12T20:35:06.688483+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "1xIibyoUvyxwoNqx8quHSz",
+    "track_name": "My Swisher Sweet, But My Sig Sauer",
+    "artists": [
+      "$uicideboy$",
+      "Germ"
+    ],
+    "artist_ids": [
+      "1VPmR4DJC1PlOtd0IADAO0",
+      "4OYIkXBBN6ET96coWyWAXh"
+    ],
+    "duration_ms": 226932,
+    "popularity": 59,
+    "explicit": true,
+    "added_at": "2023-03-13T21:13:23Z",
+    "created_at": "2025-10-12T20:35:06.688487+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "67IECOggWzBnCERhbOlTRp",
+    "track_name": "Center Core Never More",
+    "artists": [
+      "$uicideboy$",
+      "Germ"
+    ],
+    "artist_ids": [
+      "1VPmR4DJC1PlOtd0IADAO0",
+      "4OYIkXBBN6ET96coWyWAXh"
+    ],
+    "duration_ms": 164723,
+    "popularity": 58,
+    "explicit": true,
+    "added_at": "2023-03-13T21:13:23Z",
+    "created_at": "2025-10-12T20:35:06.688492+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "4ZlO1WSbIu7BzWstOaLSwx",
+    "track_name": "Бро не женись пока нет",
+    "artists": [
+      "Nurminsky"
+    ],
+    "artist_ids": [
+      "36pVuMIbDJk9Mpbfr5gHja"
+    ],
+    "duration_ms": 196803,
+    "popularity": 15,
+    "explicit": false,
+    "added_at": "2023-10-04T21:24:56Z",
+    "created_at": "2025-10-12T20:35:06.688496+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "2fP2RBX81C55kEBaHZHomY",
+    "track_name": "Малиновый закат",
+    "artists": [
+      "Max Korzh"
+    ],
+    "artist_ids": [
+      "5meD8C7oGK5yUEY2T7ZZ7W"
+    ],
+    "duration_ms": 177626,
+    "popularity": 55,
+    "explicit": false,
+    "added_at": "2023-10-04T21:28:50Z",
+    "created_at": "2025-10-12T20:35:06.688500+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "2fIBmScNzkGmSJ3y2XsmEI",
+    "track_name": "Yamakasi",
+    "artists": [
+      "Miyagi & Andy Panda"
+    ],
+    "artist_ids": [
+      "0hmUwzWBrPHpGWGrYH05c3"
+    ],
+    "duration_ms": 263597,
+    "popularity": 58,
+    "explicit": true,
+    "added_at": "2023-10-05T20:13:40Z",
+    "created_at": "2025-10-12T20:35:06.688504+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "7qQ6u1BXb0lys5vuVZkj2h",
+    "track_name": "Там ревели горы",
+    "artists": [
+      "Miyagi & Andy Panda"
+    ],
+    "artist_ids": [
+      "0hmUwzWBrPHpGWGrYH05c3"
+    ],
+    "duration_ms": 176874,
+    "popularity": 56,
+    "explicit": true,
+    "added_at": "2023-10-05T20:13:40Z",
+    "created_at": "2025-10-12T20:35:06.688508+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "4CeBKWWLXMrQMFsP0Q0K3V",
+    "track_name": "Kosandra",
+    "artists": [
+      "Miyagi & Andy Panda"
+    ],
+    "artist_ids": [
+      "0hmUwzWBrPHpGWGrYH05c3"
+    ],
+    "duration_ms": 221378,
+    "popularity": 71,
+    "explicit": true,
+    "added_at": "2023-10-05T20:13:40Z",
+    "created_at": "2025-10-12T20:35:06.688513+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "4U1CD6Laspn0qUW0M4ks9w",
+    "track_name": "Говори мне",
+    "artists": [
+      "MiyaGi",
+      "Andy Panda"
+    ],
+    "artist_ids": [
+      "1kmpkcYbuaZ8tnFejLzkj2",
+      "4b20nn6eekG7JQYjX7zJPx"
+    ],
+    "duration_ms": 210114,
+    "popularity": 61,
+    "explicit": false,
+    "added_at": "2023-10-05T20:13:40Z",
+    "created_at": "2025-10-12T20:35:06.688517+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "3cdUEnMVspkAfx6nnxSdTl",
+    "track_name": "Freeman",
+    "artists": [
+      "Miyagi & Andy Panda"
+    ],
+    "artist_ids": [
+      "0hmUwzWBrPHpGWGrYH05c3"
+    ],
+    "duration_ms": 230222,
+    "popularity": 60,
+    "explicit": true,
+    "added_at": "2023-10-05T20:13:40Z",
+    "created_at": "2025-10-12T20:35:06.688521+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "7s9C4sqYkuX3N1vGeXqLia",
+    "track_name": "Колизей",
+    "artists": [
+      "MiyaGi & Endspiel"
+    ],
+    "artist_ids": [
+      "6L5bLEtpxwd0KOdOr3gtW4"
+    ],
+    "duration_ms": 267669,
+    "popularity": 48,
+    "explicit": true,
+    "added_at": "2023-10-05T20:13:40Z",
+    "created_at": "2025-10-12T20:35:06.688525+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "71hUNAiuvPyzaQGVYQtqlF",
+    "track_name": "Fire Man",
+    "artists": [
+      "MiyaGi & Endspiel"
+    ],
+    "artist_ids": [
+      "6L5bLEtpxwd0KOdOr3gtW4"
+    ],
+    "duration_ms": 217442,
+    "popularity": 58,
+    "explicit": true,
+    "added_at": "2023-10-05T20:13:40Z",
+    "created_at": "2025-10-12T20:35:06.688529+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "4pgjMWCGUmKP9ovyUb4wFT",
+    "track_name": "Дама",
+    "artists": [
+      "MiyaGi & Endspiel"
+    ],
+    "artist_ids": [
+      "6L5bLEtpxwd0KOdOr3gtW4"
+    ],
+    "duration_ms": 214289,
+    "popularity": 50,
+    "explicit": false,
+    "added_at": "2023-10-05T20:13:40Z",
+    "created_at": "2025-10-12T20:35:06.688533+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "7hkAxPu5K4UqWnFmebSvEE",
+    "track_name": "Именно та",
+    "artists": [
+      "MiyaGi & Endspiel",
+      "NERAK"
+    ],
+    "artist_ids": [
+      "6L5bLEtpxwd0KOdOr3gtW4",
+      "1klrOHkzxWvTmUOpGySO0i"
+    ],
+    "duration_ms": 196097,
+    "popularity": 0,
+    "explicit": true,
+    "added_at": "2023-10-05T20:13:40Z",
+    "created_at": "2025-10-12T20:35:06.688537+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "7rvEwAILTqxBpdIyUifkE8",
+    "track_name": "Marmalade",
+    "artists": [
+      "Miyagi & Andy Panda",
+      "Mav-d"
+    ],
+    "artist_ids": [
+      "0hmUwzWBrPHpGWGrYH05c3",
+      "1Kxxz7r0ZIqz9XDQiaeaGa"
+    ],
+    "duration_ms": 220363,
+    "popularity": 59,
+    "explicit": false,
+    "added_at": "2023-10-05T20:13:40Z",
+    "created_at": "2025-10-12T20:35:06.688542+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "0r9fpWPI6z3V3YZXIiVaNC",
+    "track_name": "99 Problems",
+    "artists": [
+      "Big Baby Tape",
+      "kizaru"
+    ],
+    "artist_ids": [
+      "5NMwoStnfHT4LdETlJSwDT",
+      "5NipqMGsY4AUeb7kGT8aVz"
+    ],
+    "duration_ms": 159100,
+    "popularity": 0,
+    "explicit": true,
+    "added_at": "2023-10-05T20:13:40Z",
+    "created_at": "2025-10-12T20:35:06.688546+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "16AzcbKli3UQsxj491hJLQ",
+    "track_name": "Bandana",
+    "artists": [
+      "Big Baby Tape",
+      "kizaru"
+    ],
+    "artist_ids": [
+      "5NMwoStnfHT4LdETlJSwDT",
+      "5NipqMGsY4AUeb7kGT8aVz"
+    ],
+    "duration_ms": 151456,
+    "popularity": 0,
+    "explicit": true,
+    "added_at": "2023-10-05T20:13:40Z",
+    "created_at": "2025-10-12T20:35:06.688551+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "4umjgYILQbHyV41ZmaemQm",
+    "track_name": "Million",
+    "artists": [
+      "Big Baby Tape",
+      "kizaru"
+    ],
+    "artist_ids": [
+      "5NMwoStnfHT4LdETlJSwDT",
+      "5NipqMGsY4AUeb7kGT8aVz"
+    ],
+    "duration_ms": 134723,
+    "popularity": 0,
+    "explicit": true,
+    "added_at": "2023-10-05T20:13:40Z",
+    "created_at": "2025-10-12T20:35:06.688555+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "01mlfrIBozItOaXOG5Fgls",
+    "track_name": "Солнца не видно",
+    "artists": [
+      "Basta",
+      "Boombox"
+    ],
+    "artist_ids": [
+      "7as5DY4Rz9jac9tgoTrj9H",
+      "2c3PFZtun8HemDbDfRPV6G"
+    ],
+    "duration_ms": 298920,
+    "popularity": 52,
+    "explicit": true,
+    "added_at": "2023-10-05T20:13:40Z",
+    "created_at": "2025-10-12T20:35:06.688560+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "2DJXKOYwKlGxl2MRHf1wCr",
+    "track_name": "Быстро",
+    "artists": [
+      "Colorit"
+    ],
+    "artist_ids": [
+      "0dijbfX5asmCCHPL8Co77Y"
+    ],
+    "duration_ms": 120898,
+    "popularity": 0,
+    "explicit": false,
+    "added_at": "2023-10-05T20:13:40Z",
+    "created_at": "2025-10-12T20:35:06.688564+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "4wT9xC986HKw6LMObnOLfr",
+    "track_name": "Тысячи рук",
+    "artists": [
+      "SODA LUV"
+    ],
+    "artist_ids": [
+      "3TikHXhctY4FUIMlkl0tzR"
+    ],
+    "duration_ms": 186382,
+    "popularity": 41,
+    "explicit": false,
+    "added_at": "2023-10-05T20:13:40Z",
+    "created_at": "2025-10-12T20:35:06.688568+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "1GOiMxQXZUzjzH0Sxpck0B",
+    "track_name": "Дежавю",
+    "artists": [
+      "kizaru"
+    ],
+    "artist_ids": [
+      "5NipqMGsY4AUeb7kGT8aVz"
+    ],
+    "duration_ms": 173725,
+    "popularity": 0,
+    "explicit": true,
+    "added_at": "2023-10-05T20:13:40Z",
+    "created_at": "2025-10-12T20:35:06.688572+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "1Kp2TF4fFYjJPqEMf1U0RK",
+    "track_name": "Вина (feat. 17 SEVENTEEN)",
+    "artists": [
+      "OG Buda",
+      "MAYOT",
+      "17 SEVENTEEN"
+    ],
+    "artist_ids": [
+      "1H1zBr7TXFwTwsHU5kX9gW",
+      "3KtiWEUyKC5lgHedcN6y6C",
+      "496nklFjflGjJOhhfhH2Nc"
+    ],
+    "duration_ms": 166956,
+    "popularity": 0,
+    "explicit": true,
+    "added_at": "2023-10-05T20:13:40Z",
+    "created_at": "2025-10-12T20:35:06.688577+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "21BrQW6GdRcMxvrwhIHqzR",
+    "track_name": "Веном",
+    "artists": [
+      "Платина",
+      "Big Baby Tape"
+    ],
+    "artist_ids": [
+      "4TzGOY9RpErzedN02w8Boh",
+      "5NMwoStnfHT4LdETlJSwDT"
+    ],
+    "duration_ms": 176746,
+    "popularity": 48,
+    "explicit": true,
+    "added_at": "2023-10-05T20:13:40Z",
+    "created_at": "2025-10-12T20:35:06.688581+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "1OhtcX8IP2mQ2s5yEZ3jSN",
+    "track_name": "VLAGA",
+    "artists": [
+      "Arut",
+      "Big Baby Tape"
+    ],
+    "artist_ids": [
+      "0mp2sdIanszB7wxCNM8fr0",
+      "5NMwoStnfHT4LdETlJSwDT"
+    ],
+    "duration_ms": 152578,
+    "popularity": 38,
+    "explicit": true,
+    "added_at": "2023-10-05T20:13:40Z",
+    "created_at": "2025-10-12T20:35:06.688585+00:00"
+  },
+  {
+    "playlist_id": "6RrlFq1uzlAkORTdtOBjge",
+    "playlist_name": "NightGatherings",
+    "track_id": "1hnMLPOqTMV2gurNxOnsjK",
+    "track_name": "Курить",
+    "artists": [
+      "Jakone",
+      "A.V.G",
+      "Итачи"
+    ],
+    "artist_ids": [
+      "0Kwx9LPnkelacgHzRI8vxl",
+      "3a4bEvoyyeZPOLxCkSgPO6",
+      "5rCd3B014Gzgupz7jkjAnG"
+    ],
+    "duration_ms": 127451,
+    "popularity": 42,
+    "explicit": true,
+    "added_at": "2023-10-05T20:13:40Z",
+    "created_at": "2025-10-12T20:35:06.688589+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "1JyhQmZhEgEV7iOfZOVm0W",
+    "track_name": "BLACK SKY",
+    "album_id": "5TDlRk3kAiPFwLFOPBjcE4",
+    "album_name": "BLACK SKY",
+    "artists": [
+      "DrDeagle"
+    ],
+    "artist_ids": [
+      "0JFdYafPV1FuaD6n0mMAwi"
+    ],
+    "duration_ms": 131581,
+    "popularity": 1,
+    "explicit": false,
+    "added_at": "2025-10-13T09:02:19Z",
+    "created_at": "2025-10-13T09:02:57.281305+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "5PZaClGQ92YnCSOzUP5zBk",
+    "track_name": "AURORA",
+    "album_id": "0c3bxZWmNW8DkEIrc9uBUw",
+    "album_name": "AURORA",
+    "artists": [
+      "HXLLGANG"
+    ],
+    "artist_ids": [
+      "75TXk71aO72EDVxp9LZA28"
+    ],
+    "duration_ms": 180923,
+    "popularity": 0,
+    "explicit": false,
+    "added_at": "2025-10-13T09:30:56Z",
+    "created_at": "2025-10-14T12:56:07.637113+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "05ukIersEAr0FelGQj4b9u",
+    "track_name": "DARK SOULS",
+    "album_id": "1M8djSvXuygdJL9nNq1RJy",
+    "album_name": "DARK SOULS",
+    "artists": [
+      "DrDeagle",
+      "HXLLGANG"
+    ],
+    "artist_ids": [
+      "0JFdYafPV1FuaD6n0mMAwi",
+      "75TXk71aO72EDVxp9LZA28"
+    ],
+    "duration_ms": 90860,
+    "popularity": 32,
+    "explicit": false,
+    "added_at": "2025-10-30T13:26:06Z",
+    "created_at": "2025-11-04T01:58:25.137673+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "4LiwV2JJVxxIaJYhAyQB7v",
+    "track_name": "IM NOT HUMAN",
+    "album_id": "5ct7u1Uo7MkUqEoh5KlMaf",
+    "album_name": "IM NOT HUMAN",
+    "artists": [
+      "Burgos"
+    ],
+    "artist_ids": [
+      "3chqU15yLP7B3XRQpILQY2"
+    ],
+    "duration_ms": 120000,
+    "popularity": 40,
+    "explicit": false,
+    "added_at": "2025-10-29T13:17:34Z",
+    "created_at": "2025-11-04T01:58:25.731876+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "0cV41MRNONxft0VakiY0Ng",
+    "track_name": "XENIA",
+    "album_id": "3UaThVICdQaiSZMwrm5efm",
+    "album_name": "XENIA",
+    "artists": [
+      "nightfxrce",
+      "dvspair"
+    ],
+    "artist_ids": [
+      "0zPcNpNWxJ8KZutFU26dfW",
+      "3z0A4imcC68KLhZGn4uwzw"
+    ],
+    "duration_ms": 124363,
+    "popularity": 36,
+    "explicit": false,
+    "added_at": "2025-10-29T14:33:25Z",
+    "created_at": "2025-11-04T01:58:26.097309+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "00Fzc3PB8RAmmP8n4eXDVE",
+    "track_name": "FRACTURE",
+    "album_id": "18PuZusIy6GiuWrUuhqZRj",
+    "album_name": "FRACTURE",
+    "artists": [
+      "Jurasd",
+      "ITXSHI"
+    ],
+    "artist_ids": [
+      "3rqjroXAN0yiIgB9sNJcY1",
+      "0ztCHnDpvaOS9cZKOUi67Z"
+    ],
+    "duration_ms": 105230,
+    "popularity": 30,
+    "explicit": false,
+    "added_at": "2025-10-29T14:22:24Z",
+    "created_at": "2025-11-04T01:58:26.281401+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "5ozYKZrjyZpNUT8bYBsmTT",
+    "track_name": "She Said I Was Cute",
+    "album_id": "1lIyk3AqESpE6skmHodxzb",
+    "album_name": "She Said I Was Cute",
+    "artists": [
+      "Azulo"
+    ],
+    "artist_ids": [
+      "1T4SBodPtb9Wy2uLUEIF0I"
+    ],
+    "duration_ms": 217890,
+    "popularity": 30,
+    "explicit": false,
+    "added_at": "2025-10-31T11:14:28Z",
+    "created_at": "2025-11-04T01:58:26.579926+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "07LNYcVTyGWadmudA13ygF",
+    "track_name": "valor",
+    "album_id": "7u7QUdgSmKVIfagOlkci8r",
+    "album_name": "valor",
+    "artists": [
+      "dimeohs",
+      "$werve",
+      "Willer"
+    ],
+    "artist_ids": [
+      "2hTgpYC4sanWiU3ezwkQGa",
+      "60vF1fLR6yzLxCQUlnAYYj",
+      "2tLHuV3ZjroVZxyiSNDRNE"
+    ],
+    "duration_ms": 105545,
+    "popularity": 35,
+    "explicit": false,
+    "added_at": "2025-10-31T11:37:28Z",
+    "created_at": "2025-11-04T01:58:26.939418+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "5vziBIIVXAxale5DdbUX83",
+    "track_name": "Already Knew",
+    "album_id": "5u1mqz6E9kXVCCBsny0o6c",
+    "album_name": "Already Knew",
+    "artists": [
+      "Azulo"
+    ],
+    "artist_ids": [
+      "1T4SBodPtb9Wy2uLUEIF0I"
+    ],
+    "duration_ms": 159584,
+    "popularity": 41,
+    "explicit": false,
+    "added_at": "2025-10-29T13:18:00Z",
+    "created_at": "2025-11-04T01:58:27.112046+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "1oAKASW7QkZM84zQRXNJ3k",
+    "track_name": "PUSH ME",
+    "album_id": "3SkYq6oI4fxedO8XmWEgRx",
+    "album_name": "PUSH ME",
+    "artists": [
+      "6SIXSIX"
+    ],
+    "artist_ids": [
+      "1mMnunVIw4ejNRFNBEqRC2"
+    ],
+    "duration_ms": 107238,
+    "popularity": 26,
+    "explicit": false,
+    "added_at": "2025-10-29T13:30:28Z",
+    "created_at": "2025-11-04T01:58:27.492342+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "0Tqus4oKDposH85h3iZL7y",
+    "track_name": "OUT OF MY HEAD",
+    "album_id": "5TdEhSXLprpXITvNYBq3s1",
+    "album_name": "OUT OF MY HEAD",
+    "artists": [
+      "Shifu",
+      "Karashnikov"
+    ],
+    "artist_ids": [
+      "0VT8yx1RZKOLxcbAj8KOii",
+      "0H6wjgFfHI7vf5SaX2T14n"
+    ],
+    "duration_ms": 258273,
+    "popularity": 33,
+    "explicit": false,
+    "added_at": "2025-10-30T13:29:59Z",
+    "created_at": "2025-11-04T01:58:27.726475+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "1rcFkzHwWSqeOnczsx0jpj",
+    "track_name": "APOCALYPSE",
+    "album_id": "3rZoUc1YEyXlfQaE69qxPx",
+    "album_name": "APOCALYPSE",
+    "artists": [
+      "DrDeagle",
+      "NILXRO",
+      "SLOWERB"
+    ],
+    "artist_ids": [
+      "0JFdYafPV1FuaD6n0mMAwi",
+      "5uZ7rugsxiLvGlUpvB7TGG",
+      "2ZJZrB4omgIuowframwGmT"
+    ],
+    "duration_ms": 72475,
+    "popularity": 25,
+    "explicit": false,
+    "added_at": "2025-10-27T11:09:02Z",
+    "created_at": "2025-11-04T01:58:29.574271+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "6k6DBoUHiqmi62dlPl2y4V",
+    "track_name": "CHARIOT",
+    "album_id": "1t20qGn2PiDS2EvmBJiaXv",
+    "album_name": "CHARIOT",
+    "artists": [
+      "KIIXSHI",
+      "D4C"
+    ],
+    "artist_ids": [
+      "3nLZDVpDU6RrQ9k98yHTKh",
+      "03dgMbqosvNOQzxyfqALkq"
+    ],
+    "duration_ms": 94317,
+    "popularity": 24,
+    "explicit": false,
+    "added_at": "2025-10-27T11:09:19Z",
+    "created_at": "2025-11-04T01:58:33.037873+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "2M5BTNR2AGe7dHtuxup9ln",
+    "track_name": "ME VS MYSELF",
+    "album_id": "3TsNqF6jWQpGmJhspa7x6g",
+    "album_name": "ME VS MYSELF",
+    "artists": [
+      "HXLLGANG"
+    ],
+    "artist_ids": [
+      "75TXk71aO72EDVxp9LZA28"
+    ],
+    "duration_ms": 140653,
+    "popularity": 18,
+    "explicit": false,
+    "added_at": "2025-10-31T09:31:06Z",
+    "created_at": "2025-11-04T01:58:33.769005+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "3zaLBrFyetVC1ogOELa0tZ",
+    "track_name": "missingcall",
+    "album_id": "0CvFKr7VaRAmRPB2JTCPsc",
+    "album_name": "missingcall",
+    "artists": [
+      "Vermillion"
+    ],
+    "artist_ids": [
+      "1PvcWjADPMezv8CTyJO9Uk"
+    ],
+    "duration_ms": 96000,
+    "popularity": 34,
+    "explicit": false,
+    "added_at": "2025-10-24T13:25:16Z",
+    "created_at": "2025-11-04T01:58:38.765628+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "1H8dgcvjvxxWQYnRIZBCy3",
+    "track_name": "Darkness",
+    "album_id": "72e9zcpVTMlTSsUnexmNu5",
+    "album_name": "Darkness",
+    "artists": [
+      "Scott Rill",
+      "Snoop Dogg"
+    ],
+    "artist_ids": [
+      "7dNg7OLrxcWU9cVe3sQoMV",
+      "7hJcb9fa4alzcOq3EaNPoG"
+    ],
+    "duration_ms": 133200,
+    "popularity": 26,
+    "explicit": false,
+    "added_at": "2025-06-13T08:33:26Z",
+    "created_at": "2025-11-04T01:58:45.562461+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "6qyS9qBy0mEk3qYaH8mPss",
+    "track_name": "Murder In My Mind",
+    "album_id": "68GI09qAs2XLJmA3hj5K7y",
+    "album_name": "Murder In My Mind",
+    "artists": [
+      "Kordhell"
+    ],
+    "artist_ids": [
+      "2W6WP4pHQTFlbr2z9S4n54"
+    ],
+    "duration_ms": 145000,
+    "popularity": 75,
+    "explicit": true,
+    "added_at": "2025-06-13T08:33:26Z",
+    "created_at": "2025-11-04T01:58:45.816743+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "2OAueQleY1T83ZSfsdnBg9",
+    "track_name": "colega legal",
+    "album_id": "0fPjQjvTQFzRi1mpClUziK",
+    "album_name": "colega legal",
+    "artists": [
+      "XO1"
+    ],
+    "artist_ids": [
+      "7IVPJk3I9EYRxUliaCy876"
+    ],
+    "duration_ms": 109647,
+    "popularity": 34,
+    "explicit": false,
+    "added_at": "2025-06-13T08:33:26Z",
+    "created_at": "2025-11-04T01:58:46.099097+00:00"
+  },
+  {
+    "playlist_id": "71z6BdHlnfNj4DKRhuu1Fk",
+    "playlist_name": "RAGE 💪 EDM WORKOUT MOTIVATION",
+    "track_id": "0wpVBSxau0r4Own4RYUEwp",
+    "track_name": "TROMBETA FAVELA",
+    "album_id": "3Bk514JcPoYhdJgbQG8vn9",
+    "album_name": "TROMBETA FAVELA",
+    "artists": [
+      "N4STY"
+    ],
+    "artist_ids": [
+      "4bwC2Lesvx9TFF3UQ44snp"
+    ],
+    "duration_ms": 90545,
+    "popularity": 20,
+    "explicit": false,
+    "added_at": "2025-06-13T08:33:26Z",
+    "created_at": "2025-11-04T01:58:46.279791+00:00"
   }
 ]
