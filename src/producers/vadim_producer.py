@@ -159,6 +159,7 @@ class VadimNewProducer:
                 }
 
                 track_data = {
+                    "user_id": self.user_id,  # Добавляем user_id для дедупликации в consumer
                     "track_id": track["id"],
                     "track_name": track.get("name"),
                     "artists": [a.get("name") for a in track.get("artists", [])],
@@ -168,7 +169,7 @@ class VadimNewProducer:
                     "explicit": track.get("explicit"),
                     "played_at": played_at,
                     "played_at_dt": played_at_dt,
-                    "album": album_data,  # Вся информация об альбоме в треке
+                    "album": album_data,
                     "created_at": datetime.now(timezone.utc).isoformat(),
                 }
                 tracks.append(track_data)
@@ -236,6 +237,7 @@ class VadimNewProducer:
                     }
 
                     track_data = {
+                        "user_id": self.user_id,  # Добавляем user_id для дедупликации
                         "track_id": track["id"],
                         "track_name": track.get("name"),
                         "artists": [a.get("name") for a in track.get("artists", [])],
@@ -247,7 +249,7 @@ class VadimNewProducer:
                         "playlist_name": playlist_name,
                         "added_at": added_at,
                         "added_at_dt": added_at_dt,
-                        "album": album_data,  # Вся информация об альбоме в треке
+                        "album": album_data,
                         "created_at": datetime.now(timezone.utc).isoformat(),
                     }
                     all_tracks.append(track_data)
